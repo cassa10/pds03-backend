@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - data-postgresql-pds03-backend:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=pds03-backend
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    env_file:
+      - ./deploy/dev.env
+    depends_on:
+      - db
+volumes:
+  data-postgresql-pds03-backend:
