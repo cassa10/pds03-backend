@@ -1,45 +1,62 @@
 # pds03-backend
-Practicas de Desarrollo de Software
+Materia: Prácticas de Desarrollo de Software
 
+# Integrantes
+
+
+|Alumno           | Github       |
+|-----------------|--------------|
+| -               | @a           |
+| -               | @b           |
+|Jose Luis Cassano| @cassa10     |
 
 ## Pre-Requirements
-java 11
-maven
-postgresql
-Docker (optional)
-Bash (docker)
-Install and run API with Docker (Recommended)
-Clone repository
-CD to repository cloned
-CD to backend
-Execute command:
-mvn clean install
 
-CD back and give execution permission to runDocker.sh
-chmod +x runDocker.sh
+    - java 11
+    - maven
+    - postgresql
+    - Docker (optional)
+    - Bash (docker)
 
-Execute runDocker.sh script
-High-level explanation of runDocker.sh
-Requires fat jar of app (Generated at 4th step in last section) for building image of app
+## Install and run API with Docker (Recommended)
+
+1. Clone repository
+2. CD to repository cloned
+3. Execute command:
+    >mvn clean install
+
+4. CD back and give execution permission to runDocker.sh
+    >chmod +x runDocker.sh
+
+5. Execute runDocker.sh script
+
+## High-level explanation of runDocker.sh
+
+Requires fat jar of app (that was generated at 3rd step at previous section) for building image of app
 
 Build docker image of app with Dockerfile
 
 Execute docker compose and start containers (database and app) with configuration at docker-compose.yml
 
-Install and run API (without Docker)
-Clone repository
+## Install and run API (without Docker)
 
-CD to repository cloned
+1. Clone repository
 
-Config. Properties (2 options)
+2. CD to repository cloned
 
-A. Set up all enviroments variables at ./deploy/dev.env (Recommended)
+3. Config. Properties: set up all environments variables at ./deploy/local.env (change if needs credentials or host envs)
 
-B. Replace all properties of application.properties with values of ./deploy/dev.env
+4. Execute command
+    >mvn clean install
 
-Execute command "mvn clean install"
+5. Create postgresql database with name 'pds03-backend' with no quotes
 
-Create database with name "pds03-backend"
+6. Execute command for start API
+   >mvn spring-boot:run
 
-Execute command "mvn spring-boot:run" for start API`
+## Swagger Doc
+
+Documentation of all available api endpoints and Model DTO's
+
+- Visit endpoints "/" or "/swagger-ui.html"
 
