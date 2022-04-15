@@ -13,10 +13,10 @@ import java.util.*
 class ControllerAdviceRequestError : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [(UserNotFound::class)])
-    fun handlerException(exception: Exception, request: WebRequest): ResponseEntity<ErrorsDetails> {
-        val errorDetails = ErrorsDetails(Date(), exception.message!!)
+    fun handlerException(exception: Exception, request: WebRequest): ResponseEntity<ErrorDetail> {
+        val errorDetails = ErrorDetail(Date(), exception.message!!)
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 }
 
-data class ErrorsDetails(val time: Date, val message: String)
+data class ErrorDetail(val time: Date, val message: String)
