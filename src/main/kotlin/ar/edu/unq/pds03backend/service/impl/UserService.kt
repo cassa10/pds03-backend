@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import java.util.Optional
 
 @Service
-class UserService(@Autowired val userRepository: IUserRepository) : IUserService {
+class UserService(@Autowired private val userRepository: IUserRepository) : IUserService {
     override fun findById(id: Long): Optional<User> {
         return userRepository.findById(id)
     }
