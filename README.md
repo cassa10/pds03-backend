@@ -6,7 +6,7 @@ Materia: Prácticas de Desarrollo de Software
 
 |Alumno           | Github       |
 |-----------------|--------------|
-| -               | @a           |
+|Daniel Villegas  | @DaniVillegas14 |
 |Matías Cabrera   | @maty11c     |
 |Jose Luis Cassano| @cassa10     |
 
