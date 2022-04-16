@@ -9,7 +9,8 @@ import java.util.Optional
 
 @Service
 class UserService(@Autowired private val userRepository: IUserRepository) : IUserService {
-    override fun findById(id: Long): Optional<User> {
-        return userRepository.findById(id)
-    }
+
+    override fun findById(id: Long): Optional<User> = userRepository.findById(id)
+
+    override fun findByEmailAndDni(email: String, dni: String): Optional<User> = userRepository.findByEmailAndDni(email, dni)
 }

@@ -5,6 +5,5 @@ import java.util.*
 
 interface IUserService {
     fun findById(id: Long): Optional<User>
-
-    // TODO: Agregar método para obtener usuario por email y dni
+    fun findByEmailAndDni(email: String, dni: String): Optional<User>
 }

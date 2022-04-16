@@ -20,7 +20,7 @@ class AuthService(@Autowired private val userService: UserService) : IAuthServic
     }
 
     private fun validate(loginRequestDTO: LoginRequestDTO): User {
-        val user = userService.findById(1)
+        val user = userService.findByEmailAndDni(loginRequestDTO.email, loginRequestDTO.dni)
 
         return user.orElseThrow { throw UserNotFound() }
     }
