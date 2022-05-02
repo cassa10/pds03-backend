@@ -4,11 +4,11 @@ Materia: Prácticas de Desarrollo de Software
 # Integrantes
 
 
-|Alumno           | Github       |
-|-----------------|--------------|
-|Daniel Villegas  | @DaniVillegas14 |
-|Matías Cabrera   | @maty11c     |
-|Jose Luis Cassano| @cassa10     |
+| Alumno            | Github          |
+|-------------------|-----------------|
+| Daniel Villegas   | @DaniVillegas14 |
+| Matías Cabrera    | @maty11c        |
+| Jose Luis Cassano | @cassa10        |
 
 ## Pre-Requirements
 
@@ -36,6 +36,8 @@ Requires fat jar of app (that was generated at 3rd step at previous section) for
 
 Build docker image of app with Dockerfile
 
+Copy /deploy/dev.env as .env in root repo folder
+
 Execute docker compose and start containers (database and app) with configuration at docker-compose.yml
 
 ## Install and run API (without Docker)
@@ -54,9 +56,11 @@ Execute docker compose and start containers (database and app) with configuratio
 6. Execute command for start API
    >mvn spring-boot:run
 
-## Swagger Doc
+## Swagger Doc & Health checks
 
 Documentation of all available api endpoints and Model DTO's
 
 - Visit endpoints "/" or "/swagger-ui.html"
+
+- Visit "/actuator/health" for health checks
 

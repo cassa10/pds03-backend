@@ -15,5 +15,8 @@ then
     echo "[INFO] - Execute \"mvn clean install\" for generating .jar file"
 fi
 
+# Set up enviroment variables for compose
+cp ./deploy/dev.env .env
+
 # Build and instance containers with docker-compose info
 docker-compose up -d --build

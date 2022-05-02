@@ -1,23 +1,28 @@
 version: '3'
 
+#Check .env file before start compose
+
 services:
   db:
     image: "postgres"
     ports:
-      - "5432:5432"
+      - ${DB_PORT}:${DB_PORT}
+    env_file:
+      - ./deploy/dev.env
     volumes:
       - data-postgresql-pds03-backend:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=pds03-backend
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
   app:
     build: .
+    #image: "(utilizar repo de imagenes, gitlab, github)"
     ports:
-      - 8080:8080
+      - ${SPRING_PORT}:${SPRING_PORT}
     env_file:
       - ./deploy/dev.env
     depends_on:
       - db
 volumes:
-  data-postgresql-pds03-backend:
+    data-postgresql-pds03-backend:
