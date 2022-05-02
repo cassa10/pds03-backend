@@ -11,10 +11,13 @@ class Semester(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
+
     @Column(nullable = false)
     val semester: Boolean,
+
     @Column(nullable = false)
     val year: Int,
+
     @Column(unique = true, nullable = false)
     val name: String
 )
