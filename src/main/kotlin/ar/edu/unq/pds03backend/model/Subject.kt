@@ -13,5 +13,5 @@ class Subject(
     val name: String,
 
     @ManyToMany(mappedBy = "subjects", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    val degree: Collection<Career>,
+    val degree: Collection<Degree>,
 )

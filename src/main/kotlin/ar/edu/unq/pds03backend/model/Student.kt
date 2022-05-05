@@ -24,16 +24,6 @@ class Student(
     @Column(unique = true, nullable = false)
     val email: String,
 
-    @Column(nullable = false)
-    val coefficient: Float,
-
-    @ManyToMany(cascade = [CascadeType.ALL])
-    @JoinTable(name = "student_career",
-        joinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "career_id", referencedColumnName = "id")]
-    )
-    val registered_careers: Collection<Career>,
-
-    @OneToMany(mappedBy="student")
-    val studied_subjects: Collection<StudiedSubject>
+    @OneToMany(mappedBy = "student")
+    val studiedDegrees: Collection<StudiedDegree>
 )

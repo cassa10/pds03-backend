@@ -40,5 +40,5 @@ class Course(
         joinColumns = [JoinColumn(name = "course_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")]
     )
-    val students_enrolled: Collection<Student>
+    val students: Collection<Student>
 )
