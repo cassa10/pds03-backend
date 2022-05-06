@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService(@Autowired private val personService: PersonService, @Autowired private val loginMapper: LoginMapper) : IAuthService {
+class AuthService(@Autowired private val personService: PersonService) : IAuthService {
     override fun login(loginRequestDTO: LoginRequestDTO): LoginResponseDTO {
         val person = validate(loginRequestDTO)
 
         // TODO: Crear JWT
 
-        return loginMapper.toDTO(person.user)
+        return LoginMapper().toDTO(person.user)
     }
 
     private fun validate(loginRequestDTO: LoginRequestDTO): Person {
