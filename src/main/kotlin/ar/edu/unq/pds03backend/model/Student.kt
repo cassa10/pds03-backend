@@ -3,27 +3,21 @@ package ar.edu.unq.pds03backend.model
 import javax.persistence.*;
 
 @Entity
-@Table(name = "students")
+@DiscriminatorValue("1")
 class Student(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    id: Long?,
+    firstName: String,
+    lastName: String,
+    dni: String,
+    email: String,
+    user: User,
 
-    @Column(unique = true, nullable = false)
-    val dni: String,
-
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     val legajo: String,
 
-    @Column(nullable = false)
-    val firstName: String,
-
-    @Column(nullable = false)
-    val lastName: String,
-
-    @Column(unique = true, nullable = false)
-    val email: String,
-
     @OneToMany(mappedBy = "student")
-    val studiedDegrees: Collection<StudiedDegree>
-)
+    val degree_histories: Collection<StudiedDegree>
+) : Person(id, firstName, lastName, dni, email, user)
+{
+    override fun isStudent(): Boolean = true
+}

@@ -8,12 +8,11 @@ data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
+
     @Column(unique = true, nullable = false)
     val username: String,
-    @Column(unique = true, nullable = false)
-    val email: String,
-    @Column(unique = true, nullable = false)
-    val dni: String,
-    @Column(nullable = false)
-    val role: Role
+    
+    @OneToOne()
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    val person: Person
 )
