@@ -7,7 +7,7 @@ import javax.persistence.*;
 class Degree(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    val id: Long? = null,
 
     @Column(unique = true, nullable = false)
     val name: String,
