@@ -28,4 +28,11 @@ class DegreeController(@Autowired private val degreeService: DegreeService) {
         degreeService.update(id, createDegreeRequestDTO)
         return "Degree updated"
     }
+
+    @DeleteMapping("/{id}")
+    @LogExecution
+    fun delete(@PathVariable id: Long): String {
+        degreeService.delete(id)
+        return "Degree deleted"
+    }
 }

@@ -27,18 +27,6 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         )
     }
 
-    override fun update(id: Long, createDegreeRequestDTO: CreateDegreeRequestDTO) {
-        val degree = degreeRepository.findById(id)
-
-        if (!degree.isPresent) throw DegreeNotFound()
-
-        val newDegree = degree.get()
-        newDegree.name = createDegreeRequestDTO.name
-        newDegree.acronym = createDegreeRequestDTO.acronym
-
-        degreeRepository.save(newDegree)
-    }
-
     override fun getAll(): List<DegreeResponseDTO> {
         val degrees = degreeRepository.findAll()
 
@@ -56,5 +44,25 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
 
             )
         }
+    }
+
+    override fun update(id: Long, createDegreeRequestDTO: CreateDegreeRequestDTO) {
+        val degree = degreeRepository.findById(id)
+
+        if (!degree.isPresent) throw DegreeNotFound()
+
+        val newDegree = degree.get()
+        newDegree.name = createDegreeRequestDTO.name
+        newDegree.acronym = createDegreeRequestDTO.acronym
+
+        degreeRepository.save(newDegree)
+    }
+
+    override fun delete(id: Long) {
+        val degree = degreeRepository.findById(id)
+
+        if (!degree.isPresent) throw DegreeNotFound()
+
+        degreeRepository.delete(degree.get())
     }
 }

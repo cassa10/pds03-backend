@@ -7,4 +7,5 @@ interface IDegreeService {
     fun create(createDegreeRequestDTO: CreateDegreeRequestDTO)
     fun getAll(): List<DegreeResponseDTO>
     fun update(id: Long, createDegreeRequestDTO: CreateDegreeRequestDTO)
+    fun delete(id: Long)
 }
