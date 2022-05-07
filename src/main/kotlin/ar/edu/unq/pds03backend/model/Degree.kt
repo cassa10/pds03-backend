@@ -7,13 +7,13 @@ import javax.persistence.*;
 class Degree(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(unique = true, nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(unique = true, nullable = false)
-    val acronym: String,
+    var acronym: String,
 
     @ManyToMany(cascade = [CascadeType.ALL])
     @JoinTable(name = "degree_subject",

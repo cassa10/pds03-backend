@@ -1,7 +1,7 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.dto.LoginRequestDTO
-import ar.edu.unq.pds03backend.dto.LoginResponseDTO
+import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
+import ar.edu.unq.pds03backend.dto.authentication.LoginResponseDTO
 import ar.edu.unq.pds03backend.service.impl.AuthService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired

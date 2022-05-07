@@ -1,7 +1,10 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.CreateDegreeRequestDTO
+import ar.edu.unq.pds03backend.dto.degree.CreateDegreeRequestDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.exception.DegreeAlreadyExists
+import ar.edu.unq.pds03backend.exception.DegreeNotFound
 import ar.edu.unq.pds03backend.model.Degree
 import ar.edu.unq.pds03backend.repository.IDegreeRepository
 import ar.edu.unq.pds03backend.service.IDegreeService
@@ -22,5 +25,36 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
                 subjects = mutableListOf()
             )
         )
+    }
+
+    override fun update(id: Long, createDegreeRequestDTO: CreateDegreeRequestDTO) {
+        val degree = degreeRepository.findById(id)
+
+        if (!degree.isPresent) throw DegreeNotFound()
+
+        val newDegree = degree.get()
+        newDegree.name = createDegreeRequestDTO.name
+        newDegree.acronym = createDegreeRequestDTO.acronym
+
+        degreeRepository.save(newDegree)
+    }
+
+    override fun getAll(): List<DegreeResponseDTO> {
+        val degrees = degreeRepository.findAll()
+
+        return degrees.map { degree ->
+            DegreeResponseDTO(
+                id = degree.id!!,
+                name = degree.name,
+                acronym = degree.acronym,
+                subjects = degree.subjects.map { subject ->
+                    SubjectResponseDTO(
+                        id = subject.id!!,
+                        name = subject.name
+                    )
+                }
+
+            )
+        }
     }
 }
