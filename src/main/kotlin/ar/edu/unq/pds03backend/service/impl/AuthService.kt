@@ -1,11 +1,10 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.LoginRequestDTO
-import ar.edu.unq.pds03backend.dto.LoginResponseDTO
+import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
+import ar.edu.unq.pds03backend.dto.authentication.LoginResponseDTO
 import ar.edu.unq.pds03backend.exception.UserNotFound
 import ar.edu.unq.pds03backend.mapper.LoginMapper
 import ar.edu.unq.pds03backend.model.Person
-import ar.edu.unq.pds03backend.model.User
 import ar.edu.unq.pds03backend.service.IAuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

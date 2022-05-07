@@ -1,4 +1,4 @@
-package ar.edu.unq.pds03backend.dto
+package ar.edu.unq.pds03backend.dto.authentication
 
 import ar.edu.unq.pds03backend.model.Role
 
