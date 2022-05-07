@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.degree.CreateDegreeRequestDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeRequestDTO
 import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.exception.DegreeAlreadyExists
@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) : IDegreeService {
-    override fun create(createDegreeRequestDTO: CreateDegreeRequestDTO) {
-        val degree = degreeRepository.findByNameAndAcronym(createDegreeRequestDTO.name, createDegreeRequestDTO.acronym)
+    override fun create(degreeRequestDTO: DegreeRequestDTO) {
+        val degree = degreeRepository.findByNameAndAcronym(degreeRequestDTO.name, degreeRequestDTO.acronym)
 
         if (degree.isPresent) throw DegreeAlreadyExists()
 
         degreeRepository.save(
             Degree(
-                name = createDegreeRequestDTO.name,
-                acronym = createDegreeRequestDTO.acronym,
+                name = degreeRequestDTO.name,
+                acronym = degreeRequestDTO.acronym,
                 subjects = mutableListOf()
             )
         )
@@ -46,14 +46,14 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         }
     }
 
-    override fun update(id: Long, createDegreeRequestDTO: CreateDegreeRequestDTO) {
+    override fun update(id: Long, degreeRequestDTO: DegreeRequestDTO) {
         val degree = degreeRepository.findById(id)
 
         if (!degree.isPresent) throw DegreeNotFound()
 
         val newDegree = degree.get()
-        newDegree.name = createDegreeRequestDTO.name
-        newDegree.acronym = createDegreeRequestDTO.acronym
+        newDegree.name = degreeRequestDTO.name
+        newDegree.acronym = degreeRequestDTO.acronym
 
         degreeRepository.save(newDegree)
     }

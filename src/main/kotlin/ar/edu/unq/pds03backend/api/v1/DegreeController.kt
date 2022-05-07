@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.dto.degree.CreateDegreeRequestDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeRequestDTO
 import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
 import ar.edu.unq.pds03backend.service.impl.DegreeService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
@@ -13,7 +13,7 @@ class DegreeController(@Autowired private val degreeService: DegreeService) {
 
     @PostMapping
     @LogExecution
-    fun create(@RequestBody createDegreeRequestDTO: CreateDegreeRequestDTO): String {
+    fun create(@RequestBody createDegreeRequestDTO: DegreeRequestDTO): String {
         degreeService.create(createDegreeRequestDTO)
         return "Degree created"
     }
@@ -24,8 +24,8 @@ class DegreeController(@Autowired private val degreeService: DegreeService) {
 
     @PutMapping("/{id}")
     @LogExecution
-    fun update(@PathVariable id: Long, @RequestBody createDegreeRequestDTO: CreateDegreeRequestDTO): String {
-        degreeService.update(id, createDegreeRequestDTO)
+    fun update(@PathVariable id: Long, @RequestBody degreeRequestDTO: DegreeRequestDTO): String {
+        degreeService.update(id, degreeRequestDTO)
         return "Degree updated"
     }
 
