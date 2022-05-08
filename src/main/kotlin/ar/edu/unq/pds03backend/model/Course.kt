@@ -13,11 +13,11 @@ class Course(
     val id: Long?,
 
     @ManyToOne
-    @JoinColumn(name="semester_id")
+    @JoinColumn(name = "semester_id")
     val semester: Semester,
 
     @ManyToOne
-    @JoinColumn(name="subject_id")
+    @JoinColumn(name = "subject_id")
     val subject: Subject,
 
     @Column(unique = true, nullable = false)
@@ -36,7 +36,8 @@ class Course(
     val total_quotes: Int,
 
     @ManyToMany(cascade = [CascadeType.ALL])
-    @JoinTable(name = "course_student",
+    @JoinTable(
+        name = "course_student",
         joinColumns = [JoinColumn(name = "course_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")]
     )

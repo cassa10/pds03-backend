@@ -6,4 +6,5 @@ import java.util.*
 
 interface IQuoteRequestRepository : CrudRepository<QuoteRequest, Long> {
     fun findByCourseIdAndStudentId(idCourse: Long, idStudent: Long): Optional<QuoteRequest>
+    fun findAllByCourseId(idCourse: Long): Iterable<QuoteRequest>
 }
