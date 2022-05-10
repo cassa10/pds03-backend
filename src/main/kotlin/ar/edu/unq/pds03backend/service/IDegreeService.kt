@@ -5,6 +5,7 @@ import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
 
 interface IDegreeService {
     fun create(degreeRequestDTO: DegreeRequestDTO)
+    fun getById(id: Long): DegreeResponseDTO
     fun getAll(): List<DegreeResponseDTO>
     fun update(id: Long, degreeRequestDTO: DegreeRequestDTO)
     fun delete(id: Long)

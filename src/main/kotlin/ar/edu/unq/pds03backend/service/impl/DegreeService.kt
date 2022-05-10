@@ -27,23 +27,17 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         )
     }
 
+    override fun getById(id: Long): DegreeResponseDTO {
+        val degree = degreeRepository.findById(id)
+
+        if (!degree.isPresent) throw DegreeNotFoundException()
+
+        return toResponseDTO(degree.get())
+    }
+
     override fun getAll(): List<DegreeResponseDTO> {
         val degrees = degreeRepository.findAll()
-
-        return degrees.map { degree ->
-            DegreeResponseDTO(
-                id = degree.id!!,
-                name = degree.name,
-                acronym = degree.acronym,
-                subjects = degree.subjects.map { subject ->
-                    SubjectResponseDTO(
-                        id = subject.id!!,
-                        name = subject.name
-                    )
-                }
-
-            )
-        }
+        return degrees.map { toResponseDTO(it) }
     }
 
     override fun update(id: Long, degreeRequestDTO: DegreeRequestDTO) {
@@ -64,5 +58,19 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         if (!degree.isPresent) throw DegreeNotFoundException()
 
         degreeRepository.delete(degree.get())
+    }
+
+    private fun toResponseDTO(degree: Degree): DegreeResponseDTO {
+        return DegreeResponseDTO(
+            id = degree.id!!,
+            name = degree.name,
+            acronym = degree.acronym,
+            subjects = degree.subjects.map { subject ->
+                SubjectResponseDTO(
+                    id = subject.id!!,
+                    name = subject.name
+                )
+            }
+        )
     }
 }

@@ -18,6 +18,10 @@ class DegreeController(@Autowired private val degreeService: DegreeService) {
         return "Degree created"
     }
 
+    @GetMapping("/{id}")
+    @LogExecution
+    fun getById(@PathVariable id: Long): DegreeResponseDTO = degreeService.getById(id)
+
     @GetMapping
     @LogExecution
     fun getAll(): List<DegreeResponseDTO> = degreeService.getAll()
