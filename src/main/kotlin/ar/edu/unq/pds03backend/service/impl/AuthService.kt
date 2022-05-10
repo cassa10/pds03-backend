@@ -2,7 +2,7 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
 import ar.edu.unq.pds03backend.dto.authentication.LoginResponseDTO
-import ar.edu.unq.pds03backend.exception.UserNotFound
+import ar.edu.unq.pds03backend.exception.UserNotFoundException
 import ar.edu.unq.pds03backend.mapper.LoginMapper
 import ar.edu.unq.pds03backend.model.Person
 import ar.edu.unq.pds03backend.service.IAuthService
@@ -22,6 +22,6 @@ class AuthService(@Autowired private val personService: PersonService) : IAuthSe
     private fun validate(loginRequestDTO: LoginRequestDTO): Person {
         val person = personService.findByEmailAndDni(loginRequestDTO.email, loginRequestDTO.dni)
 
-        return person.orElseThrow { throw UserNotFound() }
+        return person.orElseThrow { throw UserNotFoundException() }
     }
 }

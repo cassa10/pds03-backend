@@ -7,7 +7,7 @@ import javax.persistence.*;
 class QuoteRequest(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    val id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name="course_id")

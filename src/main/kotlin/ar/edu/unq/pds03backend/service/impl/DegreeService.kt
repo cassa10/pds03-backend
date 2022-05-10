@@ -3,8 +3,8 @@ package ar.edu.unq.pds03backend.service.impl
 import ar.edu.unq.pds03backend.dto.degree.DegreeRequestDTO
 import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
-import ar.edu.unq.pds03backend.exception.DegreeAlreadyExists
-import ar.edu.unq.pds03backend.exception.DegreeNotFound
+import ar.edu.unq.pds03backend.exception.DegreeAlreadyExistsException
+import ar.edu.unq.pds03backend.exception.DegreeNotFoundException
 import ar.edu.unq.pds03backend.model.Degree
 import ar.edu.unq.pds03backend.repository.IDegreeRepository
 import ar.edu.unq.pds03backend.service.IDegreeService
@@ -16,7 +16,7 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
     override fun create(degreeRequestDTO: DegreeRequestDTO) {
         val degree = degreeRepository.findByNameAndAcronym(degreeRequestDTO.name, degreeRequestDTO.acronym)
 
-        if (degree.isPresent) throw DegreeAlreadyExists()
+        if (degree.isPresent) throw DegreeAlreadyExistsException()
 
         degreeRepository.save(
             Degree(
@@ -49,7 +49,7 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
     override fun update(id: Long, degreeRequestDTO: DegreeRequestDTO) {
         val degree = degreeRepository.findById(id)
 
-        if (!degree.isPresent) throw DegreeNotFound()
+        if (!degree.isPresent) throw DegreeNotFoundException()
 
         val newDegree = degree.get()
         newDegree.name = degreeRequestDTO.name
@@ -61,7 +61,7 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
     override fun delete(id: Long) {
         val degree = degreeRepository.findById(id)
 
-        if (!degree.isPresent) throw DegreeNotFound()
+        if (!degree.isPresent) throw DegreeNotFoundException()
 
         degreeRepository.delete(degree.get())
     }

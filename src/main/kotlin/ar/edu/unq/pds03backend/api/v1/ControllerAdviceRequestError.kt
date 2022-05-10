@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.exception.UserNotFound
+import ar.edu.unq.pds03backend.exception.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -12,7 +12,7 @@ import java.util.*
 @ControllerAdvice
 class ControllerAdviceRequestError : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(value = [(UserNotFound::class)])
+    @ExceptionHandler(value = [(NotFoundException::class)])
     fun handlerException(exception: Exception, request: WebRequest): ResponseEntity<ErrorDetail> {
         val errorDetails = ErrorDetail(Date(), exception.message!!)
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
