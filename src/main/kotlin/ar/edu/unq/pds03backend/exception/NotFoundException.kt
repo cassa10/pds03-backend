@@ -3,12 +3,12 @@ package ar.edu.unq.pds03backend.exception
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
-abstract class NotFoundException(message: String) : RuntimeException(message)
-
 private const val USER_NOT_FOUND = "User not found"
 private const val STUDENT_NOT_FOUND = "Student not found"
 private const val DEGREE_NOT_FOUND = "Degree not found"
 private const val COURSE_NOT_FOUND = "Course not found"
+
+abstract class NotFoundException(message: String) : RuntimeException(message)
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = USER_NOT_FOUND)
 class UserNotFoundException : NotFoundException(USER_NOT_FOUND)

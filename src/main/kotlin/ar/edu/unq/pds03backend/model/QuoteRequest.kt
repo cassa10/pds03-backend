@@ -7,19 +7,19 @@ import javax.persistence.*;
 class QuoteRequest(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    val id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name="course_id")
-    var course: Course,
+    val course: Course,
 
     @ManyToOne
     @JoinColumn(name="student_id")
-    var student: Student,
+    val student: Student,
 
     @Column(nullable = false)
-    var state: QuoteState,
+    val state: QuoteState,
 
     @Column(nullable = false)
-    var comment: String
+    val comment: String
 )
