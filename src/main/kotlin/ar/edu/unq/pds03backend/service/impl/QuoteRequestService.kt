@@ -3,7 +3,9 @@ package ar.edu.unq.pds03backend.service.impl
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.model.QuoteRequest
@@ -53,7 +55,21 @@ class QuoteRequestService(
         return quoteRequests.map { quoteRequest ->
             QuoteRequestResponseDTO(
                 id = quoteRequest.id!!,
-                course = CourseResponseDTO(quoteRequest.course.id!!, quoteRequest.course.name),
+                course = CourseResponseDTO(
+                    quoteRequest.course.id!!,
+                    SemesterResponseDTO(
+                        quoteRequest.course.semester.id!!,
+                        quoteRequest.course.semester.semester,
+                        quoteRequest.course.semester.year,
+                        quoteRequest.course.semester.name
+                    ),
+                    SubjectResponseDTO(quoteRequest.course.subject.id!!, quoteRequest.course.subject.name),
+                    quoteRequest.course.number,
+                    quoteRequest.course.name,
+                    quoteRequest.course.assigned_teachers,
+                    quoteRequest.course.current_quotes,
+                    quoteRequest.course.total_quotes
+                ),
                 student = StudentResponseDTO(
                     quoteRequest.student.id!!,
                     quoteRequest.student.firstName,
