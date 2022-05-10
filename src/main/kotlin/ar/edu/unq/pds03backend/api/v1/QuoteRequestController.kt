@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.service.impl.QuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,4 +17,8 @@ class QuoteRequestController(@Autowired private val quoteRequestService: QuoteRe
         quoteRequestService.create(code, quoteRequestRequestDTO)
         return "quote request created"
     }
+
+    @GetMapping
+    @LogExecution
+    fun getAllByCourse(@RequestParam code: String): List<QuoteRequestResponseDTO> = quoteRequestService.getAllByCourse(code)
 }
