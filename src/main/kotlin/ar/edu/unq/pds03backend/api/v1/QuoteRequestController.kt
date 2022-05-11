@@ -27,15 +27,11 @@ class QuoteRequestController(@Autowired private val quoteRequestService: QuoteRe
     @GetMapping
     @LogExecution
     fun getAll(@RequestParam code: Optional<String>, @RequestParam idStudent: Optional<Long>): List<QuoteRequestResponseDTO> {
-        if (code.isPresent && idStudent.isPresent)
-            return quoteRequestService.getAllByCourseAndStudent(code.get(), idStudent.get())
-
-        if (code.isPresent)
-            return quoteRequestService.getAllByCourse(code.get())
-
-        if (idStudent.isPresent)
-            return quoteRequestService.getAllByStudent(idStudent.get())
-
-        return quoteRequestService.getAll()
+        return when {
+            code.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(code.get(), idStudent.get())
+            code.isPresent -> quoteRequestService.getAllByCourse(code.get())
+            idStudent.isPresent -> quoteRequestService.getAllByStudent(idStudent.get())
+            else -> quoteRequestService.getAll()
+        }
     }
 }
