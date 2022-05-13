@@ -8,6 +8,8 @@ private const val STUDENT_NOT_FOUND = "Student not found"
 private const val DEGREE_NOT_FOUND = "Degree not found"
 private const val COURSE_NOT_FOUND = "Course not found"
 private const val QUOTE_REQUEST_NOT_FOUND = "Quote request not found"
+private const val SEMESTER_NOT_FOUND = "Semester not found"
+private const val SUBJECT_NOT_FOUND = "Subject not found"
 
 abstract class NotFoundException(message: String) : RuntimeException(message)
 
@@ -25,3 +27,9 @@ class CourseNotFoundException : NotFoundException(COURSE_NOT_FOUND)
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = QUOTE_REQUEST_NOT_FOUND)
 class QuoteRequestNotFoundException : NotFoundException(QUOTE_REQUEST_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = SEMESTER_NOT_FOUND)
+class SemesterNotFoundException : NotFoundException(SEMESTER_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = SUBJECT_NOT_FOUND)
+class SubjectNotFoundException : NotFoundException(SUBJECT_NOT_FOUND)

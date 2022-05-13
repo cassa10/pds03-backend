@@ -10,7 +10,7 @@ import javax.persistence.*;
 class Course(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "semester_id")
