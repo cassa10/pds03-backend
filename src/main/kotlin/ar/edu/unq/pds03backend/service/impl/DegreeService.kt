@@ -2,7 +2,7 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.degree.DegreeRequestDTO
 import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
-import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
 import ar.edu.unq.pds03backend.exception.DegreeAlreadyExistsException
 import ar.edu.unq.pds03backend.exception.DegreeNotFoundException
 import ar.edu.unq.pds03backend.model.Degree
@@ -65,10 +65,10 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
             id = degree.id!!,
             name = degree.name,
             acronym = degree.acronym,
-            subjects = degree.subjects.map { subject ->
-                SubjectResponseDTO(
-                    id = subject.id!!,
-                    name = subject.name
+            subjects = degree.subjects.map {
+                SimpleSubjectResponseDTO(
+                    id = it.id!!,
+                    name = it.name
                 )
             }
         )

@@ -2,25 +2,28 @@ package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.degree.DegreeRequestDTO
 import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
-import ar.edu.unq.pds03backend.service.impl.DegreeService
+import ar.edu.unq.pds03backend.service.IDegreeService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/degrees")
-class DegreeController(@Autowired private val degreeService: DegreeService) {
+@Validated
+class DegreeController(@Autowired private val degreeService: IDegreeService) {
 
     @PostMapping
     @LogExecution
-    fun create(@RequestBody createDegreeRequestDTO: DegreeRequestDTO): String {
+    fun create(@Valid @RequestBody createDegreeRequestDTO: DegreeRequestDTO): String {
         degreeService.create(createDegreeRequestDTO)
-        return "Degree created"
+        return "degree created"
     }
 
     @GetMapping("/{id}")
     @LogExecution
-    fun getById(@PathVariable id: Long): DegreeResponseDTO = degreeService.getById(id)
+    fun getById(@PathVariable @Valid id: Long): DegreeResponseDTO = degreeService.getById(id)
 
     @GetMapping
     @LogExecution
@@ -28,15 +31,18 @@ class DegreeController(@Autowired private val degreeService: DegreeService) {
 
     @PutMapping("/{id}")
     @LogExecution
-    fun update(@PathVariable id: Long, @RequestBody degreeRequestDTO: DegreeRequestDTO): String {
+    fun update(@PathVariable @Valid id: Long, @Valid @RequestBody degreeRequestDTO: DegreeRequestDTO): String {
         degreeService.update(id, degreeRequestDTO)
-        return "Degree updated"
+        return "degree updated"
     }
 
+    /*
+    TODO: BUG - Delete all objects, not by id
     @DeleteMapping("/{id}")
     @LogExecution
-    fun delete(@PathVariable id: Long): String {
+    fun delete(@PathVariable @Valid id: Long): String {
         degreeService.delete(id)
-        return "Degree deleted"
+        return "degree deleted"
     }
+    */
 }

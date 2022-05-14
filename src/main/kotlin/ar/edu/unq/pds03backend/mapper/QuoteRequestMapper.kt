@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteRequest
@@ -20,7 +21,7 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
                                 quoteRequest.course.semester.year,
                                 quoteRequest.course.semester.name
                         ),
-                        SubjectResponseDTO(quoteRequest.course.subject.id!!, quoteRequest.course.subject.name),
+                        SimpleSubjectResponseDTO(quoteRequest.course.subject.id!!, quoteRequest.course.subject.name),
                         quoteRequest.course.number,
                         quoteRequest.course.name,
                         quoteRequest.course.assigned_teachers,

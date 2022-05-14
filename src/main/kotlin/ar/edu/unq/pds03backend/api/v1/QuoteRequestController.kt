@@ -1,17 +1,20 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.dto.degree.DegreeResponseDTO
+
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
-import ar.edu.unq.pds03backend.service.impl.QuoteRequestService
+import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.Optional
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/quoteRequest")
-class QuoteRequestController(@Autowired private val quoteRequestService: QuoteRequestService) {
+@Validated
+class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteRequestService) {
 
     @PostMapping("/{code}")
     @LogExecution
@@ -22,7 +25,7 @@ class QuoteRequestController(@Autowired private val quoteRequestService: QuoteRe
 
     @GetMapping("/{id}")
     @LogExecution
-    fun getById(@PathVariable id: Long): QuoteRequestResponseDTO = quoteRequestService.getById(id)
+    fun getById(@PathVariable @Valid id: Long): QuoteRequestResponseDTO = quoteRequestService.getById(id)
 
     @GetMapping
     @LogExecution

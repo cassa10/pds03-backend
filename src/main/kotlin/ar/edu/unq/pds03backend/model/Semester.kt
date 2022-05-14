@@ -13,6 +13,7 @@ class Semester(
     val id: Long?,
 
     @Column(nullable = false)
+    //False = Fst semester and True = Snd semester
     val semester: Boolean,
 
     @Column(nullable = false)

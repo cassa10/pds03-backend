@@ -1,4 +1,3 @@
-# official image, using alpine because is smallest unix image
 FROM openjdk:11
 
 EXPOSE 8080
