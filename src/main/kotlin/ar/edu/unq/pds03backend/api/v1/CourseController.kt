@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.dto.CourseRequestDTO
+import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.service.impl.CourseService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired

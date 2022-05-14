@@ -1,9 +1,10 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.CourseRequestDTO
+import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
 import ar.edu.unq.pds03backend.exception.SubjectNotFoundException
 import ar.edu.unq.pds03backend.model.Course
+import ar.edu.unq.pds03backend.model.Hour
 import ar.edu.unq.pds03backend.repository.ICourseRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.repository.ISubjectRepository
@@ -16,7 +17,7 @@ class CourseService(
         @Autowired private val semesterRepository: ISemesterRepository,
         @Autowired private val subjectRepository: ISubjectRepository,
         @Autowired private val courseRepository: ICourseRepository,
-): ICourseService {
+) : ICourseService {
 
     override fun create(idSemester: Long, idSubject: Long, courseRequestDTO: CourseRequestDTO) {
         val semester = semesterRepository.findById(idSemester)
@@ -29,12 +30,11 @@ class CourseService(
                 Course(
                         semester = semester.get(),
                         subject = subject.get(),
-                        number = 2,
                         name = courseRequestDTO.name,
+                        number = subjectRepository.nextNumber(),
                         assigned_teachers = courseRequestDTO.assignedTeachers.joinToString(),
-                        current_quotes = courseRequestDTO.totalQuotes,
                         total_quotes = courseRequestDTO.totalQuotes,
-                        students = listOf()
+                        hours = courseRequestDTO.hours.map { Hour(desde = it.from, hasta = it.to, day = it.day.value) }.toMutableList()
                 )
         )
     }

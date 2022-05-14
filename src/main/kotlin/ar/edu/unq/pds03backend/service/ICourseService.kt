@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.service
 
-import ar.edu.unq.pds03backend.dto.CourseRequestDTO
+import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 
 interface ICourseService {
     fun create(idSemester: Long, idSubject: Long, courseRequestDTO: CourseRequestDTO)
