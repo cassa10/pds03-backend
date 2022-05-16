@@ -37,13 +37,10 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
         return "subject updated"
     }
 
-    /*
-    TODO: BUG - Delete all objects, not by id
     @DeleteMapping("/{id}")
     @LogExecution
     fun delete(@PathVariable @Valid id: Long): String {
         subjectService.delete(id)
         return "subject deleted"
     }
-    */
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "degrees")
 class Degree(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
     @Column(unique = true, nullable = false)
@@ -15,7 +15,7 @@ class Degree(
     @Column(unique = true, nullable = false)
     var acronym: String,
 
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
     @JoinTable(
         name = "degree_subject",
         joinColumns = [JoinColumn(name = "degree_id", referencedColumnName = "id")],
