@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "subjects")
 class Subject(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
     @Column(unique = true, nullable = false)

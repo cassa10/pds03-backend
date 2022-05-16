@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "degrees")
 class Degree(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
     @Column(unique = true, nullable = false)
