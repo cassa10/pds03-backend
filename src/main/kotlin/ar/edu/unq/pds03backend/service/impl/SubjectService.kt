@@ -3,11 +3,10 @@ package ar.edu.unq.pds03backend.service.impl
 import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
-import ar.edu.unq.pds03backend.exception.NotFoundAnyDegreeException
-import ar.edu.unq.pds03backend.exception.SubjectNameAlreadyExistsException
-import ar.edu.unq.pds03backend.exception.SubjectNotFoundException
+import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.model.Degree
 import ar.edu.unq.pds03backend.model.Subject
+import ar.edu.unq.pds03backend.repository.ICourseRepository
 import ar.edu.unq.pds03backend.repository.IDegreeRepository
 import ar.edu.unq.pds03backend.repository.ISubjectRepository
 import ar.edu.unq.pds03backend.service.ISubjectService
@@ -18,7 +17,8 @@ import javax.transaction.Transactional
 @Service
 class SubjectService(
     @Autowired private val subjectRepository: ISubjectRepository,
-    @Autowired private val degreeRepository: IDegreeRepository
+    @Autowired private val degreeRepository: IDegreeRepository,
+    @Autowired private val courseRepository: ICourseRepository,
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -60,8 +60,13 @@ class SubjectService(
     }
 
     override fun delete(id: Long) {
-        findSubjectByIdAndValidate(id)
-        subjectRepository.deleteById(id)
+        val subject = findSubjectByIdAndValidate(id)
+        val degrees = subject.degrees
+        val courses = courseRepository.findBySubjectId(subject.id!!)
+        if (courses.isNotEmpty()) throw CannotDeleteSubjectWithCoursesException()
+        degrees.forEach { it.deleteSubject(subject) }
+        degreeRepository.saveAll(degrees)
+        subjectRepository.delete(subject)
     }
 
     private fun findSubjectByIdAndValidate(id: Long): Subject {

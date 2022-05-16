@@ -36,13 +36,11 @@ class DegreeController(@Autowired private val degreeService: IDegreeService) {
         return "degree updated"
     }
 
-    /*
-    TODO: BUG - Delete all objects, not by id
+
     @DeleteMapping("/{id}")
     @LogExecution
     fun delete(@PathVariable @Valid id: Long): String {
         degreeService.delete(id)
         return "degree deleted"
     }
-    */
 }
