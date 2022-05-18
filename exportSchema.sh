@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Script for migrating database versions
+
+# Require pg_dump installed
 # Need to be executed in root project folder ("./pds03-backend")
 
 # Example:
