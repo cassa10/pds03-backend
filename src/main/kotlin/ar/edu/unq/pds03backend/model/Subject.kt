@@ -6,14 +6,18 @@ import javax.persistence.*;
 @Table(name = "subjects")
 class Subject(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
     @Column(unique = true, nullable = false)
     var name: String,
 
-    @ManyToMany(mappedBy = "subjects", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    val degrees: Collection<Degree>,
+    @ManyToMany(
+        mappedBy = "subjects",
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH],
+        fetch = FetchType.EAGER
+    )
+    val degrees: MutableCollection<Degree>,
 ){
     data class Builder(
         var id: Long? = null,
