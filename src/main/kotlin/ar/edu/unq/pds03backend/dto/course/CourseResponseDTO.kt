@@ -7,7 +7,6 @@ data class CourseResponseDTO(
     val id: Long,
     val semester: SemesterResponseDTO,
     val subject: SimpleSubjectResponseDTO,
-    val number: Int,
     val name: String,
     val assigned_teachers: String,
     val current_quotes: Int,

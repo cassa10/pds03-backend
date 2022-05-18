@@ -31,10 +31,9 @@ class CourseService(
                         semester = semester.get(),
                         subject = subject.get(),
                         name = courseRequestDTO.name,
-                        number = 1,
                         assigned_teachers = courseRequestDTO.assignedTeachers.joinToString(),
                         total_quotes = courseRequestDTO.totalQuotes,
-                        hours = courseRequestDTO.hours.map { Hour(desde = it.from, hasta = it.to, day = it.day.value) }.toMutableList()
+                        hours = courseRequestDTO.hours.map { Hour(from = it.from, to = it.to, day = it.day) }.toMutableList()
                 )
         )
     }

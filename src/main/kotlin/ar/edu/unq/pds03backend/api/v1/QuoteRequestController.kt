@@ -1,6 +1,5 @@
 package ar.edu.unq.pds03backend.api.v1
 
-
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
@@ -16,10 +15,10 @@ import javax.validation.Valid
 @Validated
 class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteRequestService) {
 
-    @PostMapping("/{code}")
+    @PostMapping()
     @LogExecution
-    fun create(@PathVariable code: String, @RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
-        quoteRequestService.create(code, quoteRequestRequestDTO)
+    fun create(@RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
+        quoteRequestService.create(quoteRequestRequestDTO)
         return "quote request created"
     }
 
@@ -29,10 +28,10 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @GetMapping
     @LogExecution
-    fun getAll(@RequestParam code: Optional<String>, @RequestParam idStudent: Optional<Long>): List<QuoteRequestResponseDTO> {
+    fun getAll(@RequestParam idCourse: Optional<Long>, @RequestParam idStudent: Optional<Long>): List<QuoteRequestResponseDTO> {
         return when {
-            code.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(code.get(), idStudent.get())
-            code.isPresent -> quoteRequestService.getAllByCourse(code.get())
+            idCourse.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(idCourse.get(), idStudent.get())
+            idCourse.isPresent -> quoteRequestService.getAllByCourse(idCourse.get())
             idStudent.isPresent -> quoteRequestService.getAllByStudent(idStudent.get())
             else -> quoteRequestService.getAll()
         }

@@ -20,9 +20,8 @@ class QuoteRequestService(
     @Autowired private val studentRepository: IStudentRepository
 ) : IQuoteRequestService {
 
-    override fun create(code: String, quoteRequestRequestDTO: QuoteRequestRequestDTO) {
-        val (idSemester, idSubject, number) = decode(code)
-        val course = courseRepository.findBySemesterIdAndSubjectIdAndNumber(idSemester, idSubject, number)
+    override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
+        val course = courseRepository.findById(quoteRequestRequestDTO.idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val student = studentRepository.findById(quoteRequestRequestDTO.idStudent)
@@ -54,9 +53,8 @@ class QuoteRequestService(
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourseAndStudent(code: String, idStudent: Long): List<QuoteRequestResponseDTO> {
-        val (idSemester, idSubject, number) = decode(code)
-        val course = courseRepository.findBySemesterIdAndSubjectIdAndNumber(idSemester, idSubject, number)
+    override fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long): List<QuoteRequestResponseDTO> {
+        val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val student = studentRepository.findById(idStudent)
@@ -66,9 +64,8 @@ class QuoteRequestService(
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourse(code: String): List<QuoteRequestResponseDTO> {
-        val (idSemester, idSubject, number) = decode(code)
-        val course = courseRepository.findBySemesterIdAndSubjectIdAndNumber(idSemester, idSubject, number)
+    override fun getAllByCourse(idCourse: Long): List<QuoteRequestResponseDTO> {
+        val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val quoteRequests = quoteRequestRepository.findAllByCourseId(course.get().id!!)
@@ -81,10 +78,5 @@ class QuoteRequestService(
 
         val quoteRequests = quoteRequestRepository.findAllByStudentId(student.get().id!!)
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
-    }
-
-    private fun decode(code: String): Triple<Long, Long, Int> {
-        val ids = code.split("-")
-        return Triple(ids[0].toLong(), ids[1].toLong(), ids[2].toInt())
     }
 }

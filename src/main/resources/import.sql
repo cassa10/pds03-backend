@@ -1,8 +1,8 @@
 -- Recommendation: Execute script in order.
 
 -- Persons:
-INSERT INTO persons(role, dni, email, first_name, last_name, legajo) VALUES (1, '11111111', 'alumno@gmail.com', 'alumno', 'alumno', '34627');
-INSERT INTO persons(role, dni, email, first_name, last_name, legajo) VALUES (2, '22222222', 'director@gmail.com', 'director', 'director', null);
+INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111111', 'alumno@gmail.com', 'alumno', 'alumno', 1, '34627');
+INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null);
 
 -- Users:
 INSERT INTO users(username, person_id) VALUES ('alumno', 1);
