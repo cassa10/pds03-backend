@@ -4,7 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(
-        name = "courses"
+    name = "courses",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["semester_id", "subject_id", "number"])]
 )
 class Course(
         @Id
@@ -18,6 +19,9 @@ class Course(
         @ManyToOne
         @JoinColumn(name = "subject_id")
         val subject: Subject,
+
+        @Column(unique = true, nullable = false)
+        val number: Int,
 
         @Column(nullable = false)
         val name: String,
