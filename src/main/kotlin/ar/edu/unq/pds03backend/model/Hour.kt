@@ -6,16 +6,16 @@ import javax.persistence.*
 @Entity
 @Table(name = "hours")
 class Hour(
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-        @Column(nullable = false)
-    val desde: String,
+    @Column(name = "_from", nullable = false)
+    val from: String,
 
-        @Column(nullable = false)
-    val hasta: String,
+    @Column(name = "_to", nullable = false)
+    val to: String,
 
-        @Column(nullable = false)
-    val day: Int
+    @Column(nullable = false)
+    val day: DayOfWeek
 )

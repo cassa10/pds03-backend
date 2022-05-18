@@ -22,7 +22,6 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
                                 quoteRequest.course.semester.name
                         ),
                         SimpleSubjectResponseDTO(quoteRequest.course.subject.id!!, quoteRequest.course.subject.name),
-                        quoteRequest.course.number,
                         quoteRequest.course.name,
                         quoteRequest.course.assigned_teachers,
                         1,
