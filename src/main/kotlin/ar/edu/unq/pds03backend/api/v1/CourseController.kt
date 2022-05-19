@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/semester")
+@RequestMapping("/api/v1/course")
 class CourseController(@Autowired private val courseService: ICourseService) {
 
-    @PostMapping("/{id_semester}/subject/{id_subject}")
+    @PostMapping("/semester/{id_semester}/subject/{id_subject}")
     @LogExecution
     fun create(@PathVariable("id_semester") idSemester: Long,
                @PathVariable("id_subject") idSubject: Long,
