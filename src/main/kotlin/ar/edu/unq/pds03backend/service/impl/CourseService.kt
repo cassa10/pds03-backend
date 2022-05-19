@@ -11,6 +11,7 @@ import ar.edu.unq.pds03backend.repository.ISubjectRepository
 import ar.edu.unq.pds03backend.service.ICourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 class CourseService(
@@ -19,6 +20,7 @@ class CourseService(
         @Autowired private val courseRepository: ICourseRepository,
 ) : ICourseService {
 
+    @Transactional
     override fun create(idSemester: Long, idSubject: Long, courseRequestDTO: CourseRequestDTO) {
         val semester = semesterRepository.findById(idSemester)
         if (!semesterRepository.findById(idSemester).isPresent) throw SemesterNotFoundException()
