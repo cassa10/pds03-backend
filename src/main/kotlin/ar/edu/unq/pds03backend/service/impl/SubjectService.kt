@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.exception.*
+import ar.edu.unq.pds03backend.mapper.SubjectMapper
 import ar.edu.unq.pds03backend.model.Degree
 import ar.edu.unq.pds03backend.model.Subject
 import ar.edu.unq.pds03backend.repository.ICourseRepository
@@ -23,10 +24,10 @@ class SubjectService(
 
     override fun getById(id: Long): SubjectResponseDTO {
         val subject = findSubjectByIdAndValidate(id)
-        return toResponseDTO(subject)
+        return SubjectMapper.toDTO(subject)
     }
 
-    override fun getAll(): List<SubjectResponseDTO> = subjectRepository.findAll().map { toResponseDTO(it) }
+    override fun getAll(): List<SubjectResponseDTO> = subjectRepository.findAll().map { SubjectMapper.toDTO(it) }
 
     @Transactional
     override fun create(subjectRequestDTO: SubjectRequestDTO) {
@@ -84,15 +85,5 @@ class SubjectService(
 
     private fun validateSubjectNameAlreadyExist(name: String) {
         if (subjectRepository.existsByName(name)) throw SubjectNameAlreadyExistsException()
-    }
-
-    private fun toResponseDTO(subject: Subject): SubjectResponseDTO {
-        return SubjectResponseDTO(id = subject.id!!, name = subject.name, degrees = subject.degrees.map {
-            SimpleDegreeResponseDTO(
-                id = it.id!!,
-                name = it.name,
-                acronym = it.acronym,
-            )
-        })
     }
 }

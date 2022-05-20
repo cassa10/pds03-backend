@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ICourseRepository : JpaRepository<Course, Long> {
     fun findBySubjectId(idSubject: Long): List<Course>
+    fun findAllBySemesterIdAndSubjectId(idSemester:Long, idSubject: Long): List<Course>
 }
