@@ -23,6 +23,7 @@ INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 2);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 2);
 
 -- Others:
-INSERT INTO semesters(name, semester, year) VALUES ('Primer cuatrimestre', false, 2022);
-INSERT INTO courses(assigned_teachers, current_quotes, name, number, total_quotes, semester_id, subject_id) VALUES ('Gabriela Arévalo', 30, 'Prácticas de desarrollo - Comisión 1', 1, 30, 1, 1);
+INSERT INTO semesters(name, is_snd_semester, year) VALUES ('Primer cuatrimestre', false, 2022);
+INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Gabriela Arévalo', 'Prácticas de desarrollo - Comisión 1', 30, 1, 1);
+INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Pepe Grillo', 'Prácticas de desarrollo - Comisión 2', 32, 1, 1);
 INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 1, 1);
