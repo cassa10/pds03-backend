@@ -2,14 +2,15 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
-import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.exception.CourseNotFoundException
 import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
 import ar.edu.unq.pds03backend.exception.SubjectNotFoundException
 import ar.edu.unq.pds03backend.mapper.CourseMapper
 import ar.edu.unq.pds03backend.model.Course
 import ar.edu.unq.pds03backend.model.Hour
+import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.repository.ICourseRepository
+import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.repository.ISubjectRepository
 import ar.edu.unq.pds03backend.service.ICourseService
@@ -22,11 +23,12 @@ class CourseService(
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val subjectRepository: ISubjectRepository,
     @Autowired private val courseRepository: ICourseRepository,
+    @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
 ) : ICourseService {
     override fun getById(idCourse: Long): CourseResponseDTO {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
-        return CourseMapper.toDTO(course.get())
+        return mapCourseToDTO(course.get())
     }
 
     override fun getAllBySemesterAndSubject(idSemester: Long, idSubject: Long): List<CourseResponseDTO> {
@@ -37,7 +39,7 @@ class CourseService(
         if (!subject.isPresent) throw SubjectNotFoundException()
 
         return courseRepository.findAllBySemesterIdAndSubjectId(semester.get().id!!, subject.get().id!!).map {
-            CourseMapper.toDTO(it)
+            mapCourseToDTO(it)
         }
     }
 
@@ -60,4 +62,12 @@ class CourseService(
             )
         )
     }
+
+    private fun mapCourseToDTO(course: Course): CourseResponseDTO {
+        val requestedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.PENDING, course.id!!)
+        val acceptedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.APPROVED, course.id!!)
+        return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes)
+    }
+
+
 }

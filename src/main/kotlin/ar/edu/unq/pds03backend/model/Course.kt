@@ -25,7 +25,6 @@ class Course(
 
         @Column(nullable = false)
         val total_quotes: Int,
-
         @ManyToMany(cascade = [CascadeType.ALL])
         @JoinTable(
                 name = "course_student",
