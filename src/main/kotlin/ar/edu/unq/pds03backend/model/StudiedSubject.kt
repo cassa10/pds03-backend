@@ -3,15 +3,15 @@ package ar.edu.unq.pds03backend.model
 import javax.persistence.*;
 
 @Entity
-@Table(name = "studied_courses")
-class StudiedCourse(
+@Table(name = "studied_subject")
+class StudiedSubject(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
     @ManyToOne
-    @JoinColumn(name="course_id")
-    val course: Course,
+    @JoinColumn(name="subject_id")
+    val subject: Subject,
 
     @Column(nullable = true)
     val mark: Int,

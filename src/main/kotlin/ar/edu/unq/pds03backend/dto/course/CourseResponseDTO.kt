@@ -9,6 +9,7 @@ data class CourseResponseDTO(
     val subject: SimpleSubjectResponseDTO,
     val name: String,
     val assigned_teachers: String,
+    val hours: List<HourResponseDTO>,
     val totalQuotes: Int,
     val currentQuotes: Int,
     val acceptedQuotes: Int,

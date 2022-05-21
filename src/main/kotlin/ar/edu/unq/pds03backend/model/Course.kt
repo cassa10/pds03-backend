@@ -18,13 +18,13 @@ class Course(
         val subject: Subject,
 
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(nullable = false)
-        val assigned_teachers: String,
+        var assigned_teachers: String,
 
         @Column(nullable = false)
-        val total_quotes: Int,
+        var total_quotes: Int,
         @ManyToMany(cascade = [CascadeType.ALL])
         @JoinTable(
                 name = "course_student",
@@ -34,5 +34,5 @@ class Course(
         val students: Collection<Student>? = null,
 
         @OneToMany(cascade = [CascadeType.ALL])
-        val hours: MutableCollection<Hour>
+        var hours: MutableCollection<Hour>
 )

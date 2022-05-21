@@ -21,5 +21,5 @@ class StudiedDegree(
     val coefficient: Float,
 
     @OneToMany(mappedBy="studiedDegree")
-    val studied_courses: Collection<StudiedCourse>
+    val studied_subjects: Collection<StudiedSubject>
 )
