@@ -68,6 +68,4 @@ class CourseService(
         val acceptedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.APPROVED, course.id!!)
         return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes)
     }
-
-
 }
