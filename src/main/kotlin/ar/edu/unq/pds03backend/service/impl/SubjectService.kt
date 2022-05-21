@@ -6,12 +6,10 @@ import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.SubjectMapper
 import ar.edu.unq.pds03backend.model.Degree
+import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.model.Student
 import ar.edu.unq.pds03backend.model.Subject
-import ar.edu.unq.pds03backend.repository.ICourseRepository
-import ar.edu.unq.pds03backend.repository.IDegreeRepository
-import ar.edu.unq.pds03backend.repository.IPersonRepository
-import ar.edu.unq.pds03backend.repository.ISubjectRepository
+import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ISubjectService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,7 +20,8 @@ class SubjectService(
     @Autowired private val subjectRepository: ISubjectRepository,
     @Autowired private val degreeRepository: IDegreeRepository,
     @Autowired private val courseRepository: ICourseRepository,
-    @Autowired private val personRepository: IPersonRepository
+    @Autowired private val personRepository: IPersonRepository,
+    @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -84,7 +83,8 @@ class SubjectService(
         if (!degree.isPresent) throw DegreeNotFoundException()
 
         val currentFilteredCourses = courseRepository.findAll()
-            .filter { course -> course.isCurrent() && course.subject.degrees.contains(degree.get()) }
+            .filter { course -> course.isCurrent() && course.belongsToDegree(degree.get()) }
+
         val currentFilteredCoursesGroupedBySubject = currentFilteredCourses.groupBy { it.subject }
         return currentFilteredCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
     }
@@ -94,7 +94,14 @@ class SubjectService(
         if (!person.isPresent || (person.isPresent && !person.get().isStudent())) throw StudentNotFoundException()
         val student = person.get() as Student
 
-        val currentCourses = courseRepository.findAll().filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.enrolled(course.subject) }
+        var currentCourses = courseRepository.findAll()
+            .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.enrolled(course.subject) }
+
+        val currentCoursesRequested = quoteRequestRepository.findAllByStudentId(idStudent)
+            .filter { it.state == QuoteState.PENDING && it.course.isCurrent() }.map { it.course }
+        if (currentCoursesRequested.isNotEmpty())
+            currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
+
         val currentCoursesGroupedBySubject = currentCourses.groupBy { it.subject }
         return currentCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
     }
