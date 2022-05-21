@@ -1,9 +1,11 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
+import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.repository.ICourseRepository
@@ -12,12 +14,13 @@ import ar.edu.unq.pds03backend.repository.IStudentRepository
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class QuoteRequestService(
-    @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
-    @Autowired private val courseRepository: ICourseRepository,
-    @Autowired private val studentRepository: IStudentRepository
+        @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
+        @Autowired private val courseRepository: ICourseRepository,
+        @Autowired private val studentRepository: IStudentRepository
 ) : IQuoteRequestService {
 
     override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
@@ -31,12 +34,12 @@ class QuoteRequestService(
         if (quoteRequest.isPresent) throw QuoteRequestAlreadyExistsException()
 
         quoteRequestRepository.save(
-            QuoteRequest(
-                course = course.get(),
-                student = student.get(),
-                state = QuoteState.PENDING,
-                comment = quoteRequestRequestDTO.comment
-            )
+                QuoteRequest(
+                        course = course.get(),
+                        student = student.get(),
+                        state = QuoteState.PENDING,
+                        comment = quoteRequestRequestDTO.comment
+                )
         )
     }
 
@@ -78,5 +81,20 @@ class QuoteRequestService(
 
         val quoteRequests = quoteRequestRepository.findAllByStudentId(student.get().id!!)
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
+    }
+
+    override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
+        val isSndSemester = LocalDate.now().month.value > 6
+        val quoteRequestSubjectsPending = quoteRequestRepository.findAllByStateAndSemester(QuoteState.PENDING, isSndSemester)
+
+        // TODO: refactor in query
+        val list = mutableListOf<Long>()
+        return quoteRequestSubjectsPending.filter {
+            !list.contains(it.course.id).apply {
+                list.add(it.course.id!!)
+            }
+        }.map {
+            QuoteRequestSubjectPendingMapper(quoteRequestRepository).map(it)
+        }
     }
 }

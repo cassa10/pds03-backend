@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
@@ -35,5 +36,11 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
             idStudent.isPresent -> quoteRequestService.getAllByStudent(idStudent.get())
             else -> quoteRequestService.getAll()
         }
+    }
+
+    @GetMapping("/subjects/pending")
+    @LogExecution
+    fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
+        return quoteRequestService.getQuoteRequestSubjectsPending()
     }
 }
