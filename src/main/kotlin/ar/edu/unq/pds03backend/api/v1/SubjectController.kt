@@ -9,6 +9,7 @@ import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -47,5 +48,10 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
 
     @GetMapping("/currents")
     @LogExecution
-    fun getAllCurrent(): List<SubjectWithCoursesResponseDTO> = subjectService.getAllCurrent()
+    fun getAllCurrent(@RequestParam idDegree: Optional<Long>): List<SubjectWithCoursesResponseDTO> {
+        return when {
+            idDegree.isPresent -> subjectService.getAllCurrentByDegree(idDegree.get())
+            else -> subjectService.getAllCurrent()
+        }
+    }
 }

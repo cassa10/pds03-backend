@@ -11,4 +11,5 @@ interface ISubjectService {
     fun update(id: Long, subjectRequestDTO: SubjectRequestDTO)
     fun delete(id: Long)
     fun getAllCurrent(): List<SubjectWithCoursesResponseDTO>
+    fun getAllCurrentByDegree(idDegree: Long): List<SubjectWithCoursesResponseDTO>
 }

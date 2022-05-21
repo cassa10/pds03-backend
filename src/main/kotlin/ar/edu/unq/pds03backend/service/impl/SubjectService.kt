@@ -76,6 +76,16 @@ class SubjectService(
         return currentCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
     }
 
+    override fun getAllCurrentByDegree(idDegree: Long): List<SubjectWithCoursesResponseDTO> {
+        val degree = degreeRepository.findById(idDegree)
+        if (!degree.isPresent) throw DegreeNotFoundException()
+
+        val currentFilteredCourses = courseRepository.findAll()
+            .filter { course -> course.isCurrent() && course.subject.degrees.contains(degree.get()) }
+        val currentFilteredCoursesGroupedBySubject = currentFilteredCourses.groupBy { it.subject }
+        return currentFilteredCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
+    }
+
     private fun findSubjectByIdAndValidate(id: Long): Subject {
         val maybeSubject = subjectRepository.findById(id)
         if (!maybeSubject.isPresent) throw SubjectNotFoundException()
