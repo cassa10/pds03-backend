@@ -11,13 +11,9 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
     fun findAllByCourseIdAndStudentId(idCourse: Long, idStudent: Long): Iterable<QuoteRequest>
     fun findAllByCourseId(idCourse: Long): Iterable<QuoteRequest>
     fun findAllByStudentId(idStudent: Long): Iterable<QuoteRequest>
+    fun countByCourseId(courseId: Long): Int
     fun countByStateAndCourseId(quoteState: QuoteState, courseId: Long): Int
 
-    @Query(
-            "SELECT q " +
-                    "FROM QuoteRequest q " +
-                    "WHERE q.state = :quoteState " +
-                    "AND q.course.semester.isSndSemester = :isSndSemester"
-    )
+    @Query("SELECT q FROM QuoteRequest q WHERE q.state = :quoteState AND q.course.semester.isSndSemester = :isSndSemester")
     fun findAllByStateAndSemester(quoteState: QuoteState, isSndSemester: Boolean): List<QuoteRequest>
 }

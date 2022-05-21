@@ -38,7 +38,7 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         }
     }
 
-    @GetMapping("/subjects/pending")
+    @GetMapping("/courses/pending")
     @LogExecution
     fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
         return quoteRequestService.getQuoteRequestSubjectsPending()
