@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,4 +44,8 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
         subjectService.delete(id)
         return "subject deleted"
     }
+
+    @GetMapping("/currents")
+    @LogExecution
+    fun getAllCurrent(): List<SubjectWithCoursesResponseDTO> = subjectService.getAllCurrent()
 }

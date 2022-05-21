@@ -36,3 +36,6 @@ class Course(
         @OneToMany(cascade = [CascadeType.ALL])
         val hours: MutableCollection<Hour>
 )
+{
+        fun isCurrent(): Boolean = semester.isCurrent()
+}

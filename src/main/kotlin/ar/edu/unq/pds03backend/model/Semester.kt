@@ -1,5 +1,7 @@
 package ar.edu.unq.pds03backend.model
 
+import java.util.Calendar
+import java.util.Date
 import javax.persistence.*;
 
 @Entity
@@ -21,4 +23,8 @@ class Semester(
 
     @Column(unique = true, nullable = false)
     val name: String
-)
+) {
+    fun isCurrent(): Boolean {
+        return year == Calendar.getInstance().get(Calendar.YEAR) && !isSndSemester
+    }
+}

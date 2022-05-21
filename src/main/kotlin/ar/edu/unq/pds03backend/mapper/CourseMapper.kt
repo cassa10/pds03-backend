@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.mapper
 
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
+import ar.edu.unq.pds03backend.dto.course.SimpleCourseForSubjectDTO
 import ar.edu.unq.pds03backend.model.Course
 
 object CourseMapper {
@@ -16,4 +17,7 @@ object CourseMapper {
             acceptedQuotes = acceptedQuotes,
             requestedQuotes = requestedQuotes,
         )
+
+    fun toSimpleForSubjectDTO(course: Course): SimpleCourseForSubjectDTO =
+        SimpleCourseForSubjectDTO(id = course.id!!, name = course.name)
 }
