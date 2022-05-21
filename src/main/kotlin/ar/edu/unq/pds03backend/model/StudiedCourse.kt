@@ -14,7 +14,7 @@ class StudiedCourse(
     val course: Course,
 
     @Column(nullable = true)
-    val mark: Int,
+    val mark: Int?,
 
     @Column(nullable = false)
     val status: StatusStudiedCourse,
@@ -23,3 +23,8 @@ class StudiedCourse(
     @JoinColumn(name="studiedDegree_id")
     val studiedDegree: StudiedDegree
 )
+{
+    fun passed(): Boolean = status == StatusStudiedCourse.APPROVAL || status == StatusStudiedCourse.PROMOTED
+
+    fun inProgress(): Boolean = status == StatusStudiedCourse.IN_PROGRESS
+}

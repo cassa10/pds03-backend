@@ -94,7 +94,7 @@ class SubjectService(
         if (!person.isPresent || (person.isPresent && !person.get().isStudent())) throw StudentNotFoundException()
         val student = person.get() as Student
 
-        val currentCourses = courseRepository.findAll().filter { course -> course.isCurrent() && !student.passed(course.subject) }
+        val currentCourses = courseRepository.findAll().filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.enrolled(course.subject) }
         val currentCoursesGroupedBySubject = currentCourses.groupBy { it.subject }
         return currentCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
     }
