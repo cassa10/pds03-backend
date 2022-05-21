@@ -48,9 +48,16 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
 
     @GetMapping("/currents")
     @LogExecution
-    fun getAllCurrent(@RequestParam idDegree: Optional<Long>): List<SubjectWithCoursesResponseDTO> {
+    fun getAllCurrent(@RequestParam idDegree: Optional<Long>, @RequestParam idStudent: Optional<Long>): List<SubjectWithCoursesResponseDTO> {
         return when {
+            idDegree.isPresent && idStudent.isPresent -> {
+                val subjectsByDegree = subjectService.getAllCurrentByDegree(idDegree.get())
+                val subjectsByStudent = subjectService.getAllCurrentByStudent(idStudent.get())
+                val subjects = subjectsByDegree.intersect(subjectsByStudent).toList()
+                return subjects
+            }
             idDegree.isPresent -> subjectService.getAllCurrentByDegree(idDegree.get())
+            idStudent.isPresent -> subjectService.getAllCurrentByStudent(idStudent.get())
             else -> subjectService.getAllCurrent()
         }
     }
