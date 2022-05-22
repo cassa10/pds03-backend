@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.exception.*
@@ -101,5 +102,16 @@ class QuoteRequestService(
         }.map {
             QuoteRequestSubjectPendingMapper(quoteRequestRepository).map(it)
         }
+    }
+
+    override fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO) {
+        val quoteRequest = quoteRequestRepository.findById(idQuoteRequest)
+
+        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
+
+        val newQuoteRequest = quoteRequest.get()
+        newQuoteRequest.adminComment = adminCommentRequestDTO.comment
+
+        quoteRequestRepository.save(newQuoteRequest)
     }
 }

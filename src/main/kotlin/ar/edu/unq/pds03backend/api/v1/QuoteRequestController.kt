@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
@@ -42,5 +43,12 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     @LogExecution
     fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
         return quoteRequestService.getQuoteRequestSubjectsPending()
+    }
+
+    @PutMapping("/{id}/adminComment")
+    @LogExecution
+    fun addAdminComment(@PathVariable @Valid id: Long, @Valid @RequestBody adminCommentRequestDTO: AdminCommentRequestDTO): String {
+        quoteRequestService.addAdminComment(id, adminCommentRequestDTO)
+        return "admin comment added"
     }
 }
