@@ -2,14 +2,14 @@
 
 -- Persons:
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111111', 'alumno@gmail.com', 'alumno', 'alumno', 1, '34627');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111112', 'alumno2@gmail.com', 'alumno', 'alumno', 1, '34628');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111113', 'alumno3@gmail.com', 'alumno', 'alumno', 1, '34629');
+INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111112', 'alumno2@gmail.com', 'alumno2', 'alumno2', 1, '34628');
+INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111113', 'alumno3@gmail.com', 'alumno3', 'alumno3', 1, '34629');
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null);
 
 -- Users:
 INSERT INTO users(username, person_id) VALUES ('alumno', 1);
-INSERT INTO users(username, person_id) VALUES ('alumno', 2);
-INSERT INTO users(username, person_id) VALUES ('alumno', 3);
+INSERT INTO users(username, person_id) VALUES ('alumno2', 2);
+INSERT INTO users(username, person_id) VALUES ('alumno3', 3);
 INSERT INTO users(username, person_id) VALUES ('director', 4);
 
 -- Degrees:
@@ -17,6 +17,7 @@ INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación 
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
 -- Subjects:
+
 INSERT INTO subjects(name) VALUES ('Lectura y escritura académica');
 INSERT INTO subjects(name) VALUES ('Matemática');
 INSERT INTO subjects(name) VALUES ('Elementos de programación y lógica');
