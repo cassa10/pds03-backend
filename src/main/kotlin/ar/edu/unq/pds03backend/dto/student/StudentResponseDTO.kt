@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.dto.student
 
-import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
+import ar.edu.unq.pds03backend.dto.user.SimpleUserResponseDTO
 
 data class StudentResponseDTO(
     val id: Long,
@@ -9,5 +9,5 @@ data class StudentResponseDTO(
     val dni: String,
     val email: String,
     val legajo: String,
-    val user: UserResponseDTO,
+    val user: SimpleUserResponseDTO,
 )

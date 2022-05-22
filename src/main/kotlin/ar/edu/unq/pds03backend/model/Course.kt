@@ -25,13 +25,6 @@ class Course(
 
         @Column(nullable = false)
         var total_quotes: Int,
-        @ManyToMany(cascade = [CascadeType.ALL])
-        @JoinTable(
-                name = "course_student",
-                joinColumns = [JoinColumn(name = "course_id", referencedColumnName = "id")],
-                inverseJoinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")]
-        )
-        val students: Collection<Student>? = null,
 
         @OneToMany(cascade = [CascadeType.ALL])
         var hours: MutableCollection<Hour>

@@ -4,13 +4,15 @@
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111111', 'alumno@gmail.com', 'alumno', 'alumno', 1, '34627');
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111112', 'alumno2@gmail.com', 'alumno2', 'alumno2', 1, '34628');
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111113', 'alumno3@gmail.com', 'alumno3', 'alumno3', 1, '34629');
+INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999');
 INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null);
 
 -- Users:
 INSERT INTO users(username, person_id) VALUES ('alumno', 1);
 INSERT INTO users(username, person_id) VALUES ('alumno2', 2);
 INSERT INTO users(username, person_id) VALUES ('alumno3', 3);
-INSERT INTO users(username, person_id) VALUES ('director', 4);
+INSERT INTO users(username, person_id) VALUES ('pepe', 4);
+INSERT INTO users(username, person_id) VALUES ('director', 5);
 
 -- Degrees:
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
@@ -394,23 +396,26 @@ INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Feli', 'C2', 32, 2, 55);
 
 -- Quote requests:
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 1, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 3, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 5, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 7, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 9, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 11, 1);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 1, 2);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 3, 2);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 5, 2);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 7, 2);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 9, 2);
-INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 2, 3);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 1, 1, 'Lo voy a pensar con Gabi');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 3, 1, 'Mmmm revisar bien porque ...');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 5, 1, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 7, 1, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 9, 1, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 11, 1, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 1, 2, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 3, 2, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 5, 2, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 7, 2, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 9, 2, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 2, 3, '');
 
 -- Studied degrees:
-INSERT INTO studied_degrees(coefficient, degree_id, student_id) VALUES (10, 1, 1)
+INSERT INTO studied_degrees(coefficient, degree_id, student_id) VALUES (10, 1, 1);
 
 -- Studied subjects:
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 1)
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 2)
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 3)
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 1);
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 2);
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 3);
+
+-- Student enrolled courses:
+INSERT INTO student_enrolled_course(student_id, course_id) VALUES (1, 23)

@@ -23,6 +23,6 @@ class QuoteRequest(
     @Column(nullable = false)
     val comment: String,
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     var adminComment: String = ""
 )
