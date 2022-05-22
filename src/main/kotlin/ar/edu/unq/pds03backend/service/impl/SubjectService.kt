@@ -95,7 +95,7 @@ class SubjectService(
         val student = person.get() as Student
 
         var currentCourses = courseRepository.findAll()
-            .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.enrolled(course.subject) }
+            .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.studiedOrEnrolled(course.subject) }
 
         val currentCoursesRequested = quoteRequestRepository.findAllByStudentId(idStudent)
             .filter { it.state == QuoteState.PENDING && it.course.isCurrent() }.map { it.course }

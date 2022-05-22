@@ -5,7 +5,7 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
-import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
+import ar.edu.unq.pds03backend.dto.user.SimpleUserResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteRequest
 
 object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
@@ -32,7 +32,7 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
                 quoteRequest.student.dni,
                 quoteRequest.student.email,
                 quoteRequest.student.legajo,
-                UserResponseDTO(quoteRequest.student.user.id!!, quoteRequest.student.user.username)
+                SimpleUserResponseDTO(quoteRequest.student.user.id!!, quoteRequest.student.user.username)
             ),
             state = quoteRequest.state,
             comment = quoteRequest.comment

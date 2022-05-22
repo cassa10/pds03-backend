@@ -24,7 +24,8 @@ class StudiedSubject(
     val studiedDegree: StudiedDegree
 )
 {
-    fun passed(): Boolean = status == StatusStudiedCourse.APPROVAL || status == StatusStudiedCourse.PROMOTED
+    fun passed(): Boolean = status.passed()
 
-    fun inProgress(): Boolean = status == StatusStudiedCourse.IN_PROGRESS
+    //TODO: Es necesario inProgress() ya que existe en student "enrolledCourses"??
+    fun inProgress(): Boolean = status.inProgress()
 }

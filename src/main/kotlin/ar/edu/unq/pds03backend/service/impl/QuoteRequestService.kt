@@ -16,7 +16,6 @@ import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class QuoteRequestService(
@@ -31,6 +30,8 @@ class QuoteRequestService(
 
         val student = studentRepository.findById(quoteRequestRequestDTO.idStudent)
         if (!student.isPresent) throw StudentNotFoundException()
+
+        if (courses.any{student.get().studiedOrEnrolled(it.subject)}) throw StudentHasAlreadyEnrolledSubject()
 
         //If quoteRequest was already created by that student, there are skipped
         courses.forEach {
