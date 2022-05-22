@@ -4,8 +4,10 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
+import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -50,5 +52,10 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     fun addAdminComment(@PathVariable @Valid id: Long, @Valid @RequestBody adminCommentRequestDTO: AdminCommentRequestDTO): String {
         quoteRequestService.addAdminComment(id, adminCommentRequestDTO)
         return "admin comment added"
+    }
+
+    @GetMapping("/students/pending")
+    fun findAllStudentsWithQuoteStatusPending(): List<StudentWithQuotesInfoResponseDTO> {
+        return quoteRequestService.findAllStudentsWithQuoteStatusPendingCurrentSemester()
     }
 }

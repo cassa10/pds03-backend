@@ -10,5 +10,5 @@ class Director(
     lastName: String,
     dni: String,
     email: String,
-    user: User
-) : Person(id, firstName, lastName, dni, email, user)
+    username: String
+) : User(id, firstName, lastName, dni, email, username)

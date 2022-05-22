@@ -10,12 +10,13 @@ import ar.edu.unq.pds03backend.repository.IDegreeRepository
 import ar.edu.unq.pds03backend.service.IDegreeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) : IDegreeService {
+    @Transactional
     override fun create(degreeRequestDTO: DegreeRequestDTO) {
         val degree = degreeRepository.findByNameAndAcronym(degreeRequestDTO.name, degreeRequestDTO.acronym)
-
         if (degree.isPresent) throw DegreeAlreadyExistsException()
 
         degreeRepository.save(
@@ -40,9 +41,9 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         return degrees.map { toResponseDTO(it) }
     }
 
+    @Transactional
     override fun update(id: Long, degreeRequestDTO: DegreeRequestDTO) {
         val degree = degreeRepository.findById(id)
-
         if (!degree.isPresent) throw DegreeNotFoundException()
 
         val newDegree = degree.get()
@@ -52,25 +53,14 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         degreeRepository.save(newDegree)
     }
 
+    @Transactional
     override fun delete(id: Long) {
         val degree = degreeRepository.findById(id)
-
         if (!degree.isPresent) throw DegreeNotFoundException()
-
         degreeRepository.delete(degree.get())
     }
 
     private fun toResponseDTO(degree: Degree): DegreeResponseDTO {
-        return DegreeResponseDTO(
-            id = degree.id!!,
-            name = degree.name,
-            acronym = degree.acronym,
-            subjects = degree.subjects.map {
-                SimpleSubjectResponseDTO(
-                    id = it.id!!,
-                    name = it.name
-                )
-            }
-        )
+        return DegreeResponseDTO.Mapper(degree).map()
     }
 }

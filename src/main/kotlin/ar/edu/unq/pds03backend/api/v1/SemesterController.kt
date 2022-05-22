@@ -18,9 +18,9 @@ class SemesterController(@Autowired val semesterService: ISemesterService) {
     fun getSemester(@RequestParam year: Optional<Int>, @RequestParam isSndSemester: Optional<Boolean>): Semester {
         return when {
             year.isPresent && isSndSemester.isPresent -> semesterService.getSemesterByYearAndIsSndSemester(year.get(), isSndSemester.get())
-            year.isPresent -> semesterService.getSemesterByYearAndIsSndSemester(year.get(), SemesterHelper.currentSecondSemester)
+            year.isPresent -> semesterService.getSemesterByYearAndIsSndSemester(year.get(), SemesterHelper.currentIsSecondSemester)
             isSndSemester.isPresent -> semesterService.getSemesterByYearAndIsSndSemester(SemesterHelper.currentYear, isSndSemester.get())
-            else -> semesterService.getSemesterByYearAndIsSndSemester(SemesterHelper.currentYear, SemesterHelper.currentSecondSemester)
+            else -> semesterService.getSemesterByYearAndIsSndSemester(SemesterHelper.currentYear, SemesterHelper.currentIsSecondSemester)
         }
     }
 
