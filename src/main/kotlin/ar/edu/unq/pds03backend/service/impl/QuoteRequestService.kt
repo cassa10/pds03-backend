@@ -18,29 +18,33 @@ import java.time.LocalDate
 
 @Service
 class QuoteRequestService(
-        @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
-        @Autowired private val courseRepository: ICourseRepository,
-        @Autowired private val studentRepository: IStudentRepository
+    @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
+    @Autowired private val courseRepository: ICourseRepository,
+    @Autowired private val studentRepository: IStudentRepository
 ) : IQuoteRequestService {
 
     override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
-        val course = courseRepository.findById(quoteRequestRequestDTO.idCourse)
-        if (!course.isPresent) throw CourseNotFoundException()
+        val courses = courseRepository.findAllById(quoteRequestRequestDTO.idCourses)
+        if (courses.isEmpty()) throw CourseNotFoundException()
 
         val student = studentRepository.findById(quoteRequestRequestDTO.idStudent)
         if (!student.isPresent) throw StudentNotFoundException()
 
-        val quoteRequest = quoteRequestRepository.findByCourseIdAndStudentId(course.get().id!!, student.get().id!!)
-        if (quoteRequest.isPresent) throw QuoteRequestAlreadyExistsException()
-
-        quoteRequestRepository.save(
-                QuoteRequest(
-                        course = course.get(),
+        //If quoteRequest was already created by that student, there are skipped
+        courses.forEach {
+            val quoteRequest = quoteRequestRepository.findByCourseIdAndStudentId(it.id!!, student.get().id!!)
+            if (!quoteRequest.isPresent) {
+                quoteRequestRepository.save(
+                    QuoteRequest(
+                        course = it,
                         student = student.get(),
                         state = QuoteState.PENDING,
                         comment = quoteRequestRequestDTO.comment
+                    )
                 )
-        )
+            }
+        }
+
     }
 
     override fun getById(id: Long): QuoteRequestResponseDTO {
@@ -85,7 +89,8 @@ class QuoteRequestService(
 
     override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
         val isSndSemester = LocalDate.now().month.value > 6
-        val quoteRequestSubjectsPending = quoteRequestRepository.findAllByStateAndSemester(QuoteState.PENDING, isSndSemester)
+        val quoteRequestSubjectsPending =
+            quoteRequestRepository.findAllByStateAndSemester(QuoteState.PENDING, isSndSemester)
 
         // TODO: refactor in query
         val list = mutableListOf<Long>()
