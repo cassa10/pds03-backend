@@ -21,5 +21,8 @@ class QuoteRequest(
     val state: QuoteState,
 
     @Column(nullable = false)
-    val comment: String
+    val comment: String,
+
+    @Column(nullable = true)
+    var adminComment: String = ""
 )
