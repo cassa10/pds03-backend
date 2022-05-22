@@ -16,9 +16,9 @@ import javax.validation.Valid
 @Validated
 class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteRequestService) {
 
-    @PostMapping()
+    @PostMapping
     @LogExecution
-    fun create(@RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
+    fun create(@Valid @RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
         quoteRequestService.create(quoteRequestRequestDTO)
         return "quote request created"
     }
