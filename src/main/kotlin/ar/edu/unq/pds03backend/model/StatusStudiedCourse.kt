@@ -1,5 +1,5 @@
 package ar.edu.unq.pds03backend.model
 
 enum class StatusStudiedCourse {
-    APPROVAL, PROMOTED, INDEPENDENT, PENDING_APPROVAL
+    IN_PROGRESS, APPROVAL, PROMOTED, INDEPENDENT, PENDING_APPROVAL
 }

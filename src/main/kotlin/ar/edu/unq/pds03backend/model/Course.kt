@@ -36,3 +36,8 @@ class Course(
         @OneToMany(cascade = [CascadeType.ALL])
         var hours: MutableCollection<Hour>
 )
+{
+        fun isCurrent(): Boolean = semester.isCurrent()
+
+        fun belongsToDegree(degree: Degree): Boolean = subject.degrees.contains(degree)
+}

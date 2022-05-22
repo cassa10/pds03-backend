@@ -20,4 +20,10 @@ class Student(
 ) : Person(id, firstName, lastName, dni, email, user)
 {
     override fun isStudent(): Boolean = true
+
+    fun passed(subject: Subject): Boolean =
+        degree_histories.any { studiedDegree -> studiedDegree.studied_subjects.any { studiedSubject -> studiedSubject.subject == subject && studiedSubject.passed() } }
+
+    fun enrolled(subject: Subject): Boolean =
+        degree_histories.any { studiedDegree -> studiedDegree.studied_subjects.any { studiedSubject -> studiedSubject.subject == subject && studiedSubject.inProgress() } }
 }

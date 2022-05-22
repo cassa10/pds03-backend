@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.model
 
+import ar.edu.unq.pds03backend.utils.SemesterHelper
 import javax.persistence.*;
 
 @Entity
@@ -21,4 +22,7 @@ class Semester(
 
     @Column(unique = true, nullable = false)
     val name: String
-)
+) {
+    fun isCurrent(): Boolean =
+        SemesterHelper.isCurrentYear(year) && SemesterHelper.isCurrentSecondSemester(isSndSemester)
+}

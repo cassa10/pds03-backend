@@ -3,11 +3,13 @@ package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
+import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -42,5 +44,21 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
     fun delete(@PathVariable @Valid id: Long): String {
         subjectService.delete(id)
         return "subject deleted"
+    }
+
+    @GetMapping("/currents")
+    @LogExecution
+    fun getAllCurrent(@RequestParam idDegree: Optional<Long>, @RequestParam idStudent: Optional<Long>): List<SubjectWithCoursesResponseDTO> {
+        return when {
+            idDegree.isPresent && idStudent.isPresent -> {
+                val subjectsByDegree = subjectService.getAllCurrentByDegree(idDegree.get())
+                val subjectsByStudent = subjectService.getAllCurrentByStudent(idStudent.get())
+                val subjects = subjectsByStudent.intersect(subjectsByDegree).toList()
+                return subjects
+            }
+            idDegree.isPresent -> subjectService.getAllCurrentByDegree(idDegree.get())
+            idStudent.isPresent -> subjectService.getAllCurrentByStudent(idStudent.get())
+            else -> subjectService.getAllCurrent()
+        }
     }
 }

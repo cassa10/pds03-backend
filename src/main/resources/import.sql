@@ -32,7 +32,7 @@ INSERT INTO subjects(name) VALUES ('Redes de Computadoras');
 INSERT INTO subjects(name) VALUES ('Sistemas Operativos');
 INSERT INTO subjects(name) VALUES ('Programación Funcional');
 INSERT INTO subjects(name) VALUES ('Construcción de Interfaces de Usuario');
-INSERT INTO subjects(name) VALUES ('Algoritmos'); SOLO LIC
+INSERT INTO subjects(name) VALUES ('Algoritmos');
 INSERT INTO subjects(name) VALUES ('Estrategias de Persistencia');
 INSERT INTO subjects(name) VALUES ('Laboratorio de Sistemas Operativos y Redes');
 INSERT INTO subjects(name) VALUES ('Análisis Matemático');
@@ -405,3 +405,11 @@ INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No pu
 INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 7, 2);
 INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 9, 2);
 INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 2, 3);
+
+-- Studied degrees:
+INSERT INTO studied_degrees(coefficient, degree_id, student_id) VALUES (10, 1, 1)
+
+-- Studied subjects:
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 1)
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 2)
+INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 3)
