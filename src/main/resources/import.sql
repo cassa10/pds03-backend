@@ -1,18 +1,11 @@
 -- Recommendation: Execute script in order.
 
--- Persons:
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111111', 'alumno@gmail.com', 'alumno', 'alumno', 1, '34627');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111112', 'alumno2@gmail.com', 'alumno2', 'alumno2', 1, '34628');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('11111113', 'alumno3@gmail.com', 'alumno3', 'alumno3', 1, '34629');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999');
-INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null);
-
 -- Users:
-INSERT INTO users(username, person_id) VALUES ('alumno', 1);
-INSERT INTO users(username, person_id) VALUES ('alumno2', 2);
-INSERT INTO users(username, person_id) VALUES ('alumno3', 3);
-INSERT INTO users(username, person_id) VALUES ('pepe', 4);
-INSERT INTO users(username, person_id) VALUES ('director', 5);
+INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', 'alumno');
+INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', 'messi10');
+INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111113', 'alanturing@gmail.com', 'Alan', 'Turing', 1, '34629','alan_turing');
+INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999','pepe');
+INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null,'director');
 
 -- Degrees:
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');

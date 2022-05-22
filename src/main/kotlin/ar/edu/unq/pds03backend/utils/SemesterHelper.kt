@@ -4,9 +4,9 @@ import java.time.LocalDate
 
 object SemesterHelper {
     val currentYear = LocalDate.now().year
-    val currentSecondSemester = LocalDate.now().month.value >= 6
+    val currentIsSecondSemester = LocalDate.now().month.value >= 6
 
     fun isCurrentYear(year: Int): Boolean = year == currentYear
 
-    fun isCurrentSecondSemester(isSecondSemester: Boolean): Boolean = isSecondSemester == currentSecondSemester
+    fun isCurrentSecondSemester(isSecondSemester: Boolean): Boolean = isSecondSemester == currentIsSecondSemester
 }

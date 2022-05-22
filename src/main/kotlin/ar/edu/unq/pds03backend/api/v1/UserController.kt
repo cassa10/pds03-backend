@@ -1,7 +1,7 @@
 package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
-import ar.edu.unq.pds03backend.service.impl.PersonService
+import ar.edu.unq.pds03backend.service.impl.UserService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,9 +12,9 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/user")
-class UserController(@Autowired val personService: PersonService) {
+class UserController(@Autowired val userService: UserService) {
 
     @GetMapping("/{id}")
     @LogExecution
-    fun getById(@PathVariable @Valid id: Long): UserResponseDTO = personService.getById(id)
+    fun getById(@PathVariable @Valid id: Long): UserResponseDTO = userService.getById(id)
 }

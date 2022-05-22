@@ -20,7 +20,7 @@ class SubjectService(
     @Autowired private val subjectRepository: ISubjectRepository,
     @Autowired private val degreeRepository: IDegreeRepository,
     @Autowired private val courseRepository: ICourseRepository,
-    @Autowired private val personRepository: IPersonRepository,
+    @Autowired private val userRepository: IUserRepository,
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
 ) : ISubjectService {
 
@@ -62,6 +62,7 @@ class SubjectService(
         degreeRepository.saveAll(eliminatedDegrees)
     }
 
+    @Transactional
     override fun delete(id: Long) {
         val subject = findSubjectByIdAndValidate(id)
         val degrees = subject.degrees
@@ -90,9 +91,9 @@ class SubjectService(
     }
 
     override fun getAllCurrentByStudent(idStudent: Long): List<SubjectWithCoursesResponseDTO> {
-        val person = personRepository.findById(idStudent)
-        if (!person.isPresent || (person.isPresent && !person.get().isStudent())) throw StudentNotFoundException()
-        val student = person.get() as Student
+        val user = userRepository.findById(idStudent)
+        if (!user.isPresent || (user.isPresent && !user.get().isStudent())) throw StudentNotFoundException()
+        val student = user.get() as Student
 
         var currentCourses = courseRepository.findAll()
             .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.studiedOrEnrolled(course.subject) }

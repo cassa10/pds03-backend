@@ -10,7 +10,7 @@ class Student(
     lastName: String,
     dni: String,
     email: String,
-    user: User,
+    username: String,
 
     @Column(unique = true)
     val legajo: String,
@@ -27,7 +27,7 @@ class Student(
     //Comisiones ya inscriptas
     //TODO: cuando se apruebe una solicitud de cupo agregar a esta collecion la comision
     val enrolledCourses: Collection<Course>
-) : Person(id, firstName, lastName, dni, email, user)
+) : User(id, firstName, lastName, dni, email, username)
 {
     override fun isStudent(): Boolean = true
 

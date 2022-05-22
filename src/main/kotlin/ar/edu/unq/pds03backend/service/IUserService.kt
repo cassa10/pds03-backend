@@ -1,10 +1,10 @@
 package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
-import ar.edu.unq.pds03backend.model.Person
+import ar.edu.unq.pds03backend.model.User
 import java.util.*
 
-interface IPersonService {
-    fun findByEmailAndDni(email: String, dni: String): Optional<Person>
+interface IUserService {
+    fun findByEmailAndDni(email: String, dni: String): Optional<User>
     fun getById(id: Long): UserResponseDTO
 }

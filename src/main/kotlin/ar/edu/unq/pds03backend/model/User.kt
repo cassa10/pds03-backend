@@ -2,17 +2,30 @@ package ar.edu.unq.pds03backend.model
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "users")
-data class User(
+@Entity(name="users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="role",
+    discriminatorType = DiscriminatorType.INTEGER)
+abstract class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @Column(nullable = false)
+    val firstName: String,
+
+    @Column(nullable = false)
+    val lastName: String,
+
+    @Column(unique = true, nullable = false)
+    val dni: String,
+
+    @Column(unique = true, nullable = false)
+    val email: String,
+
     @Column(unique = true, nullable = false)
     val username: String,
-
-    @OneToOne()
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
-    val person: Person
 )
+{
+    fun isStudent(): Boolean = false
+}
