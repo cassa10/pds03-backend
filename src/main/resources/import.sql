@@ -8,8 +8,8 @@ INSERT INTO persons (dni, email, first_name, last_name, role, legajo) VALUES ('2
 
 -- Users:
 INSERT INTO users(username, person_id) VALUES ('alumno', 1);
-INSERT INTO users(username, person_id) VALUES ('alumno', 2);
-INSERT INTO users(username, person_id) VALUES ('alumno', 3);
+INSERT INTO users(username, person_id) VALUES ('alumno2', 2);
+INSERT INTO users(username, person_id) VALUES ('alumno3', 3);
 INSERT INTO users(username, person_id) VALUES ('director', 4);
 
 -- Degrees:
@@ -32,7 +32,10 @@ INSERT INTO subjects(name) VALUES ('Redes de Computadoras');
 INSERT INTO subjects(name) VALUES ('Sistemas Operativos');
 INSERT INTO subjects(name) VALUES ('Programación Funcional');
 INSERT INTO subjects(name) VALUES ('Construcción de Interfaces de Usuario');
-INSERT INTO subjects(name) VALUES ('Algoritmos'); SOLO LIC
+
+-- SOLO LIC
+
+INSERT INTO subjects(name) VALUES ('Algoritmos');
 INSERT INTO subjects(name) VALUES ('Estrategias de Persistencia');
 INSERT INTO subjects(name) VALUES ('Laboratorio de Sistemas Operativos y Redes');
 INSERT INTO subjects(name) VALUES ('Análisis Matemático');
