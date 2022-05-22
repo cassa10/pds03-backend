@@ -32,7 +32,7 @@ INSERT INTO subjects(name) VALUES ('Redes de Computadoras');
 INSERT INTO subjects(name) VALUES ('Sistemas Operativos');
 INSERT INTO subjects(name) VALUES ('Programación Funcional');
 INSERT INTO subjects(name) VALUES ('Construcción de Interfaces de Usuario');
-INSERT INTO subjects(name) VALUES ('Algoritmos'); SOLO LIC
+INSERT INTO subjects(name) VALUES ('Algoritmos');
 INSERT INTO subjects(name) VALUES ('Estrategias de Persistencia');
 INSERT INTO subjects(name) VALUES ('Laboratorio de Sistemas Operativos y Redes');
 INSERT INTO subjects(name) VALUES ('Análisis Matemático');
