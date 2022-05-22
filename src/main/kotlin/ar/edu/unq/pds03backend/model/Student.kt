@@ -22,8 +22,8 @@ class Student(
     override fun isStudent(): Boolean = true
 
     fun passed(subject: Subject): Boolean =
-        degree_histories.any { studiedDegree -> studiedDegree.studied_courses.any { studiedCourse -> studiedCourse.course.subject == subject && studiedCourse.passed() } }
+        degree_histories.any { studiedDegree -> studiedDegree.studied_subjects.any { studiedSubject -> studiedSubject.subject == subject && studiedSubject.passed() } }
 
     fun enrolled(subject: Subject): Boolean =
-        degree_histories.any { studiedDegree -> studiedDegree.studied_courses.any { studiedCourse -> studiedCourse.course.subject == subject && studiedCourse.inProgress() } }
+        degree_histories.any { studiedDegree -> studiedDegree.studied_subjects.any { studiedSubject -> studiedSubject.subject == subject && studiedSubject.inProgress() } }
 }

@@ -1,12 +1,12 @@
 package ar.edu.unq.pds03backend.dto.course
 
-
 import javax.validation.Valid
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 
-data class CourseRequestDTO(
+
+data class CourseUpdateRequestDTO(
     @field:NotBlank
     val name: String,
     @field:NotEmpty
