@@ -13,6 +13,7 @@ import ar.edu.unq.pds03backend.repository.ICourseRepository
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.IStudentRepository
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
+import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -89,9 +90,8 @@ class QuoteRequestService(
     }
 
     override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
-        val isSndSemester = LocalDate.now().month.value > 6
         val quoteRequestSubjectsPending =
-            quoteRequestRepository.findAllByStateAndSemester(QuoteState.PENDING, isSndSemester)
+            quoteRequestRepository.findAllByStateAndSemester(QuoteState.PENDING, SemesterHelper.currentSecondSemester)
 
         // TODO: refactor in query
         val list = mutableListOf<Long>()
