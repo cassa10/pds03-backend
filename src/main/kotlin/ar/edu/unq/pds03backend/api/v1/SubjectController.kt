@@ -53,7 +53,7 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
             idDegree.isPresent && idStudent.isPresent -> {
                 val subjectsByDegree = subjectService.getAllCurrentByDegree(idDegree.get())
                 val subjectsByStudent = subjectService.getAllCurrentByStudent(idStudent.get())
-                val subjects = subjectsByDegree.intersect(subjectsByStudent).toList()
+                val subjects = subjectsByStudent.intersect(subjectsByDegree).toList()
                 return subjects
             }
             idDegree.isPresent -> subjectService.getAllCurrentByDegree(idDegree.get())
