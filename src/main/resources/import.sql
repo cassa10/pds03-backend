@@ -277,3 +277,11 @@ INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_
 
 -- Quote requests:
 INSERT INTO quote_requests(comment, state, course_id, student_id) VALUES ('No puedo por horario de trabajo', 0, 1, 1);
+
+-- Studied degrees:
+INSERT INTO studied_degrees(coefficient, degree_id, student_id) VALUES (10, 1, 1)
+
+-- Studied courses:
+INSERT INTO studied_courses(mark, status, course_id, studied_degree_id) VALUES (10, 2, 1, 1)
+INSERT INTO studied_courses(mark, status, course_id, studied_degree_id) VALUES (10, 2, 3, 1)
+INSERT INTO studied_courses(mark, status, course_id, studied_degree_id) VALUES (10, 2, 5, 1)
