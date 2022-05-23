@@ -23,6 +23,9 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
             student.dni,
             student.email,
             student.legajo,
-            student.username
+            student.username,
+            student.enrolledCourses.groupBy { it.subject }
+                .map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
         )
+
 }
