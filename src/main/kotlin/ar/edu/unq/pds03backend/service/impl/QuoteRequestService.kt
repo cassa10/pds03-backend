@@ -133,6 +133,18 @@ class QuoteRequestService(
         }
     }
 
+    override fun delete(id: Long) {
+        val quoteRequest = quoteRequestRepository.findById(id)
+
+        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
+
+        if (quoteRequest.get().state != QuoteState.PENDING) {
+            throw CannotDeleteQuoteRequestException()
+        } else {
+            quoteRequestRepository.deleteById(quoteRequest.get().id!!)
+        }
+    }
+
     private fun getCurrentSemester(): Semester {
         return getSemester(SemesterHelper.currentYear, SemesterHelper.currentIsSecondSemester)
     }
