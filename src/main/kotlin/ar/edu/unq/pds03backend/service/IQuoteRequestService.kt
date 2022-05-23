@@ -16,4 +16,5 @@ interface IQuoteRequestService {
     fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO>
     fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO)
     fun findAllStudentsWithQuoteStatusPendingCurrentSemester(): List<StudentWithQuotesInfoResponseDTO>
+    fun delete(id: Long)
 }

@@ -7,7 +7,6 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
-import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -57,5 +56,11 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     @GetMapping("/students/pending")
     fun findAllStudentsWithQuoteStatusPending(): List<StudentWithQuotesInfoResponseDTO> {
         return quoteRequestService.findAllStudentsWithQuoteStatusPendingCurrentSemester()
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable @Valid id: Long): String {
+        quoteRequestService.delete(id)
+        return "quote request deleted"
     }
 }
