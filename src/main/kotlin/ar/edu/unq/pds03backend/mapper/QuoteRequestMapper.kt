@@ -24,15 +24,7 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
                 assigned_teachers = quoteRequest.course.assigned_teachers,
                 totalQuotes = quoteRequest.course.total_quotes
             ),
-            student = StudentResponseDTO(
-                id = quoteRequest.student.id!!,
-                firstName = quoteRequest.student.firstName,
-                lastName = quoteRequest.student.lastName,
-                dni = quoteRequest.student.dni,
-                email = quoteRequest.student.email,
-                legajo = quoteRequest.student.legajo,
-                username = quoteRequest.student.username,
-            ),
+            student = StudentMapper.toDTO(quoteRequest.student),
             state = quoteRequest.state,
             comment = quoteRequest.comment
         )

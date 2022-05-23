@@ -21,4 +21,7 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
 
     @Query("SELECT q FROM QuoteRequest q WHERE q.state = :quoteState AND q.course.semester.id = :semesterId")
     fun findAllByStateAndCourseSemesterId(quoteState: QuoteState, semesterId: Long): List<QuoteRequest>
+
+    @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.state = :quoteState AND q.course.subject.id = :idSubject AND q.course.semester.id = :semesterId")
+    fun findAllStudentsWithQuoteRequestStateToSubjectAndCourseSemesterId(quoteState: QuoteState, idSubject: Long, semesterId: Long): List<Student>
 }

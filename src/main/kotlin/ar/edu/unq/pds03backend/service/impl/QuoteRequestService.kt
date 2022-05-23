@@ -4,10 +4,12 @@ import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
 import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
+import ar.edu.unq.pds03backend.mapper.StudentMapper
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.model.Semester
@@ -131,6 +133,16 @@ class QuoteRequestService(
             val numberOfPendingQuoteRequest = quoteRequestRepository.countByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, it.id!!, semester.id!!)
             StudentWithQuotesInfoResponseDTO.Mapper(it, numberOfPendingQuoteRequest).map()
         }
+    }
+
+    override fun findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
+        val studentsWithQuoteRequestsToSubject =
+            quoteRequestRepository.findAllStudentsWithQuoteRequestStateToSubjectAndCourseSemesterId(
+                QuoteState.PENDING,
+                idSubject,
+                getCurrentSemester().id!!
+            )
+        return studentsWithQuoteRequestsToSubject.map { StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it) }
     }
 
     override fun delete(id: Long) {
