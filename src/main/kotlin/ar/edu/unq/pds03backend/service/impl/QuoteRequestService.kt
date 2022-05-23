@@ -142,7 +142,10 @@ class QuoteRequestService(
                 idSubject,
                 getCurrentSemester().id!!
             )
-        return studentsWithQuoteRequestsToSubject.map { StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it) }
+        return studentsWithQuoteRequestsToSubject.map {
+            val quoteRequests = quoteRequestRepository.findAllByStudentId(it.id!!).toList()
+            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it, quoteRequests)
+        }
     }
 
     override fun delete(id: Long) {
