@@ -18,7 +18,7 @@ class Hour(
     @Column(name = "_to", nullable = false)
     val to: LocalTime,
 
-    @Column(nullable = false)
+    @Column(name = "_day", nullable = false)
     val day: DayOfWeek
 ) {
     fun getFromString(): String = from.format(DateTimeFormatter.ofPattern("HH:mm"))

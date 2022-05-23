@@ -26,7 +26,7 @@ class Course(
         @Column(nullable = false)
         var total_quotes: Int,
 
-        @OneToMany(cascade = [CascadeType.ALL])
+        @ManyToMany(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
         var hours: MutableCollection<Hour>
 )
 {
