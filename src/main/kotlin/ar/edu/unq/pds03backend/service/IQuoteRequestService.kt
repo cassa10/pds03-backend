@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 
 interface IQuoteRequestService {
@@ -16,5 +17,6 @@ interface IQuoteRequestService {
     fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO>
     fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO)
     fun findAllStudentsWithQuoteStatusPendingCurrentSemester(): List<StudentWithQuotesInfoResponseDTO>
+    fun findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO>
     fun delete(id: Long)
 }

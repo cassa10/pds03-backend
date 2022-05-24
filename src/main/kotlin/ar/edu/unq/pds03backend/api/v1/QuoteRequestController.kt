@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
@@ -56,6 +57,11 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     @GetMapping("/students/pending")
     fun findAllStudentsWithQuoteStatusPending(): List<StudentWithQuotesInfoResponseDTO> {
         return quoteRequestService.findAllStudentsWithQuoteStatusPendingCurrentSemester()
+    }
+
+    @GetMapping("/students/pending/subjects/{id}")
+    fun findAllStudentsWithQuoteStatusPendingToSubject(@PathVariable @Valid id: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
+        return quoteRequestService.findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(id)
     }
 
     @DeleteMapping("/{id}")
