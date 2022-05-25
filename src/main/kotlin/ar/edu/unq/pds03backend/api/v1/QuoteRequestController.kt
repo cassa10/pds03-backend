@@ -6,6 +6,7 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,12 +37,12 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         return when {
             idCourse.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(idCourse.get(), idStudent.get())
             idCourse.isPresent -> quoteRequestService.getAllByCourse(idCourse.get())
-            idStudent.isPresent -> quoteRequestService.getAllByStudent(idStudent.get())
+            idStudent.isPresent -> quoteRequestService.getAllCurrentSemesterByStudent(idStudent.get())
             else -> quoteRequestService.getAll()
         }
     }
 
-    @GetMapping("/courses/pending")
+    @GetMapping("/pending/courses")
     @LogExecution
     fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
         return quoteRequestService.getQuoteRequestSubjectsPending()
@@ -54,17 +55,26 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         return "admin comment added"
     }
 
-    @GetMapping("/students/pending")
+    @GetMapping("/pending/students")
+    @LogExecution
     fun findAllStudentsWithQuoteStatusPending(): List<StudentWithQuotesInfoResponseDTO> {
         return quoteRequestService.findAllStudentsWithQuoteStatusPendingCurrentSemester()
     }
 
-    @GetMapping("/students/pending/subjects/{id}")
-    fun findAllStudentsWithQuoteStatusPendingToSubject(@PathVariable @Valid id: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
-        return quoteRequestService.findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(id)
+    @GetMapping("/pending/students/subject/{idSubject}")
+    @LogExecution
+    fun findAllStudentsWithQuoteStatusPendingToSubject(@PathVariable @Valid idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
+        return quoteRequestService.findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject)
+    }
+
+    @GetMapping("/pending/student/{idStudent}")
+    @LogExecution
+    fun findStudentWithPendingQuoteRequests(@PathVariable @Valid idStudent: Long): StudentWithRequestedQuotesResponseDTO {
+        return quoteRequestService.findStudentWithPendingQuoteRequests(idStudent)
     }
 
     @DeleteMapping("/{id}")
+    @LogExecution
     fun delete(@PathVariable @Valid id: Long): String {
         quoteRequestService.delete(id)
         return "quote request deleted"

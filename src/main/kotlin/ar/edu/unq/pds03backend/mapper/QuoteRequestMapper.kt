@@ -19,7 +19,7 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
         QuoteRequestWithoutStudentResponseDTO(
             id = quoteRequest.id!!,
             course = CourseMapper.toSimpleForSubjectDTO(quoteRequest.course),
-            subject = SubjectMapper.toSimpleDTO(quoteRequest.course.subject),
+            subject = SubjectMapper.toDTO(quoteRequest.course.subject),
             state = quoteRequest.state,
             comment = quoteRequest.comment,
             adminComment = quoteRequest.adminComment
