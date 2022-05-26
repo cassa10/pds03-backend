@@ -5,12 +5,10 @@ import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.SubjectMapper
-import ar.edu.unq.pds03backend.model.Degree
-import ar.edu.unq.pds03backend.model.QuoteState
-import ar.edu.unq.pds03backend.model.Student
-import ar.edu.unq.pds03backend.model.Subject
+import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ISubjectService
+import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -22,6 +20,7 @@ class SubjectService(
     @Autowired private val courseRepository: ICourseRepository,
     @Autowired private val userRepository: IUserRepository,
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
+    @Autowired private val semesterRepository: ISemesterRepository,
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -98,7 +97,8 @@ class SubjectService(
         var currentCourses = courseRepository.findAll()
             .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.studiedOrEnrolled(course.subject) }
 
-        val currentCoursesRequested = quoteRequestRepository.findAllByStudentId(idStudent)
+        val currentSemester = getCurrentSemester()
+        val currentCoursesRequested = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(idStudent, currentSemester.id!!)
             .filter { it.state == QuoteState.PENDING && it.course.isCurrent() }.map { it.course }
         if (currentCoursesRequested.isNotEmpty())
             currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
@@ -122,5 +122,15 @@ class SubjectService(
 
     private fun validateSubjectNameAlreadyExist(name: String) {
         if (subjectRepository.existsByName(name)) throw SubjectNameAlreadyExistsException()
+    }
+
+    private fun getCurrentSemester(): Semester {
+        return getSemester(SemesterHelper.currentYear, SemesterHelper.currentIsSecondSemester)
+    }
+
+    private fun getSemester(year: Int, isSndSemester: Boolean): Semester {
+        val maybeSemester = semesterRepository.findByYearAndIsSndSemester(year, isSndSemester)
+        if(!maybeSemester.isPresent) throw SemesterNotFoundException()
+        return maybeSemester.get()
     }
 }
