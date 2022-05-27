@@ -11,6 +11,18 @@ INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VA
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
+-- Relation with Users and Degrees
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (2,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (2,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (4,1);
+
 -- Subjects:
 
 INSERT INTO subjects(name) VALUES ('Lectura y escritura académica');

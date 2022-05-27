@@ -15,6 +15,14 @@ class Student(
     @Column(unique = true)
     val legajo: String,
 
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+    @JoinTable(
+        name = "student_enrolled_degree",
+        joinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "degree_id", referencedColumnName = "id")],
+    )
+    val enrolledDegrees: Collection<Degree>,
+
     @OneToMany(mappedBy = "student")
     val degree_histories: Collection<StudiedDegree>,
 

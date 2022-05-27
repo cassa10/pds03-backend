@@ -1,17 +1,20 @@
 package ar.edu.unq.pds03backend.dto.user
 
+import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
 import ar.edu.unq.pds03backend.model.Course
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.QuoteState
 
 data class UserResponseDTO(
     val id: Long,
+    val isStudent: Boolean,
     val username: String,
     val firstName: String,
     val lastName: String,
     val dni: String,
     val email: String,
     val legajo: String,
+    val enrolledDegrees: List<SimpleDegreeResponseDTO>,
     val enrolledSubjects: List<SimpleEnrolledSubjectsDataDTO>,
     val requestedSubjects: List<RequestedSubjectsDTO>
 )
