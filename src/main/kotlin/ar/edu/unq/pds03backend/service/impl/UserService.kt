@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
 import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
@@ -30,11 +31,14 @@ class UserService(
     private fun getUserInfo(user: User): UserResponseDTO {
         var enrolledSubjects = listOf<SimpleEnrolledSubjectsDataDTO>()
         var requestedSubjects = listOf<RequestedSubjectsDTO>()
+        var enrolledDegrees = listOf<SimpleDegreeResponseDTO>()
         var legajo = ""
-        //TODO: Validate isStudent works
         if (user.isStudent()) {
             val student = user as Student
             legajo = student.legajo
+            enrolledDegrees = student.enrolledDegrees.map {
+                SimpleDegreeResponseDTO.Mapper(it.id!!, it.name, it.acronym).map()
+            }
             enrolledSubjects = student.enrolledCourses.map {
                 SimpleEnrolledSubjectsDataDTO.Mapper(it).map()
             }
@@ -44,12 +48,14 @@ class UserService(
         }
         return UserResponseDTO(
             id = user.id!!,
+            isStudent = user.isStudent(),
             username = user.username,
             firstName = user.firstName,
             lastName = user.lastName,
             dni = user.dni,
             email = user.email,
             legajo = legajo,
+            enrolledDegrees = enrolledDegrees,
             enrolledSubjects = enrolledSubjects,
             requestedSubjects = requestedSubjects,
         )
