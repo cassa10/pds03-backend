@@ -1,10 +1,11 @@
 package ar.edu.unq.pds03backend.dto.subject
 
-import ar.edu.unq.pds03backend.dto.course.SimpleCourseForSubjectDTO
+
+import ar.edu.unq.pds03backend.dto.course.SimpleCourseResponseDTO
 
 data class SubjectWithCoursesResponseDTO(
     val subject: SimpleSubjectResponseDTO,
-    val courses: List<SimpleCourseForSubjectDTO>,
+    val courses: List<SimpleCourseResponseDTO>,
 )
 {
     override fun equals(other: Any?): Boolean {

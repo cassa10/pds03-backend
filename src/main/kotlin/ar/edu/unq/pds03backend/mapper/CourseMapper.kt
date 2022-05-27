@@ -15,7 +15,7 @@ object CourseMapper {
         subject = SubjectMapper.toSimpleDTO(course.subject),
         name = course.name,
         assigned_teachers = course.assigned_teachers,
-        hours = course.hours.map { HourResponseDTO(day = it.day, from = it.getFromString(), to = it.getToString()) },
+        hours = course.hours.map { HourResponseDTO.Mapper(it).map() },
         totalQuotes = course.total_quotes,
         currentQuotes = course.total_quotes - acceptedQuotes,
         acceptedQuotes = acceptedQuotes,
@@ -33,7 +33,8 @@ object CourseMapper {
         subject = SimpleSubjectResponseDTO(course.subject.id!!, course.subject.name),
         name = course.name,
         assigned_teachers = course.assigned_teachers,
-        totalQuotes = course.total_quotes
+        totalQuotes = course.total_quotes,
+        hours = course.hours.map{ HourResponseDTO.Mapper(it).map() },
     )
 
     fun toSimpleForSubjectDTO(course: Course): SimpleCourseForSubjectDTO =
