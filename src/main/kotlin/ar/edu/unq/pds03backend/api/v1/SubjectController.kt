@@ -51,6 +51,7 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
     fun getAllCurrent(@RequestParam idDegree: Optional<Long>, @RequestParam idStudent: Optional<Long>): List<SubjectWithCoursesResponseDTO> {
         return when {
             idDegree.isPresent && idStudent.isPresent -> {
+                //TODO: Refactor in JPQL query
                 val subjectsByDegree = subjectService.getAllCurrentByDegree(idDegree.get())
                 val subjectsByStudent = subjectService.getAllCurrentByStudent(idStudent.get())
                 return subjectsByStudent.intersect(subjectsByDegree).toList()
