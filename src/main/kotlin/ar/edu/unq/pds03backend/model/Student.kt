@@ -35,8 +35,7 @@ class Student(
     //Comisiones ya inscriptas
     //TODO: cuando se apruebe una solicitud de cupo agregar a esta collecion la comision
     val enrolledCourses: Collection<Course>
-) : User(id, firstName, lastName, dni, email, username)
-{
+) : User(id, firstName, lastName, dni, email, username) {
     override fun isStudent(): Boolean = true
 
     fun passed(subject: Subject): Boolean =
@@ -46,7 +45,11 @@ class Student(
     fun studiedOrEnrolled(subject: Subject): Boolean =
         degree_histories.any { studiedDegree ->
             studiedDegree.studied_subjects.any { it.subject == subject && it.inProgress() }
-                    || enrolledCourses.any{ it.subject == subject }
+                    || enrolledCourses.any { it.subject == subject }
 
         }
+
+    fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean {
+        return enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
+    }
 }
