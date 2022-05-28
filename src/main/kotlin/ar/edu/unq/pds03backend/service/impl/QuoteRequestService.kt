@@ -35,10 +35,15 @@ class QuoteRequestService(
 
     @Transactional
     override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
+        val currentSemester = getCurrentSemester()
+        if (!currentSemester.isAcceptQuoteRequestsAvailable()) throw CannotCreateQuoteRequestException()
+
         val courses = courseRepository.findAllById(quoteRequestRequestDTO.idCourses)
         if (courses.isEmpty()) throw CourseNotFoundException()
 
         val student = getStudent(quoteRequestRequestDTO.idStudent)
+
+        if (courses.all{ student.isStudingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
 
         if (courses.any{student.studiedOrEnrolled(it.subject)}) throw StudentHasAlreadyEnrolledSubject()
 

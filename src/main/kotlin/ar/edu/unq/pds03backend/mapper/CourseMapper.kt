@@ -24,12 +24,7 @@ object CourseMapper {
 
     fun toSimpleCourseResponseDTO(course: Course): SimpleCourseResponseDTO = SimpleCourseResponseDTO(
         id = course.id!!,
-        semester = SemesterResponseDTO(
-            course.semester.id!!,
-            course.semester.isSndSemester,
-            course.semester.year,
-            course.semester.name
-        ),
+        semester = SemesterMapper.toDTO(course.semester),
         subject = SimpleSubjectResponseDTO(course.subject.id!!, course.subject.name),
         name = course.name,
         assigned_teachers = course.assigned_teachers,

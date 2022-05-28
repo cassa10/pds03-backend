@@ -4,7 +4,8 @@ import java.time.LocalDate
 
 object SemesterHelper {
     val currentYear = LocalDate.now().year
-    val currentIsSecondSemester = LocalDate.now().month.value >= 6
+    //FIXME: Seteo con mes 8 (Agosto) para no interferir con la demo (que puede ser hasta julio - mes 7).
+    val currentIsSecondSemester = LocalDate.now().month.value >= 8
 
     fun isCurrentYear(year: Int): Boolean = year == currentYear
 

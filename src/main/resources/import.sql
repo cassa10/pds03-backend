@@ -173,8 +173,8 @@ INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 54);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 55);
 
 -- Semesters:
-INSERT INTO semesters(name, is_snd_semester, year) VALUES ('Primer cuatrimestre', false, 2022);
-INSERT INTO semesters(name, is_snd_semester, year) VALUES ('Segundo cuatrimestre', true, 2022);
+INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_quote_requests_to) VALUES (false, 2022, '2022-02-01 03:00:00'::timestamp, '2022-10-01 03:00:00'::timestamp);
+INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_quote_requests_to) VALUES (true, 2022, '2022-07-01 03:00:00'::timestamp, '2022-12-01 03:00:00'::timestamp);
 
 -- Courses - Primary semester
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Susana Grillo', 'C1', 30, 1, 1);
