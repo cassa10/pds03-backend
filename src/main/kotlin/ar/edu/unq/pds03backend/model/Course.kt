@@ -34,4 +34,6 @@ class Course(
         fun isCurrent(): Boolean = semester.isCurrent()
 
         fun belongsToDegree(degree: Degree): Boolean = subject.degrees.contains(degree)
+
+        override fun equals(other: Any?): Boolean = (other is Course) && id == other.id
 }

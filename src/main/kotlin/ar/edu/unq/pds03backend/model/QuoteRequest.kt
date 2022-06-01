@@ -27,4 +27,6 @@ class QuoteRequest(
     var adminComment: String = ""
 ){
     fun accept() = state.accept(this)
+    fun revoke() = state.revoke(this)
+    fun rollbackToPending() = state.rollbackToPending(this)
 }
