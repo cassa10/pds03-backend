@@ -2,6 +2,8 @@ package ar.edu.unq.pds03backend.repository
 
 import ar.edu.unq.pds03backend.model.Student
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.repository.CrudRepository
+import java.util.*
 
-interface IStudentRepository : JpaRepository<Student, Long> {}
+interface IStudentRepository : JpaRepository<Student, Long> {
+    fun findByLegajo(legajo: String): Optional<Student>
+}

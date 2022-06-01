@@ -414,14 +414,6 @@ INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment)
 INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 9, 2, '');
 INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 2, 3, '');
 
--- Studied degrees:
-INSERT INTO studied_degrees(coefficient, degree_id, student_id) VALUES (10, 1, 1);
-
--- Studied subjects:
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 1);
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 2);
-INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 3);
-
 -- Student enrolled courses:
 INSERT INTO student_enrolled_course(student_id, course_id) VALUES (1, 23);
 
