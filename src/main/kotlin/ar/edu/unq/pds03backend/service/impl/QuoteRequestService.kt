@@ -167,6 +167,22 @@ class QuoteRequestService(
         quoteRequestRepository.save(quoteRequest)
     }
 
+    @Transactional
+    override fun revokeQuoteRequest(id: Long) {
+        //TODO (JWT):  Add JWT and validate if it belongs to DIRECTOR rol type.
+        val quoteRequest = getQuoteRequest(id)
+        quoteRequest.revoke()
+        quoteRequestRepository.save(quoteRequest)
+    }
+
+    @Transactional
+    override fun rollbackToPendingRequest(id: Long) {
+        //TODO (JWT):  Add JWT and validate if it belongs to DIRECTOR rol type.
+        val quoteRequest = getQuoteRequest(id)
+        quoteRequest.rollbackToPending()
+        quoteRequestRepository.save(quoteRequest)
+    }
+
     private fun getQuoteRequest(id: Long): QuoteRequest {
         val quoteRequest = quoteRequestRepository.findById(id)
         if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()

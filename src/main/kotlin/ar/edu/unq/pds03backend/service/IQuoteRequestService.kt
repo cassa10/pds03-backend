@@ -22,4 +22,6 @@ interface IQuoteRequestService {
     fun delete(id: Long)
     fun findStudentWithPendingQuoteRequests(idStudent: Long): StudentWithRequestedQuotesResponseDTO
     fun acceptQuoteRequest(id: Long)
+    fun revokeQuoteRequest(id: Long)
+    fun rollbackToPendingRequest(id: Long)
 }

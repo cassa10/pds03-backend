@@ -53,5 +53,6 @@ class Student(
         enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
 
     fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
+    fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
 
 }
