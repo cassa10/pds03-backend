@@ -79,4 +79,11 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         quoteRequestService.delete(id)
         return "quote request deleted"
     }
+
+    @PutMapping("/{id}/accept")
+    @LogExecution
+    fun acceptQuoteRequest(@PathVariable @Valid id: Long): String {
+        quoteRequestService.acceptQuoteRequest(id)
+        return "quote request accepted successfully"
+    }
 }
