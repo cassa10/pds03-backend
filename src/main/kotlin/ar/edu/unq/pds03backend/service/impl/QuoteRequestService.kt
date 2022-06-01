@@ -65,11 +65,7 @@ class QuoteRequestService(
     }
 
     override fun getById(id: Long): QuoteRequestResponseDTO {
-        val quoteRequest = quoteRequestRepository.findById(id)
-
-        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
-
-        return QuoteRequestMapper.toDTO(quoteRequest.get())
+        return QuoteRequestMapper.toDTO(getQuoteRequest(id))
     }
 
     override fun getAll(): List<QuoteRequestResponseDTO> {
@@ -107,7 +103,7 @@ class QuoteRequestService(
         val quoteRequestSubjectsPending =
             quoteRequestRepository.findAllByStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!)
 
-        // TODO: refactor in query
+        // TODO (REFACTOR): refactor in query
         val list = mutableListOf<Long>()
         return quoteRequestSubjectsPending.filter {
             !list.contains(it.course.id).apply {
@@ -120,14 +116,10 @@ class QuoteRequestService(
 
     @Transactional
     override fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO) {
-        val quoteRequest = quoteRequestRepository.findById(idQuoteRequest)
-
-        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
-
-        val newQuoteRequest = quoteRequest.get()
-        newQuoteRequest.adminComment = adminCommentRequestDTO.comment
-
-        quoteRequestRepository.save(newQuoteRequest)
+        //TODO (JWT): Add JWT and validate if it belongs to DIRECTOR rol type.
+        val quoteRequest = getQuoteRequest(idQuoteRequest)
+        quoteRequest.adminComment = adminCommentRequestDTO.comment
+        quoteRequestRepository.save(quoteRequest)
     }
 
     override fun findAllStudentsWithQuoteStatusPendingCurrentSemester(): List<StudentWithQuotesInfoResponseDTO> {
@@ -153,16 +145,11 @@ class QuoteRequestService(
         }
     }
 
+    @Transactional
     override fun delete(id: Long) {
-        val quoteRequest = quoteRequestRepository.findById(id)
-
-        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
-
-        if (quoteRequest.get().state != QuoteState.PENDING) {
-            throw CannotDeleteQuoteRequestException()
-        } else {
-            quoteRequestRepository.deleteById(quoteRequest.get().id!!)
-        }
+        val quoteRequest = getQuoteRequest(id)
+        if (quoteRequest.state != QuoteState.PENDING) throw CannotDeleteQuoteRequestException()
+        quoteRequestRepository.deleteById(quoteRequest.id!!)
     }
 
     override fun findStudentWithPendingQuoteRequests(idStudent: Long): StudentWithRequestedQuotesResponseDTO {
@@ -172,6 +159,19 @@ class QuoteRequestService(
         return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequests).map()
     }
 
+    @Transactional
+    override fun acceptQuoteRequest(id: Long) {
+        //TODO (JWT):  Add JWT and validate if it belongs to DIRECTOR rol type.
+        val quoteRequest = getQuoteRequest(id)
+        quoteRequest.accept()
+        quoteRequestRepository.save(quoteRequest)
+    }
+
+    private fun getQuoteRequest(id: Long): QuoteRequest {
+        val quoteRequest = quoteRequestRepository.findById(id)
+        if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
+        return quoteRequest.get()
+    }
     private fun getStudent(idStudent: Long): Student {
         val student = studentRepository.findById(idStudent)
         if (!student.isPresent) throw StudentNotFoundException()

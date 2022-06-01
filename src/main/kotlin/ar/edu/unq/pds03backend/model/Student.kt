@@ -34,7 +34,7 @@ class Student(
     )
     //Comisiones ya inscriptas
     //TODO: cuando se apruebe una solicitud de cupo agregar a esta collecion la comision
-    val enrolledCourses: Collection<Course>
+    val enrolledCourses: MutableCollection<Course>
 ) : User(id, firstName, lastName, dni, email, username) {
     override fun isStudent(): Boolean = true
 
@@ -49,7 +49,9 @@ class Student(
 
         }
 
-    fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean {
-        return enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
-    }
+    fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean =
+        enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
+
+    fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
+
 }

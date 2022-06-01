@@ -18,11 +18,13 @@ class QuoteRequest(
     val student: Student,
 
     @Column(nullable = false)
-    val state: QuoteState,
+    var state: QuoteState,
 
     @Column(nullable = false)
     val comment: String,
 
     @Column(nullable = false)
     var adminComment: String = ""
-)
+){
+    fun accept() = state.accept(this)
+}
