@@ -24,7 +24,7 @@ class AcademyHistoryService(
             val carrera = it.key.second
             val data = it.value
 
-            val coeficiente = data.filter { it.resultado != "En Curso" }.map { it.nota }.average().toFloat()
+            val coeficiente = data.filter { it.resultado != StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() }.map { it.nota }.average().toFloat()
             val (maybeDegree, maybeStudent) = importStudiedDegree(carrera, legajo, coeficiente)
 
             importStudiedSubjects(data, maybeDegree, maybeStudent)
