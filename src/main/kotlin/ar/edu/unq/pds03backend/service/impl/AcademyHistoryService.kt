@@ -60,9 +60,9 @@ class AcademyHistoryService(
             val maybeStudiedDegree =
                 studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
             val status: StatusStudiedCourse = when (it.resultado) {
-                "En Curso" -> StatusStudiedCourse.IN_PROGRESS
-                "Aprobado" -> StatusStudiedCourse.APPROVAL
-                "Promocionado" -> StatusStudiedCourse.PROMOTED
+                StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.IN_PROGRESS
+                StatusStudiedCourse.APPROVAL.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.APPROVAL
+                StatusStudiedCourse.PROMOTED.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.PROMOTED
                 else -> StatusStudiedCourse.PENDING_APPROVAL
             }
             studiedSubjectRepository.save(

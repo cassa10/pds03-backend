@@ -19,7 +19,7 @@ class AcademyHistoryController(
     @PostMapping("/import")
     @LogExecution
     fun importAcademyHistoryCsv(@RequestParam("file") file: MultipartFile): String {
-        val data = csvService.uploadCsvFile(file)
+        val data = csvService.parseAcademyHistoriesFile(file)
         academyHistoryService.updateAcademyHistory(data)
         return "imported successfully"
     }
