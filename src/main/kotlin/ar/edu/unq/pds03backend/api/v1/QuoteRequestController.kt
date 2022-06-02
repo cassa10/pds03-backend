@@ -79,4 +79,25 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         quoteRequestService.delete(id)
         return "quote request deleted"
     }
+
+    @PutMapping("/{id}/accept")
+    @LogExecution
+    fun acceptQuoteRequest(@PathVariable @Valid id: Long): String {
+        quoteRequestService.acceptQuoteRequest(id)
+        return "quote request accepted successfully"
+    }
+
+    @PutMapping("/{id}/revoke")
+    @LogExecution
+    fun revokeQuoteRequest(@PathVariable @Valid id: Long): String {
+        quoteRequestService.revokeQuoteRequest(id)
+        return "quote request revoked successfully"
+    }
+
+    @PutMapping("/{id}/rollback")
+    @LogExecution
+    fun rollbackToPendingQuoteRequest(@PathVariable @Valid id: Long): String {
+        quoteRequestService.rollbackToPendingRequest(id)
+        return "quote request rollback to pending successfully"
+    }
 }

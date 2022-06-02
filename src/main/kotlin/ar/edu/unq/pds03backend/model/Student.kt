@@ -15,6 +15,14 @@ class Student(
     @Column(unique = true)
     val legajo: String,
 
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+    @JoinTable(
+        name = "student_enrolled_degree",
+        joinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "degree_id", referencedColumnName = "id")],
+    )
+    val enrolledDegrees: Collection<Degree>,
+
     @OneToMany(mappedBy = "student")
     val degree_histories: Collection<StudiedDegree>,
 
@@ -26,9 +34,8 @@ class Student(
     )
     //Comisiones ya inscriptas
     //TODO: cuando se apruebe una solicitud de cupo agregar a esta collecion la comision
-    val enrolledCourses: Collection<Course>
-) : User(id, firstName, lastName, dni, email, username)
-{
+    val enrolledCourses: MutableCollection<Course>
+) : User(id, firstName, lastName, dni, email, username) {
     override fun isStudent(): Boolean = true
 
     fun passed(subject: Subject): Boolean =
@@ -38,7 +45,14 @@ class Student(
     fun studiedOrEnrolled(subject: Subject): Boolean =
         degree_histories.any { studiedDegree ->
             studiedDegree.studied_subjects.any { it.subject == subject && it.inProgress() }
-                    || enrolledCourses.any{ it.subject == subject }
+                    || enrolledCourses.any { it.subject == subject }
 
         }
+
+    fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean =
+        enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
+
+    fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
+    fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
+
 }

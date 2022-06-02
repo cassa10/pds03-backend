@@ -27,9 +27,9 @@ object SubjectMapper : Mapper<Subject, SubjectResponseDTO> {
             name = subject.name,
         )
 
-    fun toSubjectWithCoursesDTO(subject: Subject, courses: List<Course>) =
+    fun toSubjectWithCoursesDTO(subject: Subject, courses: List<Course>): SubjectWithCoursesResponseDTO =
         SubjectWithCoursesResponseDTO(
             subject = toSimpleDTO(subject),
-            courses = courses.map { course -> CourseMapper.toSimpleForSubjectDTO(course) }
+            courses = courses.map { course -> CourseMapper.toSimpleCourseResponseDTO(course) }
         )
 }

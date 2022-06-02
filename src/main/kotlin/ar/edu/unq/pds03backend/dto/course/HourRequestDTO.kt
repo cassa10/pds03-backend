@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.dto.course
 
+import ar.edu.unq.pds03backend.model.Hour
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.validation.annotation.Validated
 import java.time.DayOfWeek
@@ -25,4 +26,12 @@ class HourResponseDTO(
     val day: DayOfWeek,
     val from: String,
     val to: String,
-)
+){
+    class Mapper(private val hour: Hour) {
+        fun map(): HourResponseDTO = HourResponseDTO(
+            day = hour.day,
+            from = hour.getFromString(),
+            to = hour.getToString(),
+        )
+    }
+}

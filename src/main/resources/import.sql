@@ -11,6 +11,18 @@ INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VA
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
+-- Relation with Users and Degrees
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (2,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (2,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,1);
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,2);
+
+INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (4,1);
+
 -- Subjects:
 
 INSERT INTO subjects(name) VALUES ('Lectura y escritura académica');
@@ -161,8 +173,8 @@ INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 54);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 55);
 
 -- Semesters:
-INSERT INTO semesters(name, is_snd_semester, year) VALUES ('Primer cuatrimestre', false, 2022);
-INSERT INTO semesters(name, is_snd_semester, year) VALUES ('Segundo cuatrimestre', true, 2022);
+INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_quote_requests_to) VALUES (false, 2022, '2022-02-01 03:00:00'::timestamp, '2022-10-01 03:00:00'::timestamp);
+INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_quote_requests_to) VALUES (true, 2022, '2022-07-01 03:00:00'::timestamp, '2022-12-01 03:00:00'::timestamp);
 
 -- Courses - Primary semester
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Susana Grillo', 'C1', 30, 1, 1);
@@ -411,122 +423,122 @@ INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES
 INSERT INTO studied_subjects(mark, status, studied_degree_id, subject_id) VALUES (10, 2, 1, 3);
 
 -- Student enrolled courses:
-INSERT INTO student_enrolled_course(student_id, course_id) VALUES (1, 23)
+INSERT INTO student_enrolled_course(student_id, course_id) VALUES (1, 23);
 
 -- Hours:
-INSERT INTO hours(_day, _from, _to) VALUES (1, '09:00', '13:00')
-INSERT INTO hours(_day, _from, _to) VALUES (1, '14:00', '18:00')
-INSERT INTO hours(_day, _from, _to) VALUES (1, '18:00', '21:00')
-INSERT INTO hours(_day, _from, _to) VALUES (1, '18:00', '22:00')
+INSERT INTO hours(_day, _from, _to) VALUES (1, '09:00', '13:00');
+INSERT INTO hours(_day, _from, _to) VALUES (2, '14:00', '18:00');
+INSERT INTO hours(_day, _from, _to) VALUES (3, '18:00', '21:00');
+INSERT INTO hours(_day, _from, _to) VALUES (4, '18:00', '22:00');
 
 -- Course hours:
-INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (2, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (2, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (3, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (3, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (4, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (4, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (5, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (5, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (6, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (6, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (10, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (11, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (11, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (12, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (12, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (13, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (13, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (14, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (14, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (19, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (19, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (20, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (20, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (21, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (21, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (22, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (22, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (23, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (23, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (24, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (24, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (25, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (25, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (26, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (26, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (27, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (27, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (28, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (28, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (29, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (29, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (30, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (30, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (31, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (31, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (32, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (32, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (33, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (33, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (34, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (34, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (35, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (35, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (36, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (36, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (37, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (37, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (38, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (38, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (39, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (39, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (40, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (40, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (41, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (41, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (42, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (42, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (43, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (43, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (44, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (44, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (45, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (45, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (46, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (46, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (47, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (47, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (48, 1)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (48, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (49, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (49, 4)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (50, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (50, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (51, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (51, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (52, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (52, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (53, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (53, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (54, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (54, 2)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (55, 3)
-INSERT INTO courses_hours(course_id, hours_id) VALUES (55, 2)
+INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (2, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (2, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (3, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (3, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (4, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (4, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (5, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (5, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (6, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (6, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (1, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (10, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (11, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (11, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (12, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (12, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (13, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (13, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (14, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (14, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (19, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (19, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (20, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (20, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (21, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (21, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (22, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (22, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (23, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (23, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (24, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (24, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (25, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (25, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (26, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (26, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (27, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (27, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (28, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (28, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (29, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (29, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (30, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (30, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (31, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (31, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (32, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (32, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (33, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (33, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (34, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (34, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (35, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (35, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (36, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (36, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (37, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (37, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (38, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (38, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (39, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (39, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (40, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (40, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (41, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (41, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (42, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (42, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (43, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (43, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (44, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (44, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (45, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (45, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (46, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (46, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (47, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (47, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (48, 1);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (48, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (49, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (49, 4);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (50, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (50, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (51, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (51, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (52, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (52, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (53, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (53, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (54, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (54, 2);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (55, 3);
+INSERT INTO courses_hours(course_id, hours_id) VALUES (55, 2);

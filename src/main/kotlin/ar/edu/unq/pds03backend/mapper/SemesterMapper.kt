@@ -9,6 +9,10 @@ object SemesterMapper : Mapper<Semester, SemesterResponseDTO> {
             id = semester.id!!,
             isSndSemester = semester.isSndSemester,
             year = semester.year,
-            name = semester.name,
+            name = semester.name(),
+            acceptQuoteRequestsFrom = semester.acceptQuoteRequestsFrom,
+            acceptQuoteRequestsTo = semester.acceptQuoteRequestsTo,
+            isCurrentSemester = semester.isCurrent(),
+            isAcceptQuoteRequestsAvailable = semester.isAcceptQuoteRequestsAvailable(),
         )
 }
