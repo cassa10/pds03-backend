@@ -14,19 +14,18 @@ import java.io.IOException
 import java.io.InputStreamReader
 
 @Service
-class CsvService: ICsvService {
+class CsvService(): ICsvService {
     private val logger = KotlinLogging.logger { }
     private val defaultCsvImportException = CsvImportException("error during csv import")
 
-    override fun uploadCsvFile(file: MultipartFile) {
+    override fun parseAcademyHistoriesFile(file: MultipartFile): List<CsvAcademyHistoryRequestDTO> {
         validateFileIsNotEmpty(file)
         var fileReader: BufferedReader? = null
         try {
             fileReader = BufferedReader(InputStreamReader(file.inputStream))
-            val data:List<CsvAcademyHistoryRequestDTO> = createCSVToBean(fileReader).parse()
+            val data: List<CsvAcademyHistoryRequestDTO> = createCSVToBean(fileReader).parse()
             logger.info("csv-data-parsed: $data")
-            //TODO: Map csv data to entity objects and save all
-
+            return data
         } catch (ex: Exception) {
             logger.error(ex.message)
             throw defaultCsvImportException
