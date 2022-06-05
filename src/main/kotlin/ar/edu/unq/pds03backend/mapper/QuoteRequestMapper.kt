@@ -11,7 +11,8 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
             course = CourseMapper.toSimpleCourseResponseDTO(quoteRequest.course),
             student = StudentMapper.toDTO(quoteRequest.student),
             state = quoteRequest.state,
-            comment = quoteRequest.comment
+            comment = quoteRequest.comment,
+            createdOn = quoteRequest.createdOn,
         )
     }
 
@@ -22,6 +23,7 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
             subject = SubjectMapper.toDTO(quoteRequest.course.subject),
             state = quoteRequest.state,
             comment = quoteRequest.comment,
-            adminComment = quoteRequest.adminComment
+            adminComment = quoteRequest.adminComment,
+            createdOn = quoteRequest.createdOn,
         )
 }

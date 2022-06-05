@@ -22,7 +22,9 @@ import ar.edu.unq.pds03backend.repository.IStudentRepository
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @Service
@@ -32,7 +34,6 @@ class QuoteRequestService(
     @Autowired private val studentRepository: IStudentRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
 ) : IQuoteRequestService {
-
     @Transactional
     override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
         val currentSemester = getCurrentSemester()
@@ -56,7 +57,8 @@ class QuoteRequestService(
                         course = it,
                         student = student,
                         state = QuoteState.PENDING,
-                        comment = quoteRequestRequestDTO.comment
+                        comment = quoteRequestRequestDTO.comment,
+                        createdOn = LocalDateTime.now(),
                     )
                 )
             }
@@ -69,7 +71,7 @@ class QuoteRequestService(
     }
 
     override fun getAll(): List<QuoteRequestResponseDTO> {
-        val quoteRequests = quoteRequestRepository.findAll()
+        val quoteRequests = quoteRequestRepository.findAll(getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
@@ -79,7 +81,7 @@ class QuoteRequestService(
 
         val student = getStudent(idStudent)
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentId(course.get().id!!, student.id!!)
+        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentId(course.get().id!!, student.id!!, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
@@ -87,21 +89,21 @@ class QuoteRequestService(
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseId(course.get().id!!)
+        val quoteRequests = quoteRequestRepository.findAllByCourseId(course.get().id!!, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
     override fun getAllCurrentSemesterByStudent(idStudent: Long): List<QuoteRequestResponseDTO> {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!)
+        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
     override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
         val semester = getCurrentSemester()
         val quoteRequestSubjectsPending =
-            quoteRequestRepository.findAllByStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!)
+            quoteRequestRepository.findAllByStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!, getSortByCreatedOnAsc())
 
         // TODO (REFACTOR): refactor in query
         val list = mutableListOf<Long>()
@@ -135,12 +137,10 @@ class QuoteRequestService(
         val currentSemester = getCurrentSemester()
         val studentsWithQuoteRequestsToSubject =
             quoteRequestRepository.findAllStudentsWithQuoteRequestStateToSubjectAndCourseSemesterId(
-                QuoteState.PENDING,
-                idSubject,
-                currentSemester.id!!
+                QuoteState.PENDING, idSubject, currentSemester.id!!
             )
         return studentsWithQuoteRequestsToSubject.map {
-            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(it.id!!, currentSemester.id!!)
+            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(it.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
             StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it, quoteRequests)
         }
     }
@@ -155,7 +155,7 @@ class QuoteRequestService(
     override fun findStudentWithPendingQuoteRequests(idStudent: Long): StudentWithRequestedQuotesResponseDTO {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, student.id!!, currentSemester.id!!)
+        val quoteRequests = quoteRequestRepository.findAllByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
         return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequests).map()
     }
 
@@ -202,4 +202,6 @@ class QuoteRequestService(
         if(!maybeSemester.isPresent) throw SemesterNotFoundException()
         return maybeSemester.get()
     }
+
+    private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
 }

@@ -401,18 +401,18 @@ INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id) VALUES ('Feli', 'C2', 32, 2, 55);
 
 -- Quote requests:
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 1, 1, 'Lo voy a pensar con Gabi');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 3, 1, 'Mmmm revisar bien porque ...');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 5, 1, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 7, 1, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 9, 1, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 11, 1, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 1, 2, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 3, 2, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 5, 2, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 7, 2, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 9, 2, '');
-INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment) VALUES ('No puedo por horario de trabajo', 0, 2, 3, '');
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 1, 1, 'Lo voy a pensar con Gabi', '2022-03-02 03:30:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 3, 1, 'Mmmm revisar bien porque ...', '2022-03-01 03:15:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 5, 1, '', '2022-03-02 06:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 7, 1, '', '2022-03-02 09:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 9, 1, '', '2022-03-02 10:32:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 11, 1, '', '2022-03-03 07:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 1, 2, '', '2022-03-05 03:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 3, 2, '', '2022-03-06 13:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 5, 2, '', '2022-03-07 23:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 7, 2, '', '2022-03-17 00:00:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 9, 2, '', '2022-03-20 15:30:00'::timestamp);
+INSERT INTO quote_requests(comment, state, course_id, student_id, admin_comment, created_on) VALUES ('No puedo por horario de trabajo', 0, 2, 3, 'Lo veo complicado :S', '2022-03-09 09:33:33'::timestamp);
 
 -- Student enrolled courses:
 INSERT INTO student_enrolled_course(student_id, course_id) VALUES (1, 23);
