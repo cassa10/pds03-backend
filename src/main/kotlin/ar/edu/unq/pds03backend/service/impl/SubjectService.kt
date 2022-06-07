@@ -10,6 +10,7 @@ import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -98,7 +99,7 @@ class SubjectService(
             .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.studiedOrEnrolled(course.subject) }
 
         val currentSemester = getCurrentSemester()
-        val currentCoursesRequested = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(idStudent, currentSemester.id!!)
+        val currentCoursesRequested = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(idStudent, currentSemester.id!!, getSortByCreatedOnAsc())
             .filter { it.state == QuoteState.PENDING && it.course.isCurrent() }.map { it.course }
         if (currentCoursesRequested.isNotEmpty())
             currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
@@ -133,4 +134,6 @@ class SubjectService(
         if(!maybeSemester.isPresent) throw SemesterNotFoundException()
         return maybeSemester.get()
     }
+
+    private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
 }

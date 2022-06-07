@@ -6,6 +6,7 @@ import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
 import ar.edu.unq.pds03backend.exception.UserNotFoundException
+import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.Semester
 import ar.edu.unq.pds03backend.model.User
 import ar.edu.unq.pds03backend.model.Student
@@ -15,6 +16,7 @@ import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -49,7 +51,7 @@ class UserService(
                 SimpleEnrolledSubjectsDataDTO.Mapper(it).map()
             }
             requestedSubjects =
-                quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!).map {
+                quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!, getSortByCreatedOnAsc()).map {
                     RequestedSubjectsDTO.Mapper(it).map()
                 }
         }
@@ -83,4 +85,6 @@ class UserService(
         if (!maybeSemester.isPresent) throw SemesterNotFoundException()
         return maybeSemester.get()
     }
+
+    private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
 }
