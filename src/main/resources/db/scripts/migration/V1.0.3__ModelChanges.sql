@@ -75,10 +75,6 @@ ALTER TABLE users
 ALTER TABLE users
     ALTER COLUMN last_name SET NOT NULL;
 
-UPDATE users
-SET role = 'users'
-WHERE role is null;
-
 ALTER TABLE users
     ADD CONSTRAINT uc_users_dni UNIQUE (dni);
 
