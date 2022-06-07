@@ -24,7 +24,7 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     @LogExecution
     fun create(@Valid @RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
         quoteRequestService.create(quoteRequestRequestDTO)
-        return "quote request created"
+        return "quote request/s created"
     }
 
     @GetMapping("/{id}")

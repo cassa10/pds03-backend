@@ -11,10 +11,7 @@ import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
 import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
 import ar.edu.unq.pds03backend.mapper.StudentMapper
-import ar.edu.unq.pds03backend.model.QuoteRequest
-import ar.edu.unq.pds03backend.model.QuoteState
-import ar.edu.unq.pds03backend.model.Semester
-import ar.edu.unq.pds03backend.model.Student
+import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.ICourseRepository
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
@@ -44,9 +41,12 @@ class QuoteRequestService(
 
         val student = getStudent(quoteRequestRequestDTO.idStudent)
 
-        if (courses.all{ student.isStudingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
-
+        if (courses.any{ student.isStudingAnyDegree(it.subject.degrees).not() }) throw StudentNotEnrolledInSomeDegree()
         if (courses.any{student.studiedOrEnrolled(it.subject)}) throw StudentHasAlreadyEnrolledSubject()
+
+        //Verify criteria of student if to set auto-approved or pending state
+        val crt = SimpleCriteria { it.anyCoefficientIsGreaterThan(6f) }
+        val initialState = getInitialState(student, crt)
 
         //If quoteRequest was already created by that student, there are skipped
         courses.forEach {
@@ -56,7 +56,7 @@ class QuoteRequestService(
                     QuoteRequest(
                         course = it,
                         student = student,
-                        state = QuoteState.PENDING,
+                        state = initialState,
                         comment = quoteRequestRequestDTO.comment,
                         createdOn = LocalDateTime.now(),
                     )
@@ -163,6 +163,8 @@ class QuoteRequestService(
     override fun acceptQuoteRequest(id: Long) {
         //TODO (JWT):  Add JWT and validate if it belongs to DIRECTOR rol type.
         val quoteRequest = getQuoteRequest(id)
+        //Validate if student was already accepted in other quote request on same subject
+        if (quoteRequest.student.isEnrolled(quoteRequest.course.subject)) throw StudentHasAlreadyEnrolledSubject()
         quoteRequest.accept()
         quoteRequestRepository.save(quoteRequest)
     }
@@ -204,4 +206,11 @@ class QuoteRequestService(
     }
 
     private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
+
+    private fun getInitialState(student: Student, criteria: Criteria): QuoteState {
+        if (criteria.isEligibleStudent(student)){
+            return QuoteState.AUTOAPPROVED
+        }
+        return QuoteState.PENDING
+    }
 }

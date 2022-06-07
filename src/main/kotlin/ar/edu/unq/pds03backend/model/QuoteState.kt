@@ -20,6 +20,15 @@ enum class QuoteState {
         override fun rollbackToPending(quoteRequest: QuoteRequest) {
             quoteRequest.state = PENDING
         }
+    },
+    AUTOAPPROVED {
+        override fun accept(quoteRequest: QuoteRequest) {
+            quoteRequest.state = APPROVED
+            quoteRequest.student.addEnrolledCourse(quoteRequest.course)
+        }
+        override fun revoke(quoteRequest: QuoteRequest) {
+            quoteRequest.state = REVOKED
+        }
     };
 
     open fun accept(quoteRequest: QuoteRequest) {}
