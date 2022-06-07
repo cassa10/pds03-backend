@@ -43,11 +43,11 @@ class Student(
 
     //TODO: Revisar si sigue aplicando utilizar "studiedSubject.inProgress()" si ahora existe la lista enrolledSubjects
     fun studiedOrEnrolled(subject: Subject): Boolean =
-        degree_histories.any { studiedDegree ->
+        isEnrolled(subject) || degree_histories.any { studiedDegree ->
             studiedDegree.studied_subjects.any { it.subject == subject && it.inProgress() }
-                    || enrolledCourses.any { it.subject == subject }
-
         }
+
+    fun isEnrolled(subject: Subject) = enrolledCourses.any { it.subject == subject }
 
     fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean =
         enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
@@ -55,4 +55,23 @@ class Student(
     fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
     fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
 
+    fun anyCoefficientIsGreaterThan(number: Float) = degree_histories.any {it.coefficient >= number}
+
+    data class Builder(
+        var id: Long? = null,
+        var firstName: String = "",
+        var lastName: String = "",
+        var dni: String = "",
+        var email: String = "",
+        var username: String = "",
+        var legajo: String = "",
+        var enrolledDegrees: Collection<Degree> = listOf(),
+        var degree_histories: Collection<StudiedDegree> = listOf(),
+        var enrolledCourses: MutableCollection<Course> = mutableListOf(),
+    ) {
+
+        fun build(): Student = Student(id, firstName,lastName, dni, email, username, legajo, enrolledDegrees, degree_histories, enrolledCourses)
+        fun withDni(dni: String) = apply {this.dni = dni}
+        fun withLegajo(legajo: String) = apply {this.legajo = legajo}
+    }
 }

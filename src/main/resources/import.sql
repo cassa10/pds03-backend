@@ -11,6 +11,8 @@ INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VA
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
+INSERT INTO studied_degrees(student_id, degree_id, coefficient) VALUES (4, 1, 7.0);
+
 -- Relation with Users and Degrees
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,1);
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,2);
@@ -644,8 +646,6 @@ INSERT INTO courses_hours(course_id, hours_id) VALUES (6, 12);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 13);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (7, 14);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 15);
-INSERT INTO courses_hours(course_id, hours_id) VALUES (8, 15);
-INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 16);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (9, 16);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (10, 17);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (10, 18);
@@ -661,7 +661,6 @@ INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 27);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (15, 28);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 29);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (16, 30);
-INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 31);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (17, 31);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 32);
 INSERT INTO courses_hours(course_id, hours_id) VALUES (18, 33);
