@@ -14,13 +14,16 @@ object HourHelper {
     }
 
     private fun parseDayOfWeek(dayOfWeek: String): DayOfWeek {
-        return when (dayOfWeek) {
-            "Lunes" -> DayOfWeek.MONDAY
-            "Martes" -> DayOfWeek.TUESDAY
-            "Miércoles" -> DayOfWeek.WEDNESDAY
-            "Jueves" -> DayOfWeek.THURSDAY
-            "Viernes" -> DayOfWeek.FRIDAY
-            "Sábado" -> DayOfWeek.SATURDAY
+        return when (dayOfWeek.uppercase(Locale.getDefault())) {
+            "LUNES" -> DayOfWeek.MONDAY
+            "MARTES" -> DayOfWeek.TUESDAY
+            "MIÉRCOLES" -> DayOfWeek.WEDNESDAY
+            "MIERCOLES" -> DayOfWeek.WEDNESDAY
+            "JUEVES" -> DayOfWeek.THURSDAY
+            "VIERNES" -> DayOfWeek.FRIDAY
+            "SÁBADO" -> DayOfWeek.SATURDAY
+            "SABADO" -> DayOfWeek.SATURDAY
+            "DOMINGO" -> DayOfWeek.SUNDAY
             else -> throw IllegalArgumentException()
         }
     }
