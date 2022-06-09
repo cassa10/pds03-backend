@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.course.CourseUpdateRequestDTO
 import ar.edu.unq.pds03backend.dto.course.HourRequestDTO
+import ar.edu.unq.pds03backend.dto.csv.CsvAcademyOfferRequestDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.CourseMapper
 import ar.edu.unq.pds03backend.model.*
@@ -12,6 +13,8 @@ import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.repository.ISubjectRepository
 import ar.edu.unq.pds03backend.service.ICourseService
+import ar.edu.unq.pds03backend.utils.HourHelper
+import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -69,14 +72,49 @@ class CourseService(
         courseRepository.deleteById(idCourse)
     }
 
+    @Transactional
+    override fun importAcademyOffer(data: List<CsvAcademyOfferRequestDTO>) {
+        data.forEach {
+            val maybeSemester = semesterRepository.findByYearAndIsSndSemester(
+                SemesterHelper.currentYear,
+                SemesterHelper.currentIsSecondSemester
+            )
+            if (!maybeSemester.isPresent) throw SemesterNotFoundException()
+
+            val maybeSubject = subjectRepository.findByName(it.materia)
+            if (!maybeSubject.isPresent) throw SubjectNotFoundException()
+
+            val maybeCourse = courseRepository.findByNameAndSemesterIdAndSubjectId(
+                it.comision,
+                maybeSemester.get().id!!,
+                maybeSubject.get().id!!
+            )
+            if (maybeCourse.isPresent) return
+
+            val hours = it.horarios.split("-").map { horario -> HourHelper.parseHour(horario) }.toMutableList()
+
+            courseRepository.save(
+                Course(
+                    semester = maybeSemester.get(),
+                    subject = maybeSubject.get(),
+                    name = it.comision,
+                    assigned_teachers = it.profesores,
+                    total_quotes = it.cupo,
+                    hours = hours
+                )
+            )
+        }
+    }
+
     private fun mapHours(hoursDTO: List<HourRequestDTO>): MutableCollection<Hour> {
-        val hours = hoursDTO.map { Hour(from = it.getFromAsLocalTime(), to = it.getToAsLocalTime(), day = it.day) }.toMutableList()
-        if(hours.any { it.isInvalidHour() }) throw InvalidRequestHours()
+        val hours = hoursDTO.map { Hour(from = it.getFromAsLocalTime(), to = it.getToAsLocalTime(), day = it.day) }
+            .toMutableList()
+        if (hours.any { it.isInvalidHour() }) throw InvalidRequestHours()
         return hours
     }
 
 
-    private fun getCourse(idCourse: Long):Course {
+    private fun getCourse(idCourse: Long): Course {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
         return course.get()
@@ -91,6 +129,7 @@ class CourseService(
 
         return semester.get() to subject.get()
     }
+
     private fun mapCourseToDTO(course: Course): CourseResponseDTO {
         val requestedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.PENDING, course.id!!)
         val acceptedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.APPROVED, course.id!!)
