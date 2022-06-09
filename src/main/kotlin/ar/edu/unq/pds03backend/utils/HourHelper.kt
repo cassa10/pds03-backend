@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.model.Hour
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object HourHelper {
     fun parseLocalTime(time: String): LocalTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"))
