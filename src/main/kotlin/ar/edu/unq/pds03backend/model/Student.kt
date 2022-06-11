@@ -33,29 +33,44 @@ class Student(
         inverseJoinColumns = [JoinColumn(name = "course_id", referencedColumnName = "id")],
     )
     //Comisiones ya inscriptas
-    //TODO: cuando se apruebe una solicitud de cupo agregar a esta collecion la comision
     val enrolledCourses: MutableCollection<Course>
 ) : User(id, firstName, lastName, dni, email, username) {
     override fun isStudent(): Boolean = true
 
-    fun passed(subject: Subject): Boolean =
-        degree_histories.any { studiedDegree -> studiedDegree.studied_subjects.any { it.subject == subject && it.passed() } }
-
-    //TODO: Revisar si sigue aplicando utilizar "studiedSubject.inProgress()" si ahora existe la lista enrolledSubjects
-    fun studiedOrEnrolled(subject: Subject): Boolean =
+    fun isStudyingOrEnrolled(subject: Subject): Boolean =
         isEnrolled(subject) || degree_histories.any { studiedDegree ->
             studiedDegree.studied_subjects.any { it.subject == subject && it.inProgress() }
         }
 
     fun isEnrolled(subject: Subject) = enrolledCourses.any { it.subject == subject }
 
-    fun isStudingAnyDegree(degrees: Collection<Degree>): Boolean =
+    fun isStudyingAnyDegree(degrees: Collection<Degree>): Boolean =
         enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
 
     fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
     fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
 
     fun anyCoefficientIsGreaterThan(number: Float) = degree_histories.any {it.coefficient >= number}
+
+    fun getPassedSubjects(): List<Subject> {
+        val result: MutableList<Subject> = mutableListOf()
+        degree_histories.forEach { studiedDegree ->
+            result.addAll(studiedDegree.studied_subjects.filter{ it.passed() }.map{ it.subject })
+        }
+        return result
+    }
+
+    fun canCourseSubject(subject: Subject): Boolean = !isStudyingOrEnrolled(subject)
+
+    fun passedAllPrerequisiteSubjects(subject: Subject): Boolean {
+        val allPassedSubjects: List<Subject> = getPassedSubjects()
+        return subject.prerequisiteSubjects.all { allPassedSubjects.contains(it) }
+    }
+
+    fun canCourseSubjectWithPrerequisiteSubjects(subject: Subject): Boolean {
+        return canCourseSubject(subject) && passedAllPrerequisiteSubjects(subject)
+    }
+
 
     data class Builder(
         var id: Long? = null,

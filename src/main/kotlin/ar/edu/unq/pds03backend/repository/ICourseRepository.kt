@@ -7,5 +7,6 @@ import java.util.Optional
 interface ICourseRepository : JpaRepository<Course, Long> {
     fun findBySubjectId(idSubject: Long): List<Course>
     fun findAllBySemesterIdAndSubjectId(idSemester:Long, idSubject: Long): List<Course>
+    fun findAllBySemesterId(idSemester:Long): List<Course>
     fun findByNameAndSemesterIdAndSubjectId(name: String, idSemester: Long, idSubject: Long): Optional<Course>
 }

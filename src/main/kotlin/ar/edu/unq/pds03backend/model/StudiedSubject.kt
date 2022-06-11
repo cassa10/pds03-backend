@@ -26,6 +26,5 @@ class StudiedSubject(
 {
     fun passed(): Boolean = status.passed()
 
-    //TODO: Es necesario inProgress() ya que existe en student "enrolledCourses"??
     fun inProgress(): Boolean = status.inProgress()
 }
