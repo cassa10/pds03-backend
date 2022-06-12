@@ -12,10 +12,7 @@ import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
 import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
 import ar.edu.unq.pds03backend.mapper.StudentMapper
 import ar.edu.unq.pds03backend.model.*
-import ar.edu.unq.pds03backend.repository.ICourseRepository
-import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
-import ar.edu.unq.pds03backend.repository.ISemesterRepository
-import ar.edu.unq.pds03backend.repository.IStudentRepository
+import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +27,13 @@ class QuoteRequestService(
     @Autowired private val courseRepository: ICourseRepository,
     @Autowired private val studentRepository: IStudentRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
+    @Autowired private val configurableValidationRepository: IConfigurableValidationRepository,
 ) : IQuoteRequestService {
+
+    companion object {
+        const val minCoefficientCriteria = 6f
+    }
+
     @Transactional
     override fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO) {
         val currentSemester = getCurrentSemester()
@@ -41,11 +44,14 @@ class QuoteRequestService(
 
         val student = getStudent(quoteRequestRequestDTO.idStudent)
 
-        if (courses.any{ student.isStudingAnyDegree(it.subject.degrees).not() }) throw StudentNotEnrolledInSomeDegree()
-        if (courses.any{student.studiedOrEnrolled(it.subject)}) throw StudentHasAlreadyEnrolledSubject()
+        if (courses.any{ !student.isStudyingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
+        if (courses.any{ student.isStudyingOrEnrolled(it.subject)} ) throw StudentHasAlreadyEnrolledSubject()
+
+        val prerequisiteSubjectsValidation = getPrerequisiteSubjectsValidation()
+        if (prerequisiteSubjectsValidation.validate(courses.any { !student.passedAllPrerequisiteSubjects(it.subject) })) throw StudentNotApplyWithPrerequisiteSubjects()
 
         //Verify criteria of student if to set auto-approved or pending state
-        val crt = SimpleCriteria { it.anyCoefficientIsGreaterThan(6f) }
+        val crt = SimpleCriteria { it.anyCoefficientIsGreaterThan(minCoefficientCriteria) }
         val initialState = getInitialState(student, crt)
 
         //If quoteRequest was already created by that student, there are skipped
@@ -212,5 +218,11 @@ class QuoteRequestService(
             return QuoteState.AUTOAPPROVED
         }
         return QuoteState.PENDING
+    }
+
+    private fun getPrerequisiteSubjectsValidation(): ConfigurableValidation {
+        val maybeConfigValidation = configurableValidationRepository.findByValidation(Validation.PREREQUISITE_SUBJECTS)
+        if (maybeConfigValidation.isEmpty) throw PrerequisiteSubjectsValidationNotFoundException()
+        return maybeConfigValidation.get()
     }
 }

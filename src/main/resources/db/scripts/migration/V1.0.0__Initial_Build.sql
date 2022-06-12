@@ -46,6 +46,8 @@ SET default_table_access_method = heap;
 -- Name: course_student; Type: TABLE; Schema: public; Owner: postgres
 --
 
+SET search_path TO public;
+
 CREATE TABLE public.course_student (
                                        course_id bigint NOT NULL,
                                        student_id bigint NOT NULL

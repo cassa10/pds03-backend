@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.repository
 
+import ar.edu.unq.pds03backend.model.Course
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.model.Student
@@ -19,6 +20,10 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
     fun findAllByCourseId(idCourse: Long, sort: Sort): Iterable<QuoteRequest>
     fun findAllByStudentIdAndCourseSemesterId(idStudent: Long, idSemester: Long, sort: Sort): List<QuoteRequest>
     fun findAllByStateAndStudentIdAndCourseSemesterId(state: QuoteState, idStudent: Long, semesterId: Long, sort: Sort): List<QuoteRequest>
+
+    @Query("SELECT DISTINCT q.course FROM QuoteRequest q WHERE q.state = :state AND q.student.id = :idStudent AND q.course.semester.id = :semesterId")
+    fun findAllCoursesByStateAndStudentIdAndCourseSemesterId(state: QuoteState, idStudent: Long, semesterId: Long): List<Course>
+
     @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.state = :quoteState AND q.course.semester.id = :semesterId")
     fun findAllStudentsWithQuoteRequestStateAndCourseSemesterId(quoteState: QuoteState, semesterId: Long): List<Student>
     @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.state = :quoteState AND q.course.subject.id = :idSubject AND q.course.semester.id = :semesterId")

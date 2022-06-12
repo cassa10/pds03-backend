@@ -10,7 +10,6 @@ import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -22,6 +21,7 @@ class SubjectService(
     @Autowired private val userRepository: IUserRepository,
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
+    @Autowired private val configurableValidationRepository: IConfigurableValidationRepository,
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -36,7 +36,8 @@ class SubjectService(
         //Adds all found degrees. If some degree doesn't exist, it doesn't add in subject
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
         validateSubjectNameAlreadyExist(subjectRequestDTO.name)
-        val addedSubject = subjectRepository.save(Subject.Builder().withName(subjectRequestDTO.name).build())
+        val subjectsFounded = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
+        val addedSubject = subjectRepository.save(Subject.Builder().withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded).build())
         degreesFounded.forEach { it.addSubject(addedSubject) }
         degreeRepository.saveAll(degreesFounded)
     }
@@ -48,8 +49,8 @@ class SubjectService(
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
         validateSubjectNameAlreadyExist(subjectRequestDTO.name)
 
-
         subjectToUpdate.name = subjectRequestDTO.name
+        subjectToUpdate.prerequisiteSubjects = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
         subjectRepository.save(subjectToUpdate)
         degreesFounded.forEach {
             it.addSubject(subjectToUpdate)
@@ -74,7 +75,8 @@ class SubjectService(
     }
 
     override fun getAllCurrent(): List<SubjectWithCoursesResponseDTO> {
-        val currentCourses = courseRepository.findAll().filter { it.isCurrent() }
+        val currentSemester = getCurrentSemester()
+        val currentCourses = courseRepository.findAllBySemesterId(currentSemester.id!!)
         val currentCoursesGroupedBySubject = currentCourses.groupBy { it.subject }
         return currentCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
     }
@@ -83,8 +85,9 @@ class SubjectService(
         val degree = degreeRepository.findById(idDegree)
         if (!degree.isPresent) throw DegreeNotFoundException()
 
-        val currentFilteredCourses = courseRepository.findAll()
-            .filter { course -> course.isCurrent() && course.belongsToDegree(degree.get()) }
+        val currentSemester = getCurrentSemester()
+        val currentFilteredCourses = courseRepository.findAllBySemesterId(currentSemester.id!!)
+            .filter { course -> course.belongsToDegree(degree.get()) }
 
         val currentFilteredCoursesGroupedBySubject = currentFilteredCourses.groupBy { it.subject }
         return currentFilteredCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
@@ -95,12 +98,12 @@ class SubjectService(
         if (!user.isPresent || (user.isPresent && !user.get().isStudent())) throw StudentNotFoundException()
         val student = user.get() as Student
 
-        var currentCourses = courseRepository.findAll()
-            .filter { course -> course.isCurrent() && !student.passed(course.subject) && !student.studiedOrEnrolled(course.subject) }
-
         val currentSemester = getCurrentSemester()
-        val currentCoursesRequested = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(idStudent, currentSemester.id!!, getSortByCreatedOnAsc())
-            .filter { it.state == QuoteState.PENDING && it.course.isCurrent() }.map { it.course }
+        var currentCourses = courseRepository.findAllBySemesterId(currentSemester.id!!)
+            .filter(handleGetCurrentCoursesFilter(student))
+
+        //TODO: Refactor to jpql
+        val currentCoursesRequested = quoteRequestRepository.findAllCoursesByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, idStudent, currentSemester.id!!)
         if (currentCoursesRequested.isNotEmpty())
             currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
 
@@ -135,5 +138,16 @@ class SubjectService(
         return maybeSemester.get()
     }
 
-    private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
+    private fun getPrerequisiteSubjectsValidation(): ConfigurableValidation {
+        val maybeConfigValidation = configurableValidationRepository.findByValidation(Validation.PREREQUISITE_SUBJECTS)
+        if (maybeConfigValidation.isEmpty) throw PrerequisiteSubjectsValidationNotFoundException()
+        return maybeConfigValidation.get()
+    }
+
+    private fun handleGetCurrentCoursesFilter(student: Student): (Course) -> Boolean {
+        if (getPrerequisiteSubjectsValidation().active) {
+            return {course -> student.canCourseSubjectWithPrerequisiteSubjects(course.subject)}
+        }
+        return {course -> student.canCourseSubject(course.subject)}
+    }
 }

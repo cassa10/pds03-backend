@@ -13,6 +13,8 @@ private const val QUOTE_REQUEST_NOT_FOUND = "Quote request not found"
 private const val SEMESTER_NOT_FOUND = "Semester not found"
 private const val SUBJECT_NOT_FOUND = "Subject not found"
 private const val ANY_DEGREE_NOT_FOUND = "any degree not found"
+private const val CONFIGURABLE_VALIDATION_NOT_FOUND = "configurable validation not found"
+private const val PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND = "prerequisite subjects validation configuration not found"
 
 abstract class NotFoundException(message: String) : RuntimeException(message)
 
@@ -39,3 +41,9 @@ class SemesterNotFoundException : NotFoundException(SEMESTER_NOT_FOUND)
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = SUBJECT_NOT_FOUND)
 class SubjectNotFoundException : NotFoundException(SUBJECT_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = CONFIGURABLE_VALIDATION_NOT_FOUND)
+class ConfigurableValidationNotFoundException: NotFoundException(CONFIGURABLE_VALIDATION_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND)
+class PrerequisiteSubjectsValidationNotFoundException: NotFoundException(PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND)

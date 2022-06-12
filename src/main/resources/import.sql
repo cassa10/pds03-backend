@@ -1,11 +1,14 @@
 -- Recommendation: Execute script in order.
 
+-- Validation Configuration (only prerequisite subjects -correlativas-)
+INSERT INTO configurable_validation(validation, active) VALUES (0, true);
+
 -- Users:
-INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', 'alumno');
-INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', 'messi10');
-INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('11111113', 'alanturing@gmail.com', 'Alan', 'Turing', 1, '34629','alan_turing');
-INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999','pepe');
-INSERT INTO users (dni, email, first_name, last_name, role, legajo, username) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null,'director');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', 'alumno');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', 'messi10');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111113', 'alanturing@gmail.com', 'Alan', 'Turing', 1, '34629','alan_turing');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999','pepe');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null,'director');
 
 -- Degrees:
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
@@ -82,6 +85,63 @@ INSERT INTO subjects(name) VALUES ('Taller de Trabajo Universitario');
 INSERT INTO subjects(name) VALUES ('Inglés I');
 INSERT INTO subjects(name) VALUES ('Inglés II');
 INSERT INTO subjects(name) VALUES ('Desarrollo de Aplicaciones');
+INSERT INTO subjects(name) VALUES ('Introducción a la Programación Cuántica');
+INSERT INTO subjects(name) VALUES ('Redes Neuronales');
+INSERT INTO subjects(name) VALUES ('Ciencia de Datos');
+
+
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (4, 3);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (4, 2);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (5, 3);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (6, 3);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (7, 3);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (8, 3);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (9, 4);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (10, 4);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (11, 8);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (12, 6);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (13, 5);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (13, 6);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (14, 7);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (15, 11);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (16, 14);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (17, 11);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (18, 12);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (18, 13);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (19, 10);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (20, 4);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (20, 5);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (21, 11);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (22, 18);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (23, 19);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (24, 7);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (25, 21);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (26, 15);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (27, 23);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (28, 25);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (29, 20);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (30, 11);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (31, 29);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (32, 24);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (32, 26);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (32, 28);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (32, 22);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (33, 24);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (33, 18);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (34, 20);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (35, 32);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (35, 33);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (36, 18);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (37, 29);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (37, 34);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (39, 9);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (54, 53);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (55, 15);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (55, 17);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (55, 21);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (56, 34);
+INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (56, 23);
+
 
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 1);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 1);

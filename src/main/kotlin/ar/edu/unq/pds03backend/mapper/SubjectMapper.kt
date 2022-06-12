@@ -18,6 +18,9 @@ object SubjectMapper : Mapper<Subject, SubjectResponseDTO> {
                     name = it.name,
                     acronym = it.acronym,
                 )
+            },
+            prerequisiteSubjects = subject.prerequisiteSubjects.map {
+                toSimpleDTO(it)
             }
         )
 
