@@ -31,3 +31,6 @@ target/
 #env
 .DS_Store
 .env
+
+#extras
+resultMigrationScript.sql
