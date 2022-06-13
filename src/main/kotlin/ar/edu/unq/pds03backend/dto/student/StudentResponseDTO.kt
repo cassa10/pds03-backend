@@ -2,6 +2,7 @@ package ar.edu.unq.pds03backend.dto.student
 
 import ar.edu.unq.pds03backend.dto.course.CourseWithSubjectInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithoutStudentResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.Student
@@ -14,6 +15,8 @@ data class StudentResponseDTO(
     val email: String,
     val legajo: String,
     val username: String,
+    val maxCoefficient: Float,
+    val enrolledDegrees: List<EnrolledDegreeResponseDTO>,
 )
 
 class StudentWithQuotesInfoResponseDTO(
@@ -25,6 +28,8 @@ class StudentWithQuotesInfoResponseDTO(
     val legajo: String,
     val username: String,
     val requested_quotes: Int,
+    val maxCoefficient: Float,
+    val enrolledDegrees: List<EnrolledDegreeResponseDTO>,
 ) {
     class Mapper(private val student: Student, private val numberOfPendingQuoteRequest: Int) {
         fun map(): StudentWithQuotesInfoResponseDTO =
@@ -37,6 +42,8 @@ class StudentWithQuotesInfoResponseDTO(
                 legajo = student.legajo,
                 username = student.username,
                 requested_quotes = numberOfPendingQuoteRequest,
+                maxCoefficient = student.maxCoefficient(),
+                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
             )
     }
 }
@@ -49,6 +56,8 @@ class StudentWithRequestedQuotesResponseDTO(
     val email: String,
     val legajo: String,
     val username: String,
+    val maxCoefficient: Float,
+    val enrolledDegrees: List<EnrolledDegreeResponseDTO>,
     val enrolledCourses: List<CourseWithSubjectInfoResponseDTO>,
     val quoteRequests: List<QuoteRequestWithoutStudentResponseDTO>,
 ) {
@@ -62,6 +71,8 @@ class StudentWithRequestedQuotesResponseDTO(
                 email = student.email,
                 legajo = student.legajo,
                 username = student.username,
+                maxCoefficient = student.maxCoefficient(),
+                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
                 enrolledCourses = student.enrolledCourses.map {
                     CourseWithSubjectInfoResponseDTO.Mapper(it).map()
                 },
