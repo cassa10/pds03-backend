@@ -52,6 +52,13 @@ class Student(
 
     fun anyCoefficientIsGreaterThan(number: Float) = degree_histories.any {it.coefficient >= number}
 
+    fun maxCoefficient(): Float {
+        if (degree_histories.isEmpty()) return 0f
+        return degree_histories.maxOf { it.coefficient }
+    }
+
+    fun getStudiedDegreeCoefficient(degree: Degree): Float = degree_histories.find { it.degree == degree }?.coefficient ?: 0f
+
     fun getPassedSubjects(): List<Subject> {
         val result: MutableList<Subject> = mutableListOf()
         degree_histories.forEach { studiedDegree ->

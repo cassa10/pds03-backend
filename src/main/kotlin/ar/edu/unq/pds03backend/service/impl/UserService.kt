@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
 import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
@@ -39,14 +39,16 @@ class UserService(
         val currentSemester = getCurrentSemester()
         var enrolledSubjects = listOf<SimpleEnrolledSubjectsDataDTO>()
         var requestedSubjects = listOf<RequestedSubjectsDTO>()
-        var enrolledDegrees = listOf<SimpleDegreeResponseDTO>()
+        var enrolledDegrees = listOf<EnrolledDegreeResponseDTO>()
         var legajo = ""
+        var maxCoefficient = 0f
         if (user.isStudent()) {
             val student = user as Student
             legajo = student.legajo
             enrolledDegrees = student.enrolledDegrees.map {
-                SimpleDegreeResponseDTO.Mapper(it.id!!, it.name, it.acronym).map()
+                EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map()
             }
+            maxCoefficient = student.maxCoefficient()
             enrolledSubjects = student.enrolledCourses.map {
                 SimpleEnrolledSubjectsDataDTO.Mapper(it).map()
             }
@@ -64,6 +66,7 @@ class UserService(
             dni = user.dni,
             email = user.email,
             legajo = legajo,
+            maxCoefficient = maxCoefficient,
             enrolledDegrees = enrolledDegrees,
             enrolledSubjects = enrolledSubjects,
             requestedSubjects = requestedSubjects,
