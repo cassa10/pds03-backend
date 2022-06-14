@@ -2,11 +2,10 @@ package ar.edu.unq.pds03backend.mapper
 
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteRequest
-import ar.edu.unq.pds03backend.model.QuoteState
-import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 
-class QuoteRequestSubjectPendingMapper(
-        private val quoteRequestRepository: IQuoteRequestRepository
+class QuoteRequestSubjectMapper(
+        private val approvedQuotes: Int,
+        private val requestQuotes: Int,
 ) {
     fun map(quoteRequestSubjectsPending: QuoteRequest) : QuoteRequestSubjectPendingResponseDTO {
         with(quoteRequestSubjectsPending.course) {
@@ -14,8 +13,9 @@ class QuoteRequestSubjectPendingMapper(
                     idSubject = subject.id!!,
                     name = subject.name,
                     course = CourseResponseDTOMapper.map(this),
-                    availableQuotes = total_quotes - quoteRequestRepository.countByStateAndCourseId(QuoteState.APPROVED, id!!),
-                    requestQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.PENDING, id!!)
+                    total_quotes = total_quotes,
+                    availableQuotes = total_quotes - approvedQuotes,
+                    requestQuotes = requestQuotes,
             )
         }
     }

@@ -1,7 +1,5 @@
 package ar.edu.unq.pds03backend.exception
 
-import ar.edu.unq.pds03backend.model.Semester
-import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 

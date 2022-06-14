@@ -9,11 +9,12 @@ import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
-import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
+import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectMapper
 import ar.edu.unq.pds03backend.mapper.StudentMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
+import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -76,40 +77,40 @@ class QuoteRequestService(
         return QuoteRequestMapper.toDTO(getQuoteRequest(id))
     }
 
-    override fun getAll(): List<QuoteRequestResponseDTO> {
-        val quoteRequests = quoteRequestRepository.findAll(getSortByCreatedOnAsc())
+    override fun getAll(quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
+        val quoteRequests = quoteRequestRepository.findAllByInStates(quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val student = getStudent(idStudent)
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentId(course.get().id!!, student.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(course.get().id!!, student.id!!, quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourse(idCourse: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllByCourse(idCourse: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseId(course.get().id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndInStates(course.get().id!!, quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllCurrentSemesterByStudent(idStudent: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllCurrentSemesterByStudent(idStudent: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(student.id!!, currentSemester.id!!, quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
+    override fun getQuoteRequestSubjects(states: Set<QuoteState>): List<QuoteRequestSubjectPendingResponseDTO> {
         val semester = getCurrentSemester()
         val quoteRequestSubjectsPending =
-            quoteRequestRepository.findAllByStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!, getSortByCreatedOnAsc())
+            quoteRequestRepository.findAllByInStatesAndCourseSemesterId(states, semester.id!!, getSortByCreatedOnAsc())
 
         // TODO (REFACTOR): refactor in query
         val list = mutableListOf<Long>()
@@ -118,7 +119,10 @@ class QuoteRequestService(
                 list.add(it.course.id!!)
             }
         }.map {
-            QuoteRequestSubjectPendingMapper(quoteRequestRepository).map(it)
+            QuoteRequestSubjectMapper(
+                quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), it.course.id!!),
+                quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
+            ).map(it)
         }
     }
 
@@ -130,23 +134,23 @@ class QuoteRequestService(
         quoteRequestRepository.save(quoteRequest)
     }
 
-    override fun findAllStudentsWithQuoteStatusPendingCurrentSemester(): List<StudentWithQuotesInfoResponseDTO> {
+    override fun findAllStudentsWithQuoteRequestCurrentSemester(states: Set<QuoteState>): List<StudentWithQuotesInfoResponseDTO> {
         val semester = getCurrentSemester()
-        val studentsWithQuoteRequests = quoteRequestRepository.findAllStudentsWithQuoteRequestStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!)
+        val studentsWithQuoteRequests = quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndCourseSemesterId(states, semester.id!!)
         return studentsWithQuoteRequests.map{
-            val numberOfPendingQuoteRequest = quoteRequestRepository.countByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, it.id!!, semester.id!!)
+            val numberOfPendingQuoteRequest = quoteRequestRepository.countByInStatesAndStudentIdAndCourseSemesterId(QuoteStateHelper.getPendingStates(), it.id!!, semester.id!!)
             StudentWithQuotesInfoResponseDTO.Mapper(it, numberOfPendingQuoteRequest).map()
         }
     }
 
-    override fun findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
+    override fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject: Long, states: Set<QuoteState>): List<StudentWithQuotesAndSubjectsResponseDTO> {
         val currentSemester = getCurrentSemester()
         val studentsWithQuoteRequestsToSubject =
-            quoteRequestRepository.findAllStudentsWithQuoteRequestStateToSubjectAndCourseSemesterId(
-                QuoteState.PENDING, idSubject, currentSemester.id!!
+            quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(
+                states, idSubject, currentSemester.id!!
             )
         return studentsWithQuoteRequestsToSubject.map {
-            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(it.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(it.id!!, currentSemester.id!!, QuoteStateHelper.getAllStates(), getSortByCreatedOnAsc())
             StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it, quoteRequests)
         }
     }
@@ -158,10 +162,10 @@ class QuoteRequestService(
         quoteRequestRepository.deleteById(quoteRequest.id!!)
     }
 
-    override fun findStudentWithPendingQuoteRequests(idStudent: Long): StudentWithRequestedQuotesResponseDTO {
+    override fun findStudentWithQuoteRequests(idStudent: Long, states: Set<QuoteState>): StudentWithRequestedQuotesResponseDTO {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByInStatesAndStudentIdAndCourseSemesterId(states, student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
         return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequests).map()
     }
 

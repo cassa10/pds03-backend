@@ -4,6 +4,7 @@ data class QuoteRequestSubjectPendingResponseDTO(
         val idSubject: Long,
         val name: String,
         val course: CourseResponseDTO,
+        val total_quotes: Int,
         val availableQuotes: Int,
         val requestQuotes: Int
 ) {

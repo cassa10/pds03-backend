@@ -14,6 +14,7 @@ import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.repository.ISubjectRepository
 import ar.edu.unq.pds03backend.service.ICourseService
 import ar.edu.unq.pds03backend.utils.HourHelper
+import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -131,8 +132,8 @@ class CourseService(
     }
 
     private fun mapCourseToDTO(course: Course): CourseResponseDTO {
-        val requestedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.PENDING, course.id!!)
-        val acceptedQuotes = quoteRequestRepository.countByStateAndCourseId(QuoteState.APPROVED, course.id!!)
+        val requestedQuotes = quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), course.id!!)
+        val acceptedQuotes = quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), course.id!!)
         return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes)
     }
 }

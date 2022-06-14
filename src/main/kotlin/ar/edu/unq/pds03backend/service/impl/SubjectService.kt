@@ -8,6 +8,7 @@ import ar.edu.unq.pds03backend.mapper.SubjectMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ISubjectService
+import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -103,7 +104,8 @@ class SubjectService(
             .filter(handleGetCurrentCoursesFilter(student))
 
         //TODO: Refactor to jpql
-        val currentCoursesRequested = quoteRequestRepository.findAllCoursesByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, idStudent, currentSemester.id!!)
+        val currentCoursesRequested = quoteRequestRepository.findAllCoursesWithQuoteRequestInStatesAndStudentIdAndCourseSemesterId(
+            QuoteStateHelper.getPendingStates(), idStudent, currentSemester.id!!)
         if (currentCoursesRequested.isNotEmpty())
             currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
 
