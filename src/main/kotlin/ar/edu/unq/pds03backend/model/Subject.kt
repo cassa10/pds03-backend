@@ -18,13 +18,22 @@ class Subject(
         fetch = FetchType.EAGER
     )
     val degrees: MutableCollection<Degree>,
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+    @JoinTable(
+        name = "prerequisite_subjects",
+        joinColumns = [JoinColumn(name = "subject_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "prerequisite_subject_id", referencedColumnName = "id")]
+    )
+    var prerequisiteSubjects: MutableCollection<Subject>
 ){
     data class Builder(
         var id: Long? = null,
         var name: String = "",
-        var degrees: Collection<Degree> = mutableListOf(),
+        var degrees: MutableCollection<Degree> = mutableListOf(),
+        var prerequisiteSubjects: MutableCollection<Subject> = mutableListOf(),
     ){
-        fun build():Subject = Subject(id, name, mutableListOf())
+        fun build():Subject = Subject(id, name, degrees, prerequisiteSubjects)
         fun withName(name:String) = apply { this.name = name }
+        fun withPrerequisiteSubjects(prerequisiteSubjects: MutableCollection<Subject>) = apply {this.prerequisiteSubjects = prerequisiteSubjects}
     }
 }

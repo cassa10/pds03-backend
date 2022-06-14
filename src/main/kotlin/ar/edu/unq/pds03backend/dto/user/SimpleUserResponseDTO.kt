@@ -1,6 +1,6 @@
 package ar.edu.unq.pds03backend.dto.user
 
-import ar.edu.unq.pds03backend.dto.degree.SimpleDegreeResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.model.Course
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.QuoteState
@@ -14,7 +14,8 @@ data class UserResponseDTO(
     val dni: String,
     val email: String,
     val legajo: String,
-    val enrolledDegrees: List<SimpleDegreeResponseDTO>,
+    val maxCoefficient: Float,
+    val enrolledDegrees: List<EnrolledDegreeResponseDTO>,
     val enrolledSubjects: List<SimpleEnrolledSubjectsDataDTO>,
     val requestedSubjects: List<RequestedSubjectsDTO>
 )

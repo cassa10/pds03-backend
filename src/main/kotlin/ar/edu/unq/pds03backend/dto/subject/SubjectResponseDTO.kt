@@ -6,4 +6,5 @@ data class SubjectResponseDTO(
     val id: Long,
     val name: String,
     val degrees: List<SimpleDegreeResponseDTO>,
+    val prerequisiteSubjects: List<SimpleSubjectResponseDTO>,
 )

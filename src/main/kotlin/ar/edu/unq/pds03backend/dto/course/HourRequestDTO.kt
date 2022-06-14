@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.dto.course
 
 import ar.edu.unq.pds03backend.model.Hour
+import ar.edu.unq.pds03backend.utils.HourHelper
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.validation.annotation.Validated
 import java.time.DayOfWeek
@@ -16,10 +17,9 @@ class HourRequestDTO(
     @field:NotNull val day: DayOfWeek
 ){
     @JsonIgnore
-    fun getFromAsLocalTime(): LocalTime = parseLocalTime(from)
+    fun getFromAsLocalTime(): LocalTime = HourHelper.parseLocalTime(from)
     @JsonIgnore
-    fun getToAsLocalTime(): LocalTime = parseLocalTime(to)
-    private fun parseLocalTime(time:String):LocalTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"))
+    fun getToAsLocalTime(): LocalTime = HourHelper.parseLocalTime(to)
 }
 
 class HourResponseDTO(

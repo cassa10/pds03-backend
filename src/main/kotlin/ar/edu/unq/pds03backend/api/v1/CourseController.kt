@@ -4,16 +4,21 @@ import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.course.CourseUpdateRequestDTO
 import ar.edu.unq.pds03backend.service.ICourseService
+import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/course")
 @Validated
-class CourseController(@Autowired private val courseService: ICourseService) {
+class CourseController(
+    @Autowired private val courseService: ICourseService,
+    @Autowired private val csvService: ICsvService
+) {
 
     @PostMapping("/semester/{id_semester}/subject/{id_subject}")
     @LogExecution
@@ -58,4 +63,11 @@ class CourseController(@Autowired private val courseService: ICourseService) {
         return "course deleted"
     }
 
+    @PostMapping("/currents/import")
+    @LogExecution
+    fun importAcademyOfferCsv(@RequestParam("file") file: MultipartFile): String {
+        val data = csvService.parseAcademyOfferFile(file)
+        courseService.importAcademyOffer(data)
+        return "imported successfully"
+    }
 }
