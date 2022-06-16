@@ -1,4 +1,4 @@
-package ar.edu.unq.pds03backend.repository
+package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.dto.semester.SemesterRequestDTO
 import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO

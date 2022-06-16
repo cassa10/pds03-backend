@@ -1,5 +1,8 @@
 -- Recommendation: Execute script in order.
 
+-- News:
+-- INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('', '', '', '', '2022-05-18 14:30:00'::timestamp);
+
 -- Validation Configuration (only prerequisite subjects -correlativas-)
 INSERT INTO configurable_validation(validation, active) VALUES (0, true);
 
