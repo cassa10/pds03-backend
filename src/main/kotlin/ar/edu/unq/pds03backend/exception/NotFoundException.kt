@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.exception
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
+private const val NEW_NOT_FOUND = "new not found"
 private const val USER_NOT_FOUND = "User not found"
 private const val STUDENT_NOT_FOUND = "Student not found"
 private const val DEGREE_NOT_FOUND = "Degree not found"
@@ -45,3 +46,6 @@ class ConfigurableValidationNotFoundException: NotFoundException(CONFIGURABLE_VA
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND)
 class PrerequisiteSubjectsValidationNotFoundException: NotFoundException(PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = NEW_NOT_FOUND)
+class NewNotFoundException: NotFoundException(NEW_NOT_FOUND)
