@@ -7,7 +7,7 @@ const val EMPTY_FILE_REASON = "empty file"
 const val BAD_CSV_DATA = "csv data is wrong"
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = EMPTY_FILE_REASON)
-class EmptyFileException : RuntimeException(EMPTY_FILE_REASON)
+class EmptyFileException : BadRequestException(EMPTY_FILE_REASON)
 
 @ResponseStatus(HttpStatus.BAD_REQUEST, reason = BAD_CSV_DATA)
-class CsvImportException(msg: String) : RuntimeException(msg)
+class CsvImportException(msg: String) : BadRequestException(msg)

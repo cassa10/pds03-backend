@@ -12,9 +12,9 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 class HourRequestDTO(
-    @field:NotBlank @field:Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$", message = "from time format must be 'HH:mm'") val from: String,
-    @field:NotBlank @field:Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$", message = "to time format must be 'HH:mm'") val to: String,
-    @field:NotNull val day: DayOfWeek
+    @field:NotBlank @field:Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$", message = "'from' time format must be 'HH:mm'") val from: String,
+    @field:NotBlank @field:Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$", message = "'to' time format must be 'HH:mm'") val to: String,
+    @field:NotNull(message = "'day' must exist") val day: DayOfWeek
 ){
     @JsonIgnore
     fun getFromAsLocalTime(): LocalTime = HourHelper.parseLocalTime(from)
