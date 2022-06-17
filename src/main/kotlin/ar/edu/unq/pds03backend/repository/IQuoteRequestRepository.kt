@@ -25,6 +25,9 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
     @Query("SELECT q FROM QuoteRequest q WHERE q.student.id = :idStudent AND q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
     fun findAllByInStatesAndStudentIdAndCourseSemesterId(quoteStates: Set<QuoteState>, idStudent: Long, semesterId: Long, sort: Sort): List<QuoteRequest>
 
+    @Query("SELECT q FROM QuoteRequest q WHERE NOT(q.id = :idQuoteRequestToSkip) AND q.student.id = :idStudent AND q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
+    fun findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(quoteStates: Set<QuoteState>, idQuoteRequestToSkip: Long, idStudent: Long, semesterId: Long, sort: Sort): List<QuoteRequest>
+
     @Query("SELECT q FROM QuoteRequest q WHERE q.state IN (:quoteStates)")
     fun findAllByInStates(quoteStates: Set<QuoteState>, sort: Sort): Iterable<QuoteRequest>
 

@@ -286,10 +286,11 @@ class QuoteRequestService(
         return maybeConfigValidation.get()
     }
 
-    //TODO (REFACTOR): Move to another class this methods
-    private fun getAllHoursOfStudent(student: Student): List<Hour> {
-        val allPendingQuoteRequest = quoteRequestRepository.findAllByInStatesAndStudentIdAndCourseSemesterId(
+    //TODO (REFACTOR): Move to another class this method
+    private fun getAllHoursOfStudentMinus(quoteRequestIdToSkip: Long, student: Student): List<Hour> {
+        val allPendingQuoteRequest = quoteRequestRepository.findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(
             QuoteStateHelper.getPendingStates(),
+            quoteRequestIdToSkip,
             student.id!!,
             getCurrentSemester().id!!,
             getSortByCreatedOnAsc()
@@ -297,17 +298,17 @@ class QuoteRequestService(
         return allPendingQuoteRequest.flatMap { it.course.hours }.plus(student.enrolledCourses.flatMap { it.hours })
     }
 
-    //TODO (REFACTOR): Move to another class this methods
+    //TODO (REFACTOR): Move to another class this method
     private fun getHoursWarningSeeker(): QuoteRequestWarningSeeker =
         QuoteRequestWarningSeeker { quoteRequest ->
-            val allHours: List<Hour> = getAllHoursOfStudent(quoteRequest.student)
+            val allHours: List<Hour> = getAllHoursOfStudentMinus(quoteRequest.id!!, quoteRequest.student)
             when (val maybeHour: Hour? = quoteRequest.course.hours.find { it.anyIntercept(allHours) }) {
                 null -> null
                 else -> Warning(WarningType.CRITICAL, "student has schedules in conflict with hour: ${maybeHour.String()}")
             }
         }
 
-    //TODO (REFACTOR): Move to another class this methods
+    //TODO (REFACTOR): Move to another class this method
     private fun getPrerequisiteWarningSeeker(): QuoteRequestWarningSeeker =
         QuoteRequestWarningSeeker {
             when (!it.student.passedAllPrerequisiteSubjects(it.course.subject)) {
@@ -316,7 +317,7 @@ class QuoteRequestService(
             }
         }
 
-    //TODO (REFACTOR): Move to another class this methods
+    //TODO (REFACTOR): Move to another class this method
     private fun getMinCoefficientWarningSeeker(): QuoteRequestWarningSeeker =
         QuoteRequestWarningSeeker {
             when (!it.student.anyCoefficientIsGreaterThan(minCoefficientWarning)) {
