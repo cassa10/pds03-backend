@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithWarningsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
@@ -31,7 +32,7 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @GetMapping("/{id}")
     @LogExecution
-    fun getById(@PathVariable @Valid id: Long): QuoteRequestResponseDTO = quoteRequestService.getById(id)
+    fun getById(@PathVariable @Valid id: Long): QuoteRequestWithWarningsResponseDTO = quoteRequestService.getById(id)
 
     @GetMapping("/states")
     fun getStates(): Array<QuoteState> = QuoteState.values()
