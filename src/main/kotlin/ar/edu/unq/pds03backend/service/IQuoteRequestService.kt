@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithWarningsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
@@ -11,7 +12,7 @@ import ar.edu.unq.pds03backend.model.QuoteState
 
 interface IQuoteRequestService {
     fun create(quoteRequestRequestDTO: QuoteRequestRequestDTO)
-    fun getById(id: Long): QuoteRequestResponseDTO
+    fun getById(id: Long): QuoteRequestWithWarningsResponseDTO
     fun getAll(quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO>
     fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO>
     fun getAllByCourse(idCourse: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO>
