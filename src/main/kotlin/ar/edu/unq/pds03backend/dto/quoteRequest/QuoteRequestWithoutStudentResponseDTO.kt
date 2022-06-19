@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.dto.quoteRequest
 import ar.edu.unq.pds03backend.dto.course.SimpleCourseForSubjectDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteState
+import ar.edu.unq.pds03backend.model.Warning
 import java.time.LocalDateTime
 
 data class QuoteRequestWithoutStudentResponseDTO(
@@ -13,4 +14,5 @@ data class QuoteRequestWithoutStudentResponseDTO(
     val comment: String,
     val adminComment: String,
     val createdOn: LocalDateTime,
+    val warnings: List<Warning>
 )

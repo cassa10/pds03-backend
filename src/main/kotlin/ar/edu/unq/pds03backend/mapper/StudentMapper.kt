@@ -5,6 +5,7 @@ import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseD
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.Student
+import ar.edu.unq.pds03backend.model.Warning
 
 object StudentMapper : Mapper<Student, StudentResponseDTO> {
     override fun toDTO(student: Student): StudentResponseDTO = StudentResponseDTO(
@@ -21,7 +22,7 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
 
     fun toStudentWithQuotesAndSubjectsResponseDTO(
         student: Student,
-        quoteRequests: List<QuoteRequest>
+        quoteRequestsWithWarnings: List<Pair<QuoteRequest, List<Warning>>>
     ): StudentWithQuotesAndSubjectsResponseDTO =
         StudentWithQuotesAndSubjectsResponseDTO(
             id = student.id!!,
@@ -33,7 +34,7 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
             username = student.username,
             enrolledSubjects = student.enrolledCourses.groupBy { it.subject }
                 .map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) },
-            quoteRequests = quoteRequests.map { QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it) },
+            quoteRequests = quoteRequestsWithWarnings.map { QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it.first, it.second) },
             maxCoefficient = student.maxCoefficient(),
             enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
         )

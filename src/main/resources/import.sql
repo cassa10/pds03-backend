@@ -126,7 +126,7 @@ INSERT INTO external_subjects(subject_id, guarani_code) VALUES (27, 27);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (28, 28);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (29, 29);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (30, 30);
-INSERT INTO external_subjects(subject_id, guarani_code) VALUES (11, 11);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (31, 31);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (32, 32);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (33, 33);
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (34, 34);

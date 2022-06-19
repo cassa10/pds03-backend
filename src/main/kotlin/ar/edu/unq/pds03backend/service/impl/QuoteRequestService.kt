@@ -35,6 +35,7 @@ class QuoteRequestService(
     companion object {
         //Criteria
         const val minCoefficientCriteria = 6f
+
         //Warnings
         const val prerequisiteWarningMessage = "student not apply with all prerequisite subjects"
         const val minCoefficientWarning = 3f
@@ -80,15 +81,10 @@ class QuoteRequestService(
     }
 
     override fun getById(id: Long): QuoteRequestWithWarningsResponseDTO {
-        val warningSeekers: List<QuoteRequestWarningSeeker> = listOf(
-            getHoursWarningSeeker(),
-            getPrerequisiteWarningSeeker(),
-            getMinCoefficientWarningSeeker()
-        )
         val quoteRequest = getQuoteRequest(id)
         return QuoteRequestWithWarningsResponseDTO.Mapper(
             quoteRequest,
-            warningSeekers.mapNotNull { it.apply(quoteRequest) }
+            getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteRequest) }
         ).map()
     }
 
@@ -190,14 +186,16 @@ class QuoteRequestService(
             quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(
                 states, idSubject, currentSemester.id!!
             )
-        return studentsWithQuoteRequestsToSubject.map {
+        return studentsWithQuoteRequestsToSubject.map { student ->
             val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(
-                it.id!!,
+                student.id!!,
                 currentSemester.id!!,
                 QuoteStateHelper.getAllStates(),
                 getSortByCreatedOnAsc()
             )
-            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it, quoteRequests)
+            val quoteRequestWithWarnings =
+                quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
+            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithWarnings)
         }
     }
 
@@ -220,7 +218,9 @@ class QuoteRequestService(
             currentSemester.id!!,
             getSortByCreatedOnAsc()
         )
-        return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequests).map()
+        val quoteRequestWithWarnings =
+            quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
+        return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequestWithWarnings).map()
     }
 
     @Transactional
@@ -286,6 +286,12 @@ class QuoteRequestService(
         return maybeConfigValidation.get()
     }
 
+    private fun getQuoteRequestWarningSeekers(): List<QuoteRequestWarningSeeker> = listOf(
+        getHoursWarningSeeker(),
+        getPrerequisiteWarningSeeker(),
+        getMinCoefficientWarningSeeker()
+    )
+
     //TODO (REFACTOR): Move to another class this method
     private fun getAllHoursOfStudentMinus(quoteRequestIdToSkip: Long, student: Student): List<Hour> {
         val allPendingQuoteRequest = quoteRequestRepository.findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(
@@ -304,7 +310,10 @@ class QuoteRequestService(
             val allHours: List<Hour> = getAllHoursOfStudentMinus(quoteRequest.id!!, quoteRequest.student)
             when (val maybeHour: Hour? = quoteRequest.course.hours.find { it.anyIntercept(allHours) }) {
                 null -> null
-                else -> Warning(WarningType.CRITICAL, "student has schedules in conflict with hour: ${maybeHour.String()}")
+                else -> Warning(
+                    WarningType.CRITICAL,
+                    "student has schedules in conflict with hour: ${maybeHour.String()}"
+                )
             }
         }
 
