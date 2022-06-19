@@ -17,6 +17,9 @@ INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VAL
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (1, 1);
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (2, 2);
+
 INSERT INTO studied_degrees(student_id, degree_id, coefficient) VALUES (4, 1, 7.0);
 
 -- Relation with Users and Degrees

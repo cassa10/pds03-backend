@@ -6,7 +6,7 @@ data class CsvAcademyHistoryRequestDTO(
     @CsvBindByName(column = "Legajo", required = true)
     var legajo: String = "",
     @CsvBindByName(column = "Carrera", required = true)
-    var carrera: String = "",
+    var carrera: Int = 0,
     @CsvBindByName(column = "Materia", required = true)
     var materia: Int = 0,
     @CsvBindByName(column = "Nota", required = true)

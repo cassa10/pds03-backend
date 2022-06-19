@@ -79,7 +79,7 @@ class CourseService(
             )
             if (!maybeSemester.isPresent) throw SemesterNotFoundException()
 
-            val maybeSubject = subjectRepository.findSubjectByGuaraniCode(it.materia)
+            val maybeSubject = subjectRepository.findByGuaraniCode(it.materia)
             if (!maybeSubject.isPresent) throw SubjectNotFoundException()
 
             val maybeCourse = courseRepository.findByNameAndSemesterIdAndSubjectId(
