@@ -31,7 +31,7 @@ class ConfigurableValidationService(
 
     private fun getConfigurableValidation(id: Long): ConfigurableValidation {
         val maybeConfigValidation = configurableValidationRepository.findById(id)
-        if (maybeConfigValidation.isEmpty) throw ConfigurableValidationNotFoundException()
+        if (maybeConfigValidation.isPresent) throw ConfigurableValidationNotFoundException()
         return maybeConfigValidation.get()
     }
 }

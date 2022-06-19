@@ -8,10 +8,7 @@ import ar.edu.unq.pds03backend.dto.csv.CsvAcademyOfferRequestDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.CourseMapper
 import ar.edu.unq.pds03backend.model.*
-import ar.edu.unq.pds03backend.repository.ICourseRepository
-import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
-import ar.edu.unq.pds03backend.repository.ISemesterRepository
-import ar.edu.unq.pds03backend.repository.ISubjectRepository
+import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.ICourseService
 import ar.edu.unq.pds03backend.utils.HourHelper
 import ar.edu.unq.pds03backend.utils.QuoteStateHelper
@@ -82,7 +79,7 @@ class CourseService(
             )
             if (!maybeSemester.isPresent) throw SemesterNotFoundException()
 
-            val maybeSubject = subjectRepository.findByName(it.materia)
+            val maybeSubject = subjectRepository.findSubjectByGuaraniCode(it.materia)
             if (!maybeSubject.isPresent) throw SubjectNotFoundException()
 
             val maybeCourse = courseRepository.findByNameAndSemesterIdAndSubjectId(

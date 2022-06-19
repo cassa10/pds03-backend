@@ -105,7 +105,7 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     }
 
     private fun getQueryQuoteStates(states: Optional<String>): Set<QuoteState> {
-        if(states.isEmpty) return QuoteState.values().toSet()
+        if(states.isPresent) return QuoteState.values().toSet()
         try{
             val statesStr = states.get().split(",")
             return statesStr.map { QuoteState.valueOf(it) }.toSet()
