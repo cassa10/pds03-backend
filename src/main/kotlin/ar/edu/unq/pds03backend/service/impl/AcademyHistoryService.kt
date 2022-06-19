@@ -56,7 +56,7 @@ class AcademyHistoryService(
         maybeStudent: Optional<Student>
     ) {
         data.forEach { it ->
-            val maybeSubject = subjectRepository.findByName(it.materia)
+            val maybeSubject = subjectRepository.findSubjectByGuaraniCode(it.materia)
             val maybeStudiedDegree =
                 studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
             val status: StatusStudiedCourse = when (it.resultado) {

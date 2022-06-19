@@ -1,31 +1,31 @@
 Legajo,Carrera,Materia,Nota,Resultado
-34627,Licenciatura en Informática,Lectura y escritura académica,10,Promocionado
-34627,Licenciatura en Informática,Matemática,7,Aprobado
-34627,Licenciatura en Informática,Elementos de programación y lógica,10,Promocionado
-34627,Licenciatura en Informática,Matemática I,8,Aprobado
-34627,Licenciatura en Informática,Introducción a la Programación,9,Promocionado
-34627,Licenciatura en Informática,Organización de Computadoras,6,Aprobado
-34627,Licenciatura en Informática,Estructuras de Datos,7,Aprobado
-34627,Licenciatura en Informática,Programación con Objetos I,10,Promocionado
-34627,Licenciatura en Informática,Bases de Datos,7,Aprobado
-34627,Licenciatura en Informática,Matemática II,9,Promocionado
-34627,Licenciatura en Informática,Programación con Objetos II,10,Promocionado
-34627,Licenciatura en Informática,Redes de Computadoras,7,Aprobado
-34627,Licenciatura en Informática,Sistemas Operativos,8,Promocionado
-34627,Licenciatura en Informática,Programación Funcional,7,Aprobado
-34627,Licenciatura en Informática,Construcción de Interfaces de Usuario,9,Promocionado
-34627,Licenciatura en Informática,Algoritmos,0,En Curso
-34627,Licenciatura en Informática,Estrategias de Persistencia,8,Promocionado
-34627,Licenciatura en Informática,Laboratorio de Sistemas Operativos y Redes,10,Promocionado
-34628,Licenciatura en Informática,Lectura y escritura académica,10,Aprobado
-34628,Licenciatura en Informática,Matemática,8,Aprobado
-34628,Licenciatura en Informática,Elementos de programación y lógica,9,Aprobado
-34628,Tecnicatura en Programación Informática,Lectura y escritura académica,10,Aprobado
-34628,Tecnicatura en Programación Informática,Matemática,8,Aprobado
-34628,Tecnicatura en Programación Informática,Elementos de programación y lógica,9,Aprobado
-34629,Licenciatura en Informática,Lectura y escritura académica,8,Promocionado
-34629,Licenciatura en Informática,Matemática,8,Promocionado
-34629,Licenciatura en Informática,Elementos de programación y lógica,8,Promocionado
-34629,Licenciatura en Informática,Matemática I,7,Aprobado
-34629,Licenciatura en Informática,Introducción a la Programación,9,Promocionado
-34629,Licenciatura en Informática,Organización de Computadoras,6,Aprobado
+34627,Licenciatura en Informática,1,10,Promocionado
+34627,Licenciatura en Informática,2,7,Aprobado
+34627,Licenciatura en Informática,3,10,Promocionado
+34627,Licenciatura en Informática,4,8,Aprobado
+34627,Licenciatura en Informática,5,9,Promocionado
+34627,Licenciatura en Informática,6,6,Aprobado
+34627,Licenciatura en Informática,7,7,Aprobado
+34627,Licenciatura en Informática,8,10,Promocionado
+34627,Licenciatura en Informática,9,7,Aprobado
+34627,Licenciatura en Informática,10,9,Promocionado
+34627,Licenciatura en Informática,11,10,Promocionado
+34627,Licenciatura en Informática,12,7,Aprobado
+34627,Licenciatura en Informática,13,8,Promocionado
+34627,Licenciatura en Informática,14,7,Aprobado
+34627,Licenciatura en Informática,15,9,Promocionado
+34627,Licenciatura en Informática,16,0,En Curso
+34627,Licenciatura en Informática,17,8,Promocionado
+34627,Licenciatura en Informática,18,10,Promocionado
+34628,Licenciatura en Informática,1,10,Aprobado
+34628,Licenciatura en Informática,2,8,Aprobado
+34628,Licenciatura en Informática,3,9,Aprobado
+34628,Tecnicatura en Programación Informática,1,10,Aprobado
+34628,Tecnicatura en Programación Informática,2,8,Aprobado
+34628,Tecnicatura en Programación Informática,3,9,Aprobado
+34629,Licenciatura en Informática,1,8,Promocionado
+34629,Licenciatura en Informática,2,8,Promocionado
+34629,Licenciatura en Informática,3,8,Promocionado
+34629,Licenciatura en Informática,4,7,Aprobado
+34629,Licenciatura en Informática,5,9,Promocionado
+34629,Licenciatura en Informática,6,6,Aprobado
