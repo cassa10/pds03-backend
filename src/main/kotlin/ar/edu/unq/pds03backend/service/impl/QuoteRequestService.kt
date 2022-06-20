@@ -4,16 +4,18 @@ import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithWarningsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
-import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectPendingMapper
+import ar.edu.unq.pds03backend.mapper.QuoteRequestSubjectMapper
 import ar.edu.unq.pds03backend.mapper.StudentMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
+import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -31,7 +33,12 @@ class QuoteRequestService(
 ) : IQuoteRequestService {
 
     companion object {
+        //Criteria
         const val minCoefficientCriteria = 6f
+        //Warnings
+        const val prerequisiteWarningMessage = "student not apply with all prerequisite subjects"
+        const val minCoefficientWarning = 3f
+        const val minCoefficientWarningMessage = "student max coefficient is lesser than $minCoefficientWarning"
     }
 
     @Transactional
@@ -44,8 +51,8 @@ class QuoteRequestService(
 
         val student = getStudent(quoteRequestRequestDTO.idStudent)
 
-        if (courses.any{ !student.isStudyingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
-        if (courses.any{ student.isStudyingOrEnrolled(it.subject)} ) throw StudentHasAlreadyEnrolledSubject()
+        if (courses.any { !student.isStudyingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
+        if (courses.any { student.isStudyingOrEnrolled(it.subject) }) throw StudentHasAlreadyEnrolledSubject()
 
         val prerequisiteSubjectsValidation = getPrerequisiteSubjectsValidation()
         if (prerequisiteSubjectsValidation.validate(courses.any { !student.passedAllPrerequisiteSubjects(it.subject) })) throw StudentNotApplyWithPrerequisiteSubjects()
@@ -72,44 +79,71 @@ class QuoteRequestService(
 
     }
 
-    override fun getById(id: Long): QuoteRequestResponseDTO {
-        return QuoteRequestMapper.toDTO(getQuoteRequest(id))
+    override fun getById(id: Long): QuoteRequestWithWarningsResponseDTO {
+        val warningSeekers: List<QuoteRequestWarningSeeker> = listOf(
+            getHoursWarningSeeker(),
+            getPrerequisiteWarningSeeker(),
+            getMinCoefficientWarningSeeker()
+        )
+        val quoteRequest = getQuoteRequest(id)
+        return QuoteRequestWithWarningsResponseDTO.Mapper(
+            quoteRequest,
+            warningSeekers.mapNotNull { it.apply(quoteRequest) }
+        ).map()
     }
 
-    override fun getAll(): List<QuoteRequestResponseDTO> {
-        val quoteRequests = quoteRequestRepository.findAll(getSortByCreatedOnAsc())
+    override fun getAll(quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
+        val quoteRequests = quoteRequestRepository.findAllByInStates(quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllByCourseAndStudent(
+        idCourse: Long,
+        idStudent: Long,
+        quoteStates: Set<QuoteState>
+    ): List<QuoteRequestResponseDTO> {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val student = getStudent(idStudent)
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentId(course.get().id!!, student.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(
+            course.get().id!!,
+            student.id!!,
+            quoteStates,
+            getSortByCreatedOnAsc()
+        )
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllByCourse(idCourse: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllByCourse(idCourse: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
-        val quoteRequests = quoteRequestRepository.findAllByCourseId(course.get().id!!, getSortByCreatedOnAsc())
+        val quoteRequests =
+            quoteRequestRepository.findAllByCourseIdAndInStates(course.get().id!!, quoteStates, getSortByCreatedOnAsc())
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getAllCurrentSemesterByStudent(idStudent: Long): List<QuoteRequestResponseDTO> {
+    override fun getAllCurrentSemesterByStudent(
+        idStudent: Long,
+        quoteStates: Set<QuoteState>
+    ): List<QuoteRequestResponseDTO> {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(
+            student.id!!,
+            currentSemester.id!!,
+            quoteStates,
+            getSortByCreatedOnAsc()
+        )
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
-    override fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
+    override fun getQuoteRequestSubjects(states: Set<QuoteState>): List<QuoteRequestSubjectPendingResponseDTO> {
         val semester = getCurrentSemester()
         val quoteRequestSubjectsPending =
-            quoteRequestRepository.findAllByStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!, getSortByCreatedOnAsc())
+            quoteRequestRepository.findAllByInStatesAndCourseSemesterId(states, semester.id!!, getSortByCreatedOnAsc())
 
         // TODO (REFACTOR): refactor in query
         val list = mutableListOf<Long>()
@@ -118,7 +152,10 @@ class QuoteRequestService(
                 list.add(it.course.id!!)
             }
         }.map {
-            QuoteRequestSubjectPendingMapper(quoteRequestRepository).map(it)
+            QuoteRequestSubjectMapper(
+                quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), it.course.id!!),
+                quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
+            ).map(it)
         }
     }
 
@@ -130,23 +167,36 @@ class QuoteRequestService(
         quoteRequestRepository.save(quoteRequest)
     }
 
-    override fun findAllStudentsWithQuoteStatusPendingCurrentSemester(): List<StudentWithQuotesInfoResponseDTO> {
+    override fun findAllStudentsWithQuoteRequestCurrentSemester(states: Set<QuoteState>): List<StudentWithQuotesInfoResponseDTO> {
         val semester = getCurrentSemester()
-        val studentsWithQuoteRequests = quoteRequestRepository.findAllStudentsWithQuoteRequestStateAndCourseSemesterId(QuoteState.PENDING, semester.id!!)
-        return studentsWithQuoteRequests.map{
-            val numberOfPendingQuoteRequest = quoteRequestRepository.countByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, it.id!!, semester.id!!)
+        val studentsWithQuoteRequests =
+            quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndCourseSemesterId(states, semester.id!!)
+        return studentsWithQuoteRequests.map {
+            val numberOfPendingQuoteRequest = quoteRequestRepository.countByInStatesAndStudentIdAndCourseSemesterId(
+                QuoteStateHelper.getPendingStates(),
+                it.id!!,
+                semester.id!!
+            )
             StudentWithQuotesInfoResponseDTO.Mapper(it, numberOfPendingQuoteRequest).map()
         }
     }
 
-    override fun findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
+    override fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(
+        idSubject: Long,
+        states: Set<QuoteState>
+    ): List<StudentWithQuotesAndSubjectsResponseDTO> {
         val currentSemester = getCurrentSemester()
         val studentsWithQuoteRequestsToSubject =
-            quoteRequestRepository.findAllStudentsWithQuoteRequestStateToSubjectAndCourseSemesterId(
-                QuoteState.PENDING, idSubject, currentSemester.id!!
+            quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(
+                states, idSubject, currentSemester.id!!
             )
         return studentsWithQuoteRequestsToSubject.map {
-            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterId(it.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(
+                it.id!!,
+                currentSemester.id!!,
+                QuoteStateHelper.getAllStates(),
+                getSortByCreatedOnAsc()
+            )
             StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(it, quoteRequests)
         }
     }
@@ -158,10 +208,18 @@ class QuoteRequestService(
         quoteRequestRepository.deleteById(quoteRequest.id!!)
     }
 
-    override fun findStudentWithPendingQuoteRequests(idStudent: Long): StudentWithRequestedQuotesResponseDTO {
+    override fun findStudentWithQuoteRequests(
+        idStudent: Long,
+        states: Set<QuoteState>
+    ): StudentWithRequestedQuotesResponseDTO {
         val student = getStudent(idStudent)
         val currentSemester = getCurrentSemester()
-        val quoteRequests = quoteRequestRepository.findAllByStateAndStudentIdAndCourseSemesterId(QuoteState.PENDING, student.id!!, currentSemester.id!!, getSortByCreatedOnAsc())
+        val quoteRequests = quoteRequestRepository.findAllByInStatesAndStudentIdAndCourseSemesterId(
+            states,
+            student.id!!,
+            currentSemester.id!!,
+            getSortByCreatedOnAsc()
+        )
         return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequests).map()
     }
 
@@ -196,25 +254,27 @@ class QuoteRequestService(
         if (!quoteRequest.isPresent) throw QuoteRequestNotFoundException()
         return quoteRequest.get()
     }
+
     private fun getStudent(idStudent: Long): Student {
         val student = studentRepository.findById(idStudent)
         if (!student.isPresent) throw StudentNotFoundException()
         return student.get()
     }
+
     private fun getCurrentSemester(): Semester {
         return getSemester(SemesterHelper.currentYear, SemesterHelper.currentIsSecondSemester)
     }
 
     private fun getSemester(year: Int, isSndSemester: Boolean): Semester {
         val maybeSemester = semesterRepository.findByYearAndIsSndSemester(year, isSndSemester)
-        if(!maybeSemester.isPresent) throw SemesterNotFoundException()
+        if (!maybeSemester.isPresent) throw SemesterNotFoundException()
         return maybeSemester.get()
     }
 
     private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
 
     private fun getInitialState(student: Student, criteria: Criteria): QuoteState {
-        if (criteria.isEligibleStudent(student)){
+        if (criteria.isEligibleStudent(student)) {
             return QuoteState.AUTOAPPROVED
         }
         return QuoteState.PENDING
@@ -225,4 +285,44 @@ class QuoteRequestService(
         if (maybeConfigValidation.isEmpty) throw PrerequisiteSubjectsValidationNotFoundException()
         return maybeConfigValidation.get()
     }
+
+    //TODO (REFACTOR): Move to another class this method
+    private fun getAllHoursOfStudentMinus(quoteRequestIdToSkip: Long, student: Student): List<Hour> {
+        val allPendingQuoteRequest = quoteRequestRepository.findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(
+            QuoteStateHelper.getPendingStates(),
+            quoteRequestIdToSkip,
+            student.id!!,
+            getCurrentSemester().id!!,
+            getSortByCreatedOnAsc()
+        )
+        return allPendingQuoteRequest.flatMap { it.course.hours }.plus(student.enrolledCourses.flatMap { it.hours })
+    }
+
+    //TODO (REFACTOR): Move to another class this method
+    private fun getHoursWarningSeeker(): QuoteRequestWarningSeeker =
+        QuoteRequestWarningSeeker { quoteRequest ->
+            val allHours: List<Hour> = getAllHoursOfStudentMinus(quoteRequest.id!!, quoteRequest.student)
+            when (val maybeHour: Hour? = quoteRequest.course.hours.find { it.anyIntercept(allHours) }) {
+                null -> null
+                else -> Warning(WarningType.CRITICAL, "student has schedules in conflict with hour: ${maybeHour.String()}")
+            }
+        }
+
+    //TODO (REFACTOR): Move to another class this method
+    private fun getPrerequisiteWarningSeeker(): QuoteRequestWarningSeeker =
+        QuoteRequestWarningSeeker {
+            when (!it.student.passedAllPrerequisiteSubjects(it.course.subject)) {
+                true -> Warning(WarningType.MEDIUM, prerequisiteWarningMessage)
+                else -> null
+            }
+        }
+
+    //TODO (REFACTOR): Move to another class this method
+    private fun getMinCoefficientWarningSeeker(): QuoteRequestWarningSeeker =
+        QuoteRequestWarningSeeker {
+            when (!it.student.anyCoefficientIsGreaterThan(minCoefficientWarning)) {
+                true -> Warning(WarningType.LOW, minCoefficientWarningMessage)
+                else -> null
+            }
+        }
 }

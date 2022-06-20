@@ -4,9 +4,12 @@ import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithWarningsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithRequestedQuotesResponseDTO
+import ar.edu.unq.pds03backend.exception.InvalidQuoteStateRequestException
+import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,23 +32,21 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @GetMapping("/{id}")
     @LogExecution
-    fun getById(@PathVariable @Valid id: Long): QuoteRequestResponseDTO = quoteRequestService.getById(id)
+    fun getById(@PathVariable @Valid id: Long): QuoteRequestWithWarningsResponseDTO = quoteRequestService.getById(id)
+
+    @GetMapping("/states")
+    fun getStates(): Array<QuoteState> = QuoteState.values()
 
     @GetMapping
     @LogExecution
-    fun getAll(@RequestParam idCourse: Optional<Long>, @RequestParam idStudent: Optional<Long>): List<QuoteRequestResponseDTO> {
+    fun getAll(@RequestParam idCourse: Optional<Long>, @RequestParam idStudent: Optional<Long>, @RequestParam states: Optional<String>): List<QuoteRequestResponseDTO> {
+        val queryStates = getQueryQuoteStates(states)
         return when {
-            idCourse.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(idCourse.get(), idStudent.get())
-            idCourse.isPresent -> quoteRequestService.getAllByCourse(idCourse.get())
-            idStudent.isPresent -> quoteRequestService.getAllCurrentSemesterByStudent(idStudent.get())
-            else -> quoteRequestService.getAll()
+            idCourse.isPresent && idStudent.isPresent -> quoteRequestService.getAllByCourseAndStudent(idCourse.get(), idStudent.get(), queryStates)
+            idCourse.isPresent -> quoteRequestService.getAllByCourse(idCourse.get(), queryStates)
+            idStudent.isPresent -> quoteRequestService.getAllCurrentSemesterByStudent(idStudent.get(), queryStates)
+            else -> quoteRequestService.getAll(queryStates)
         }
-    }
-
-    @GetMapping("/pending/courses")
-    @LogExecution
-    fun getQuoteRequestSubjectsPending(): List<QuoteRequestSubjectPendingResponseDTO> {
-        return quoteRequestService.getQuoteRequestSubjectsPending()
     }
 
     @PutMapping("/{id}/adminComment")
@@ -55,23 +56,25 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         return "admin comment added"
     }
 
-    @GetMapping("/pending/students")
+    @GetMapping("/courses")
     @LogExecution
-    fun findAllStudentsWithQuoteStatusPending(): List<StudentWithQuotesInfoResponseDTO> {
-        return quoteRequestService.findAllStudentsWithQuoteStatusPendingCurrentSemester()
-    }
+    fun getQuoteRequestSubjects(@RequestParam states: Optional<String>): List<QuoteRequestSubjectPendingResponseDTO> =
+        quoteRequestService.getQuoteRequestSubjects(getQueryQuoteStates(states))
 
-    @GetMapping("/pending/students/subject/{idSubject}")
+    @GetMapping("/students")
     @LogExecution
-    fun findAllStudentsWithQuoteStatusPendingToSubject(@PathVariable @Valid idSubject: Long): List<StudentWithQuotesAndSubjectsResponseDTO> {
-        return quoteRequestService.findAllStudentsWithQuoteStatusPendingToSubjectCurrentSemester(idSubject)
-    }
+    fun findAllStudentsWithQuoteRequest(@RequestParam states: Optional<String>): List<StudentWithQuotesInfoResponseDTO> =
+        quoteRequestService.findAllStudentsWithQuoteRequestCurrentSemester(getQueryQuoteStates(states))
 
-    @GetMapping("/pending/student/{idStudent}")
+    @GetMapping("/students/subject/{idSubject}")
     @LogExecution
-    fun findStudentWithPendingQuoteRequests(@PathVariable @Valid idStudent: Long): StudentWithRequestedQuotesResponseDTO {
-        return quoteRequestService.findStudentWithPendingQuoteRequests(idStudent)
-    }
+    fun findAllStudentsWithQuoteRequestInSubject(@PathVariable @Valid idSubject: Long, @RequestParam states: Optional<String>): List<StudentWithQuotesAndSubjectsResponseDTO> =
+        quoteRequestService.findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject, getQueryQuoteStates(states))
+
+    @GetMapping("/student/{idStudent}")
+    @LogExecution
+    fun findStudentWithQuoteRequest(@PathVariable @Valid idStudent: Long, @RequestParam states: Optional<String>): StudentWithRequestedQuotesResponseDTO =
+        quoteRequestService.findStudentWithQuoteRequests(idStudent, getQueryQuoteStates(states))
 
     @DeleteMapping("/{id}")
     @LogExecution
@@ -99,5 +102,15 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     fun rollbackToPendingQuoteRequest(@PathVariable @Valid id: Long): String {
         quoteRequestService.rollbackToPendingRequest(id)
         return "quote request rollback to pending successfully"
+    }
+
+    private fun getQueryQuoteStates(states: Optional<String>): Set<QuoteState> {
+        if(states.isEmpty) return QuoteState.values().toSet()
+        try{
+            val statesStr = states.get().split(",")
+            return statesStr.map { QuoteState.valueOf(it) }.toSet()
+        }catch(e: Exception){
+            throw InvalidQuoteStateRequestException()
+        }
     }
 }

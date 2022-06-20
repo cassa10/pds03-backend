@@ -9,7 +9,7 @@ import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
 import ar.edu.unq.pds03backend.mapper.SemesterMapper
 import ar.edu.unq.pds03backend.model.Semester
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
-import ar.edu.unq.pds03backend.repository.ISemesterService
+import ar.edu.unq.pds03backend.service.ISemesterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional

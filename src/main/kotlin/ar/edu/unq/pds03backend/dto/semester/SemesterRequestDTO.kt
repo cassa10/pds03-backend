@@ -7,14 +7,14 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
 class SemesterRequestDTO(
-    @field:Min(value = 2000)
-    @field:Max(value = 3000)
+    @field:Min(value = 1900, message = "'year' mmin value is 1900")
+    @field:Max(value = 4000, message = "'year' max value is 4000")
     val year: Int,
-    @field:NotNull
+    @field:NotNull(message = "'isSndSemester' must not be null")
     val isSndSemester: Boolean,
-    @field:NotNull
+    @field:NotNull(message = "'acceptQuoteRequestsFrom' must not be null")
     val acceptQuoteRequestsFrom: LocalDateTime,
-    @field:NotNull
+    @field:NotNull(message = "'acceptQuoteRequestsTo' must not be null")
     val acceptQuoteRequestsTo: LocalDateTime,
 ) {
     fun mapToSemester(): Semester = Semester(
@@ -26,8 +26,8 @@ class SemesterRequestDTO(
 }
 
 data class UpdateSemesterRequestDTO(
-    @field:NotNull
+    @field:NotNull(message = "'acceptQuoteRequestsFrom' must not be null")
     val acceptQuoteRequestsFrom: LocalDateTime,
-    @field:NotNull
+    @field:NotNull(message = "'acceptQuoteRequestsTo' must not be null")
     val acceptQuoteRequestsTo: LocalDateTime,
 )

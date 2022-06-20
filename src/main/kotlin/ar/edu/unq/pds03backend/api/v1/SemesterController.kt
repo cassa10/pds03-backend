@@ -3,8 +3,7 @@ package ar.edu.unq.pds03backend.api.v1
 import ar.edu.unq.pds03backend.dto.semester.SemesterRequestDTO
 import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.dto.semester.UpdateSemesterRequestDTO
-import ar.edu.unq.pds03backend.model.Semester
-import ar.edu.unq.pds03backend.repository.ISemesterService
+import ar.edu.unq.pds03backend.service.ISemesterService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
