@@ -1,11 +1,7 @@
 package ar.edu.unq.pds03backend
 
-import ar.edu.unq.pds03backend.dto.course.HourResponseDTO
-import ar.edu.unq.pds03backend.dto.course.SimpleCourseResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
-import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
 import ar.edu.unq.pds03backend.exception.*
-import ar.edu.unq.pds03backend.mapper.SemesterMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
@@ -14,13 +10,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.*
@@ -354,5 +347,104 @@ class QuoteRequestServiceTest {
                 }
             }
         }
+    }
+
+    @Test(expected = CourseNotFoundException::class)
+    fun `given a course id when call get all by course and student but course id not found then it should throw CourseNotFoundException`() {
+        val optionalCourseMock = mockk<Optional<Course>> {
+            every { isPresent } returns false
+        }
+        every { courseRepository.findById(any()) } returns optionalCourseMock
+
+        quoteRequestService.getAllByCourseAndStudent(COURSE_ID, STUDENT_ID, emptySet())
+    }
+
+    @Test(expected = StudentNotFoundException::class)
+    fun `given a student id when call get all by course and student but student id not found then it should throw StudentNotFoundException`() {
+        val optionalStudentMock = mockk<Optional<Student>> {
+            every { isPresent } returns false
+        }
+        every { courseRepository.findById(any()) } returns Optional.of(mockk())
+        every { studentRepository.findById(any()) } returns optionalStudentMock
+
+        quoteRequestService.getAllByCourseAndStudent(COURSE_ID, STUDENT_ID, emptySet())
+    }
+
+    @Test
+    fun `given a student id and course id when call get all by course and student then it should return list empty`() {
+        val courseMock = mockk<Course> {
+            every { id } returns COURSE_ID
+        }
+        val studentMock = mockk<Student> {
+            every { id } returns STUDENT_ID
+        }
+        every { courseRepository.findById(any()) } returns Optional.of(courseMock)
+        every { studentRepository.findById(any()) } returns Optional.of(studentMock)
+        every { quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+
+        val actual = quoteRequestService.getAllByCourseAndStudent(COURSE_ID, STUDENT_ID, emptySet())
+
+        assertTrue(actual.isEmpty())
+        assertEquals(0, actual.size)
+    }
+
+    @Test(expected = CourseNotFoundException::class)
+    fun `given a id course when call get all by course but course id not found then it should CourseNotFound`() {
+        val optionalCourseMock = mockk<Optional<Course>> {
+            every { isPresent } returns false
+        }
+        every { courseRepository.findById(any()) } returns optionalCourseMock
+
+        quoteRequestService.getAllByCourse(COURSE_ID, emptySet())
+    }
+
+    @Test
+    fun `given course id when call get all by course then it should return list empty`() {
+        val courseMock = mockk<Course> {
+            every { id } returns COURSE_ID
+        }
+        every { courseRepository.findById(any()) } returns Optional.of(courseMock)
+        every { quoteRequestRepository.findAllByCourseIdAndInStates(any(), any(), any()) } returns emptyList()
+
+        val actual = quoteRequestService.getAllByCourse(COURSE_ID, emptySet())
+
+        assertTrue(actual.isEmpty())
+        assertEquals(0, actual.size)
+    }
+
+    @Test
+    fun `given a student id when call get all current semester by student then it should return list empty`() {
+        val studentMock = mockk<Student> {
+            every { id } returns STUDENT_ID
+        }
+        val semesterMock = mockk<Semester> {
+            every { id } returns SEMESTER_ID
+        }
+        every { studentRepository.findById(any()) } returns Optional.of(studentMock)
+        every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
+        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+
+        val actual = quoteRequestService.getAllCurrentSemesterByStudent(STUDENT_ID, emptySet())
+
+        assertTrue(actual.isEmpty())
+        assertEquals(0, actual.size)
+    }
+
+    @Test
+    fun `given a quote request id when call get by id then it should return QuoteRequestWithWarningsResponseDTO`() {
+        val studentMock = mockk<Student> {
+            every { id } returns STUDENT_ID
+        }
+        val semesterMock = mockk<Semester> {
+            every { id } returns SEMESTER_ID
+        }
+        every { studentRepository.findById(any()) } returns Optional.of(studentMock)
+        every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
+        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+
+        val actual = quoteRequestService.getAllCurrentSemesterByStudent(STUDENT_ID, emptySet())
+
+        assertTrue(actual.isEmpty())
+        assertEquals(0, actual.size)
     }
 }
