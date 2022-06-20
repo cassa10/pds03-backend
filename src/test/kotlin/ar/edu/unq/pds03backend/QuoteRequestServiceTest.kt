@@ -10,8 +10,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
+import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.time.DayOfWeek
@@ -40,6 +39,7 @@ private const val DEGREE_ID: Long = 1
 private const val DEGREE_NAME = "Degree name"
 private const val DEGREE_ACRONYM = "Degree acronym"
 private const val STUDENT_COEFFICIENT = 1f
+private const val HOUR_MESSAGE = "Hour message"
 
 class QuoteRequestServiceTest {
 
@@ -431,20 +431,148 @@ class QuoteRequestServiceTest {
     }
 
     @Test
-    fun `given a quote request id when call get by id then it should return QuoteRequestWithWarningsResponseDTO`() {
-        val studentMock = mockk<Student> {
-            every { id } returns STUDENT_ID
+    fun `given a quote request id when call get by id then it should return QuoteRequestWithWarningsResponseDTO with all warnings`() {
+        val hourMock = mockk<Hour> {
+            every { day } returns DayOfWeek.FRIDAY
+            every { getFromString() } returns HOUR_FROM
+            every { getToString() } returns HOUR_TO
+            every { anyIntercept(any()) } returns true
+            every { String() } returns HOUR_MESSAGE
         }
         val semesterMock = mockk<Semester> {
             every { id } returns SEMESTER_ID
+            every { isSndSemester } returns false
+            every { year } returns 2022
+            every { name() } returns SEMESTER_NAME
+            every { acceptQuoteRequestsFrom } returns LocalDateTime.MAX
+            every { acceptQuoteRequestsTo } returns LocalDateTime.MAX
+            every { isCurrent() } returns true
+            every { isAcceptQuoteRequestsAvailable() } returns true
         }
-        every { studentRepository.findById(any()) } returns Optional.of(studentMock)
+        val courseMock = mockk<Course> {
+            every { id } returns COURSE_ID
+            every { semester } returns semesterMock
+            every { subject.id } returns SUBJECT_ID
+            every { subject.name } returns SUBJECT_NAME
+            every { name } returns COURSE_NAME
+            every { assigned_teachers } returns COURSE_ASSIGNED_TEACHERS
+            every { total_quotes } returns 30
+            every { hours } returns mutableListOf(hourMock)
+        }
+        val degreeMock = mockk<Degree> {
+            every { id } returns DEGREE_ID
+            every { name } returns DEGREE_NAME
+            every { acronym } returns DEGREE_ACRONYM
+        }
+        val studentMock = mockk<Student>(relaxed = true) {
+            every { id } returns STUDENT_ID
+            every { firstName } returns STUDENT_FIRST_NAME
+            every { lastName } returns STUDENT_LAST_NAME
+            every { dni } returns STUDENT_DNI
+            every { email } returns STUDENT_EMAIL
+            every { legajo } returns STUDENT_LEGAJO
+            every { username } returns STUDENT_USERNAME
+            every { maxCoefficient() } returns 0f
+            every { enrolledDegrees } returns listOf(degreeMock)
+            every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
+            every { enrolledCourses } returns mutableListOf(mockk(relaxed = true))
+        }
+        val quoteRequestMock = mockk<QuoteRequest> {
+            every { id } returns QUOTE_REQUEST_ID
+            every { course } returns courseMock
+            every { student } returns studentMock
+            every { state } returns QuoteState.PENDING
+            every { comment } returns COMMENT
+            every { createdOn } returns LocalDateTime.MAX
+        }
+
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
-        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+        every { quoteRequestRepository.findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(any(), any(), any(), any(), any()) } returns listOf(quoteRequestMock)
+        every { quoteRequestRepository.findById(any()) } returns Optional.of(quoteRequestMock)
 
-        val actual = quoteRequestService.getAllCurrentSemesterByStudent(STUDENT_ID, emptySet())
+        val actual = quoteRequestService.getById(QUOTE_REQUEST_ID)
 
-        assertTrue(actual.isEmpty())
-        assertEquals(0, actual.size)
+        with(actual) {
+            assertEquals(QUOTE_REQUEST_ID, id)
+            assertEquals(QuoteState.PENDING, state)
+            assertEquals(COMMENT, comment)
+            assertEquals(LocalDateTime.MAX, createdOn)
+            assertEquals(WarningType.CRITICAL, warnings[0].type)
+            assertEquals(WarningType.MEDIUM, warnings[1].type)
+            assertEquals(WarningType.LOW, warnings[2].type)
+        }
+    }
+
+    @Test
+    fun `given a quote request id when call get by id then it should return QuoteRequestWithWarningsResponseDTO without warnings`() {
+        val hourMock = mockk<Hour> {
+            every { day } returns DayOfWeek.FRIDAY
+            every { getFromString() } returns HOUR_FROM
+            every { getToString() } returns HOUR_TO
+            every { anyIntercept(any()) } returns false
+        }
+        val semesterMock = mockk<Semester> {
+            every { id } returns SEMESTER_ID
+            every { isSndSemester } returns false
+            every { year } returns 2022
+            every { name() } returns SEMESTER_NAME
+            every { acceptQuoteRequestsFrom } returns LocalDateTime.MAX
+            every { acceptQuoteRequestsTo } returns LocalDateTime.MAX
+            every { isCurrent() } returns true
+            every { isAcceptQuoteRequestsAvailable() } returns true
+        }
+        val courseMock = mockk<Course> {
+            every { id } returns COURSE_ID
+            every { semester } returns semesterMock
+            every { subject.id } returns SUBJECT_ID
+            every { subject.name } returns SUBJECT_NAME
+            every { name } returns COURSE_NAME
+            every { assigned_teachers } returns COURSE_ASSIGNED_TEACHERS
+            every { total_quotes } returns 30
+            every { hours } returns mutableListOf(hourMock)
+        }
+        val degreeMock = mockk<Degree> {
+            every { id } returns DEGREE_ID
+            every { name } returns DEGREE_NAME
+            every { acronym } returns DEGREE_ACRONYM
+        }
+        val studentMock = mockk<Student>(relaxed = true) {
+            every { id } returns STUDENT_ID
+            every { firstName } returns STUDENT_FIRST_NAME
+            every { lastName } returns STUDENT_LAST_NAME
+            every { dni } returns STUDENT_DNI
+            every { email } returns STUDENT_EMAIL
+            every { legajo } returns STUDENT_LEGAJO
+            every { username } returns STUDENT_USERNAME
+            every { maxCoefficient() } returns 0f
+            every { enrolledDegrees } returns listOf(degreeMock)
+            every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
+            every { enrolledCourses } returns mutableListOf(mockk(relaxed = true))
+            every { passedAllPrerequisiteSubjects(any()) } returns true
+            every { anyCoefficientIsGreaterThan(any()) } returns true
+        }
+        val quoteRequestMock = mockk<QuoteRequest> {
+            every { id } returns QUOTE_REQUEST_ID
+            every { course } returns courseMock
+            every { student } returns studentMock
+            every { state } returns QuoteState.PENDING
+            every { comment } returns COMMENT
+            every { createdOn } returns LocalDateTime.MAX
+        }
+
+        every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
+        every { quoteRequestRepository.findAllByInStatesAndSkipIdAndStudentIdAndCourseSemesterId(any(), any(), any(), any(), any()) } returns listOf(quoteRequestMock)
+        every { quoteRequestRepository.findById(any()) } returns Optional.of(quoteRequestMock)
+
+        val actual = quoteRequestService.getById(QUOTE_REQUEST_ID)
+
+        with(actual) {
+            assertTrue(warnings.isEmpty())
+            assertEquals(QUOTE_REQUEST_ID, id)
+            assertEquals(QuoteState.PENDING, state)
+            assertEquals(COMMENT, comment)
+            assertEquals(LocalDateTime.MAX, createdOn)
+            assertEquals(0, warnings.size)
+        }
     }
 }
