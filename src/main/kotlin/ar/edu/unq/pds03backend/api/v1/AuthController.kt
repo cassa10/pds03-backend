@@ -1,20 +1,12 @@
 package ar.edu.unq.pds03backend.api.v1
 
-import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
-import ar.edu.unq.pds03backend.dto.authentication.LoginResponseDTO
-import ar.edu.unq.pds03backend.service.IAuthService
-import ar.edu.unq.pds03backend.service.logger.LogExecution
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.validation.annotation.Validated
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
-@RestController
+@RestController(value = "V1AuthController")
 @RequestMapping("/api/v1/login")
-@Validated
-class AuthController(@Autowired private val authService: IAuthService) {
-
+class AuthController {
     @PostMapping
-    @LogExecution
-    fun login(@Valid @RequestBody loginRequestDTO: LoginRequestDTO): LoginResponseDTO = authService.login(loginRequestDTO)
+    @ResponseStatus(code = HttpStatus.MOVED_PERMANENTLY, reason = "endpoint deprecated, please use: '/api/v2/auth/login'")
+    fun deprecatedLogin() {}
 }

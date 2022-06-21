@@ -11,6 +11,7 @@ class Student(
     dni: String,
     email: String,
     username: String,
+    password: String,
 
     @Column(unique = true)
     val legajo: String,
@@ -34,8 +35,9 @@ class Student(
     )
     //Comisiones ya inscriptas
     val enrolledCourses: MutableCollection<Course>
-) : User(id, firstName, lastName, dni, email, username) {
+) : User(id, firstName, lastName, dni, email, username, password) {
     override fun isStudent(): Boolean = true
+    override fun role(): Role = Role.STUDENT
 
     fun isStudyingOrEnrolled(subject: Subject): Boolean =
         isEnrolled(subject) || degree_histories.any { studiedDegree ->
@@ -86,13 +88,14 @@ class Student(
         var dni: String = "",
         var email: String = "",
         var username: String = "",
+        var password: String = "",
         var legajo: String = "",
         var enrolledDegrees: Collection<Degree> = listOf(),
         var degree_histories: Collection<StudiedDegree> = listOf(),
         var enrolledCourses: MutableCollection<Course> = mutableListOf(),
     ) {
 
-        fun build(): Student = Student(id, firstName,lastName, dni, email, username, legajo, enrolledDegrees, degree_histories, enrolledCourses)
+        fun build(): Student = Student(id, firstName,lastName, dni, email, username, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
         fun withDni(dni: String) = apply {this.dni = dni}
         fun withLegajo(legajo: String) = apply {this.legajo = legajo}
     }

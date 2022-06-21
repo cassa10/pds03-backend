@@ -22,7 +22,6 @@ import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
 class ControllerAdviceRequestError : ResponseEntityExceptionHandler() {
-
     @ExceptionHandler(value = [(ConstraintViolationException::class), (BadRequestException::class)])
     fun handlerBadRequestException(exception: Exception, request: WebRequest): ResponseEntity<ErrorDetail> {
         val errorDetails = ErrorDetail(Date(), exception.message!!)

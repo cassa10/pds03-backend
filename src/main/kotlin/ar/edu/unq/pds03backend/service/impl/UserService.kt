@@ -33,6 +33,9 @@ class UserService(
         return getUserInfo(user)
     }
 
+    override fun findByDni(dni: String): Optional<User> =
+        userRepository.findByDni(dni)
+
     private fun getUserInfo(user: User): UserResponseDTO {
         val currentSemester = getCurrentSemester()
         var enrolledSubjects = listOf<SimpleEnrolledSubjectsDataDTO>()
