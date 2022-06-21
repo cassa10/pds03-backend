@@ -52,7 +52,7 @@ class NewService(
 
     private fun getNewsById(id: Long): New {
         val maybeNew = newRepository.findById(id)
-        if (maybeNew.isPresent) throw NewNotFoundException()
+        if (maybeNew.isPresent.not()) throw NewNotFoundException()
         return maybeNew.get()
     }
 }
