@@ -17,6 +17,9 @@ INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VAL
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (1, 1);
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (2, 2);
+
 INSERT INTO studied_degrees(student_id, degree_id, coefficient) VALUES (4, 1, 7.0);
 
 -- Relation with Users and Degrees
@@ -91,6 +94,64 @@ INSERT INTO subjects(name) VALUES ('Desarrollo de Aplicaciones');
 INSERT INTO subjects(name) VALUES ('Introducción a la Programación Cuántica');
 INSERT INTO subjects(name) VALUES ('Redes Neuronales');
 INSERT INTO subjects(name) VALUES ('Ciencia de Datos');
+
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (1, 1);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (2, 2);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (3, 3);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (4, 4);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (5, 5);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (6, 6);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (7, 7);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (8, 8);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (9, 9);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (10, 10);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (11, 11);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (12, 12);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (13, 13);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (14, 14);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (15, 15);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (16, 16);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (17, 17);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (18, 18);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (19, 19);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (20, 20);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (21, 21);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (22, 22);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (23, 23);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (24, 24);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (25, 25);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (26, 26);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (27, 27);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (28, 28);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (29, 29);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (30, 30);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (31, 31);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (32, 32);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (33, 33);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (34, 34);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (35, 35);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (36, 36);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (37, 37);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (38, 38);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (39, 39);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (40, 40);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (41, 41);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (42, 42);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (43, 43);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (44, 44);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (45, 45);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (46, 46);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (47, 47);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (48, 48);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (49, 49);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (50, 50);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (51, 51);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (52, 52);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (53, 53);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (54, 54);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (55, 55);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (56, 56);
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (57, 57);
 
 
 INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (4, 3);

@@ -142,7 +142,7 @@ class SubjectService(
 
     private fun getPrerequisiteSubjectsValidation(): ConfigurableValidation {
         val maybeConfigValidation = configurableValidationRepository.findByValidation(Validation.PREREQUISITE_SUBJECTS)
-        if (maybeConfigValidation.isEmpty) throw PrerequisiteSubjectsValidationNotFoundException()
+        if (maybeConfigValidation.isPresent.not()) throw PrerequisiteSubjectsValidationNotFoundException()
         return maybeConfigValidation.get()
     }
 

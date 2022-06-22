@@ -31,8 +31,8 @@ class AcademyHistoryService(
         }
     }
 
-    private fun importStudiedDegree(carrera: String, legajo: String, coeficiente: Float): Pair<Optional<Degree>, Optional<Student>> {
-        val maybeDegree = degreeRepository.findByName(carrera)
+    private fun importStudiedDegree(carrera: Int, legajo: String, coeficiente: Float): Pair<Optional<Degree>, Optional<Student>> {
+        val maybeDegree = degreeRepository.findByGuaraniCode(carrera)
         val maybeStudent = studentRepository.findByLegajo(legajo)
         //TODO: Crear usuario en caso de que no exista
 
@@ -56,7 +56,7 @@ class AcademyHistoryService(
         maybeStudent: Optional<Student>
     ) {
         data.forEach { it ->
-            val maybeSubject = subjectRepository.findByName(it.materia)
+            val maybeSubject = subjectRepository.findByGuaraniCode(it.materia)
             val maybeStudiedDegree =
                 studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
             val status: StatusStudiedCourse = when (it.resultado) {

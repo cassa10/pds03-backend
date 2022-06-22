@@ -199,6 +199,7 @@ class QuoteRequestServiceTest {
 
         val optionalConfigValidationMock = mockk<Optional<ConfigurableValidation>> {
             every { isEmpty } returns true
+            every { isPresent } returns false
         }
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)

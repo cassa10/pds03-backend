@@ -6,6 +6,7 @@ import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.Student
+import ar.edu.unq.pds03backend.model.Warning
 
 data class StudentResponseDTO(
     val id: Long,
@@ -61,7 +62,7 @@ class StudentWithRequestedQuotesResponseDTO(
     val enrolledCourses: List<CourseWithSubjectInfoResponseDTO>,
     val quoteRequests: List<QuoteRequestWithoutStudentResponseDTO>,
 ) {
-    class Mapper(private val student: Student, private val quoteRequests: List<QuoteRequest>) {
+    class Mapper(private val student: Student, private val quoteRequestsWithWarnings: List<Pair<QuoteRequest, List<Warning>>>) {
         fun map(): StudentWithRequestedQuotesResponseDTO =
             StudentWithRequestedQuotesResponseDTO(
                 id = student.id!!,
@@ -76,8 +77,8 @@ class StudentWithRequestedQuotesResponseDTO(
                 enrolledCourses = student.enrolledCourses.map {
                     CourseWithSubjectInfoResponseDTO.Mapper(it).map()
                 },
-                quoteRequests = quoteRequests.map {
-                    QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it)
+                quoteRequests = quoteRequestsWithWarnings.map {
+                    QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it.first, it.second)
                 },
             )
     }
