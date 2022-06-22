@@ -16,12 +16,11 @@ import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
-@RestController
-@RequestMapping("/api/v2/auth")
+@RestController(value = "V2AuthController")
+@RequestMapping("/api/v2")
 @Validated
 class AuthController(
     @Autowired private val authService: IAuthService,
-    @Autowired private val userService: IUserService,
 ) {
 
     @PostMapping("/login")
