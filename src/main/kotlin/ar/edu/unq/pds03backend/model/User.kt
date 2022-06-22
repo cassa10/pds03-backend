@@ -20,6 +20,9 @@ abstract class User(
     @Column(unique = true, nullable = false)
     val dni: String,
 
+    @Column(nullable = false)
+    val password: String,
+
     @Column(unique = true, nullable = false)
     val email: String,
 
@@ -28,4 +31,5 @@ abstract class User(
 )
 {
     fun isStudent(): Boolean = false
+    abstract fun role(): Role
 }

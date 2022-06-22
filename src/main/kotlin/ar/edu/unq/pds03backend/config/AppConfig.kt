@@ -2,6 +2,9 @@ package ar.edu.unq.pds03backend.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import springfox.documentation.builders.PathSelectors
@@ -17,7 +20,7 @@ class AppConfig {
     @Bean
     fun api(): Docket = Docket(DocumentationType.SWAGGER_2)
         .select()
-        .apis(RequestHandlerSelectors.basePackage("ar.edu.unq.pds03backend.api.v1"))
+        .apis(RequestHandlerSelectors.basePackage("ar.edu.unq.pds03backend.api"))
         .paths(PathSelectors.any())
         .build()
 

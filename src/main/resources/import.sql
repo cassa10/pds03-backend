@@ -6,12 +6,12 @@
 -- Validation Configuration (only prerequisite subjects -correlativas-)
 INSERT INTO configurable_validation(validation, active) VALUES (0, true);
 
--- Users:
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', 'alumno');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', 'messi10');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('11111113', 'alanturing@gmail.com', 'Alan', 'Turing', 1, '34629','alan_turing');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999','pepe');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, username) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null,'director');
+-- Users: (password = 'asd123')
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username, password) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', 'alumno', '$2a$10$Zob6s32CjqlljykztJfjU.sbCZLRZuXuvPqB4LcuhTrkuLKoUdvBC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username, password) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', 'messi10', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username, password) VALUES ('11111113', 'alanturing@gmail.com', 'Alan', 'Turing', 1, '34629','alan_turing', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username, password) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999','pepe', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, username, password) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null, 'director', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
 
 -- Degrees:
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
