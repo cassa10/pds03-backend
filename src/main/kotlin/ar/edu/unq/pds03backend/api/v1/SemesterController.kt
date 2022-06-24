@@ -1,11 +1,13 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.semester.SemesterRequestDTO
 import ar.edu.unq.pds03backend.dto.semester.SemesterResponseDTO
 import ar.edu.unq.pds03backend.dto.semester.UpdateSemesterRequestDTO
 import ar.edu.unq.pds03backend.service.ISemesterService
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -52,9 +54,9 @@ class SemesterController(@Autowired val semesterService: ISemesterService) {
     fun updateSemester(
         @PathVariable("id") idSemester: Long,
         @Valid @RequestBody semesterRequestDTO: UpdateSemesterRequestDTO
-    ): String {
+    ): GenericResponse {
         semesterService.updateSemester(idSemester, semesterRequestDTO)
-        return "semester $idSemester updated"
+        return GenericResponse(HttpStatus.OK, "semester $idSemester updated")
     }
 
     @GetMapping("/all")

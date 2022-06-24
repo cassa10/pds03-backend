@@ -1,9 +1,11 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.service.IAcademyHistoryService
 import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -18,9 +20,9 @@ class AcademyHistoryController(
 
     @PostMapping("/import")
     @LogExecution
-    fun importAcademyHistoryCsv(@RequestParam("file") file: MultipartFile): String {
+    fun importAcademyHistoryCsv(@RequestParam("file") file: MultipartFile): GenericResponse {
         val data = csvService.parseAcademyHistoriesFile(file)
         academyHistoryService.updateAcademyHistory(data)
-        return "imported successfully"
+        return GenericResponse(HttpStatus.OK,"imported successfully")
     }
 }
