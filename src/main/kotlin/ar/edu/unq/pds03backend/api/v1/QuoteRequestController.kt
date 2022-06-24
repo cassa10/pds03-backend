@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
@@ -13,6 +14,7 @@ import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.Optional
@@ -25,9 +27,9 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @PostMapping
     @LogExecution
-    fun create(@Valid @RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): String {
+    fun create(@Valid @RequestBody quoteRequestRequestDTO: QuoteRequestRequestDTO): GenericResponse {
         quoteRequestService.create(quoteRequestRequestDTO)
-        return "quote request/s created"
+        return GenericResponse(HttpStatus.OK, "quote request/s created")
     }
 
     @GetMapping("/{id}")
@@ -51,9 +53,9 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @PutMapping("/{id}/adminComment")
     @LogExecution
-    fun addAdminComment(@PathVariable @Valid id: Long, @Valid @RequestBody adminCommentRequestDTO: AdminCommentRequestDTO): String {
+    fun addAdminComment(@PathVariable @Valid id: Long, @Valid @RequestBody adminCommentRequestDTO: AdminCommentRequestDTO): GenericResponse {
         quoteRequestService.addAdminComment(id, adminCommentRequestDTO)
-        return "admin comment added"
+        return GenericResponse(HttpStatus.OK, "admin comment added")
     }
 
     @GetMapping("/courses")
@@ -78,30 +80,30 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
 
     @DeleteMapping("/{id}")
     @LogExecution
-    fun delete(@PathVariable @Valid id: Long): String {
+    fun delete(@PathVariable @Valid id: Long): GenericResponse {
         quoteRequestService.delete(id)
-        return "quote request deleted"
+        return GenericResponse(HttpStatus.OK, "quote request deleted")
     }
 
     @PutMapping("/{id}/accept")
     @LogExecution
-    fun acceptQuoteRequest(@PathVariable @Valid id: Long): String {
+    fun acceptQuoteRequest(@PathVariable @Valid id: Long): GenericResponse {
         quoteRequestService.acceptQuoteRequest(id)
-        return "quote request accepted successfully"
+        return GenericResponse(HttpStatus.OK, "quote request accepted successfully")
     }
 
     @PutMapping("/{id}/revoke")
     @LogExecution
-    fun revokeQuoteRequest(@PathVariable @Valid id: Long): String {
+    fun revokeQuoteRequest(@PathVariable @Valid id: Long): GenericResponse {
         quoteRequestService.revokeQuoteRequest(id)
-        return "quote request revoked successfully"
+        return GenericResponse(HttpStatus.OK, "quote request revoked successfully")
     }
 
     @PutMapping("/{id}/rollback")
     @LogExecution
-    fun rollbackToPendingQuoteRequest(@PathVariable @Valid id: Long): String {
+    fun rollbackToPendingQuoteRequest(@PathVariable @Valid id: Long): GenericResponse {
         quoteRequestService.rollbackToPendingRequest(id)
-        return "quote request rollback to pending successfully"
+        return GenericResponse(HttpStatus.OK, "quote request rollback to pending successfully")
     }
 
     private fun getQueryQuoteStates(states: Optional<String>): Set<QuoteState> {

@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.api.v1
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.course.CourseRequestDTO
 import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.course.CourseUpdateRequestDTO
@@ -7,6 +8,7 @@ import ar.edu.unq.pds03backend.service.ICourseService
 import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -26,9 +28,9 @@ class CourseController(
         @PathVariable("id_semester") idSemester: Long,
         @PathVariable("id_subject") idSubject: Long,
         @Valid @RequestBody courseRequestDTO: CourseRequestDTO
-    ): String {
+    ): GenericResponse {
         courseService.create(idSemester, idSubject, courseRequestDTO)
-        return "course created"
+        return GenericResponse(HttpStatus.OK,"course created")
     }
 
     @PutMapping("/{id_course}")
@@ -36,9 +38,9 @@ class CourseController(
     fun updateCourse(
         @PathVariable("id_course") idCourse: Long,
         @Valid @RequestBody courseUpdateRequestDTO: CourseUpdateRequestDTO
-    ): String {
+    ): GenericResponse {
         courseService.update(idCourse, courseUpdateRequestDTO)
-        return "course with id $idCourse updated"
+        return GenericResponse(HttpStatus.OK,"course with id $idCourse updated")
     }
 
     @GetMapping("/semester/{id_semester}/subject/{id_subject}")
@@ -58,16 +60,16 @@ class CourseController(
 
     @DeleteMapping("/{id_course}")
     @LogExecution
-    fun deleteCourse(@PathVariable("id_course") idCourse: Long): String {
+    fun deleteCourse(@PathVariable("id_course") idCourse: Long): GenericResponse {
         courseService.delete(idCourse)
-        return "course deleted"
+        return GenericResponse(HttpStatus.OK,"course deleted")
     }
 
     @PostMapping("/currents/import")
     @LogExecution
-    fun importAcademyOfferCsv(@RequestParam("file") file: MultipartFile): String {
+    fun importAcademyOfferCsv(@RequestParam("file") file: MultipartFile): GenericResponse {
         val data = csvService.parseAcademyOfferFile(file)
         courseService.importAcademyOffer(data)
-        return "imported successfully"
+        return GenericResponse(HttpStatus.OK, "imported successfully")
     }
 }

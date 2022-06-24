@@ -1,12 +1,14 @@
 package ar.edu.unq.pds03backend.api.v1
 
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -27,23 +29,23 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
 
     @PostMapping
     @LogExecution
-    fun create(@Valid @RequestBody subjectRequestDTO: SubjectRequestDTO): String {
+    fun create(@Valid @RequestBody subjectRequestDTO: SubjectRequestDTO): GenericResponse {
         subjectService.create(subjectRequestDTO)
-        return "subject created"
+        return GenericResponse(HttpStatus.OK, "subject created")
     }
 
     @PutMapping("/{id}")
     @LogExecution
-    fun update(@PathVariable @Valid id: Long, @Valid @RequestBody subjectRequestDTO: SubjectRequestDTO): String {
+    fun update(@PathVariable @Valid id: Long, @Valid @RequestBody subjectRequestDTO: SubjectRequestDTO): GenericResponse {
         subjectService.update(id, subjectRequestDTO)
-        return "subject updated"
+        return GenericResponse(HttpStatus.OK, "subject updated")
     }
 
     @DeleteMapping("/{id}")
     @LogExecution
-    fun delete(@PathVariable @Valid id: Long): String {
+    fun delete(@PathVariable @Valid id: Long): GenericResponse {
         subjectService.delete(id)
-        return "subject deleted"
+        return GenericResponse(HttpStatus.OK, "subject deleted")
     }
 
     @GetMapping("/currents")

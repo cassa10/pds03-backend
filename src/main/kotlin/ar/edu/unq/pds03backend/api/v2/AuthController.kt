@@ -1,11 +1,13 @@
 package ar.edu.unq.pds03backend.api.v2
 
+import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.service.IAuthService
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -25,22 +27,22 @@ class AuthController(
 
     @PostMapping("/login")
     @LogExecution
-    fun login(@Valid @RequestBody loginRequestDTO: LoginRequestDTO, response: HttpServletResponse): ResponseEntity<String> {
+    fun login(@Valid @RequestBody loginRequestDTO: LoginRequestDTO, response: HttpServletResponse): ResponseEntity<GenericResponse> {
         val jwt = authService.login(loginRequestDTO).jwt
         val cookie = Cookie("jwt", jwt)
         cookie.isHttpOnly = true
         response.addCookie(cookie)
-        return ResponseEntity.ok(jwt)
+        return ResponseEntity.ok(GenericResponse(HttpStatus.OK, jwt))
     }
 
 
     @PostMapping("/logout")
     @LogExecution
-    fun logout(response: HttpServletResponse): ResponseEntity<String> {
+    fun logout(response: HttpServletResponse): ResponseEntity<GenericResponse> {
         val cookie = Cookie("jwt", "")
         cookie.maxAge = 0
         response.addCookie(cookie)
-        return ResponseEntity.ok("logout success")
+        return ResponseEntity.ok(GenericResponse(HttpStatus.OK, "logout success"))
     }
 
     // TODO: Get by cookie (@CookieValue("jwt") jwt: String) ???
