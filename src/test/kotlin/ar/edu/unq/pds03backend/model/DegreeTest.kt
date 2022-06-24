@@ -1,7 +1,5 @@
-package ar.edu.unq.pds03backend
+package ar.edu.unq.pds03backend.model
 
-import ar.edu.unq.pds03backend.model.Degree
-import ar.edu.unq.pds03backend.model.Subject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

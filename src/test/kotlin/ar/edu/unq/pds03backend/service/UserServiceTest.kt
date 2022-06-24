@@ -1,4 +1,4 @@
-package ar.edu.unq.pds03backend
+package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.exception.UserNotFoundException
 import ar.edu.unq.pds03backend.model.*

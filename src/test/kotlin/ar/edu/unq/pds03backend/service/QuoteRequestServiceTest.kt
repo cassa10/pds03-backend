@@ -1,4 +1,4 @@
-package ar.edu.unq.pds03backend
+package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.exception.*
