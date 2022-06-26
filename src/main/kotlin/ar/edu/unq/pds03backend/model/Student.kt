@@ -10,10 +10,8 @@ class Student(
     lastName: String,
     dni: String,
     email: String,
-    username: String,
     password: String,
 
-    @Column(unique = true)
     val legajo: String,
 
     @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
@@ -35,7 +33,7 @@ class Student(
     )
     //Comisiones ya inscriptas
     val enrolledCourses: MutableCollection<Course>
-) : User(id, firstName, lastName, dni, email, username, password) {
+) : User(id=id,firstName=firstName,lastName=lastName,dni=dni,password=password,email=email) {
     override fun isStudent(): Boolean = true
     override fun role(): Role = Role.STUDENT
 
@@ -87,7 +85,6 @@ class Student(
         var lastName: String = "",
         var dni: String = "",
         var email: String = "",
-        var username: String = "",
         var password: String = "",
         var legajo: String = "",
         var enrolledDegrees: Collection<Degree> = listOf(),
@@ -95,7 +92,7 @@ class Student(
         var enrolledCourses: MutableCollection<Course> = mutableListOf(),
     ) {
 
-        fun build(): Student = Student(id, firstName,lastName, dni, email, username, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
+        fun build(): Student = Student(id, firstName,lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
         fun withDni(dni: String) = apply {this.dni = dni}
         fun withLegajo(legajo: String) = apply {this.legajo = legajo}
     }

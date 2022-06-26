@@ -11,7 +11,6 @@ data class StudentWithQuotesAndSubjectsResponseDTO(
     val dni: String,
     val email: String,
     val legajo: String,
-    val username: String,
     val maxCoefficient: Float,
     val enrolledDegrees: List<EnrolledDegreeResponseDTO>,
     val enrolledSubjects: List<SubjectWithCoursesResponseDTO>,

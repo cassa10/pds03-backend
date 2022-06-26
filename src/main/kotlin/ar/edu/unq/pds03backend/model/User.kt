@@ -12,22 +12,19 @@ abstract class User(
     val id: Long?,
 
     @Column(nullable = false)
-    val firstName: String,
+    var firstName: String,
 
     @Column(nullable = false)
-    val lastName: String,
+    var lastName: String,
 
     @Column(unique = true, nullable = false)
-    val dni: String,
+    var dni: String,
 
     @Column(nullable = false)
-    val password: String,
+    var password: String,
 
     @Column(unique = true, nullable = false)
-    val email: String,
-
-    @Column(unique = true, nullable = false)
-    val username: String,
+    var email: String,
 )
 {
     fun isStudent(): Boolean = false

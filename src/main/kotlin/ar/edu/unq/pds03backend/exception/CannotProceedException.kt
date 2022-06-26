@@ -12,6 +12,7 @@ private const val STUDENT_NOT_ENROLLED_IN_SOME_DEGREE = "student is not enrolled
 private const val QUOTE_REQUEST_CANNOT_DELETE = "quote request cannot be deleted because this state is approved or revoked"
 private const val QUOTE_REQUEST_CANNOT_CREATE_EXPIRED = "quote request cannot be created because current semester limit dates have expired"
 private const val STUDENT_NOT_APPLY_WITH_PREREQUISITE_SUBJECTS = "student is not passed all prerequisite subjects of some subject"
+private const val USER_IS_NOT_STUDENT = "user is not student"
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = SUBJECT_CANNOT_DELETE)
 class CannotDeleteSubjectWithCoursesException: CannotProceedException(SUBJECT_CANNOT_DELETE)
@@ -33,3 +34,6 @@ class CannotCreateQuoteRequestException: CannotProceedException(QUOTE_REQUEST_CA
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = STUDENT_NOT_APPLY_WITH_PREREQUISITE_SUBJECTS)
 class StudentNotApplyWithPrerequisiteSubjects: CannotProceedException(STUDENT_NOT_APPLY_WITH_PREREQUISITE_SUBJECTS)
+
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = USER_IS_NOT_STUDENT)
+class UserIsNotStudentException: CannotProceedException(USER_IS_NOT_STUDENT)

@@ -2,6 +2,7 @@ package ar.edu.unq.pds03backend.api.v2
 
 import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.authentication.LoginRequestDTO
+import ar.edu.unq.pds03backend.dto.authentication.ReestablishPasswordRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.service.IAuthService
 import ar.edu.unq.pds03backend.service.IUserService
@@ -49,9 +50,16 @@ class AuthController(
     // TODO: @RequestHeader (name="Authorization") handle in middleware in SecurityConfig
     @GetMapping("/user")
     @LogExecution
-    fun getByJwt(@RequestHeader (name="Authorization") token: String): UserResponseDTO {
-        return authService.getUserByToken(token)
+    fun getByJwt(@RequestHeader (name="Authorization") token: String): UserResponseDTO =
+        authService.getUserByToken(token)
+
+    @PutMapping("/reestablish/password")
+    @LogExecution
+    fun reestablishPassword(@RequestBody @Valid reestablishPasswordReq: ReestablishPasswordRequestDTO): GenericResponse {
+        authService.reestablishPassword(reestablishPasswordReq.dni)
+        return GenericResponse(HttpStatus.OK, "new user credentials sent to email")
     }
+
 
 
 

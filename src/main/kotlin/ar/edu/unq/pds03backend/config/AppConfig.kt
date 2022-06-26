@@ -2,6 +2,8 @@ package ar.edu.unq.pds03backend.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -12,10 +14,22 @@ import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
+import java.util.concurrent.Executor
 
 @Configuration
 @EnableSwagger2
+@EnableAsync
 class AppConfig {
+
+    @Bean("threadPoolTaskExecutor")
+    fun taskExecutor(): Executor {
+        val executor = ThreadPoolTaskExecutor()
+        executor.corePoolSize = 2
+        executor.maxPoolSize = 10
+        executor.setQueueCapacity(20)
+        executor.initialize()
+        return executor
+    }
 
     @Bean
     fun api(): Docket = Docket(DocumentationType.SWAGGER_2)

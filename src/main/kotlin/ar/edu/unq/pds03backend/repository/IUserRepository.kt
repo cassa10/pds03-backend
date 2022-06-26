@@ -6,5 +6,6 @@ import java.util.*
 
 interface IUserRepository : JpaRepository<User, Long> {
     fun findByEmailAndDni(email: String, dni: String): Optional<User>
+    fun findByDniOrEmail(dni: String, email: String): Optional<User>
     fun findByDni(dni: String): Optional<User>
 }

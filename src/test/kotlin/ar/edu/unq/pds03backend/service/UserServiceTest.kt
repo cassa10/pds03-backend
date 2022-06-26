@@ -5,7 +5,7 @@ import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.repository.IUserRepository
-import ar.edu.unq.pds03backend.service.IUserService
+import ar.edu.unq.pds03backend.service.email.IEmailSender
 import ar.edu.unq.pds03backend.service.impl.UserService
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -17,7 +17,6 @@ import org.junit.Test
 import java.util.*
 
 private const val USER_ID: Long = 1
-private const val USER_NAME = "user name"
 private const val USER_FIRST_NAME = "user first name"
 private const val USER_LAST_NAME = "user last name"
 private const val USER_DNI = "user dni"
@@ -46,6 +45,12 @@ class UserServiceTest {
     private lateinit var quoteRequestRepository: IQuoteRequestRepository
 
     @RelaxedMockK
+    private lateinit var passwordService: IPasswordService
+
+    @RelaxedMockK
+    private lateinit var emailSender: IEmailSender
+
+    @RelaxedMockK
     private lateinit var semesterRepository: ISemesterRepository
 
     private lateinit var userService: IUserService
@@ -53,7 +58,7 @@ class UserServiceTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        userService = UserService(userRepository, quoteRequestRepository, semesterRepository)
+        userService = UserService(userRepository, passwordService, quoteRequestRepository, semesterRepository, emailSender)
     }
 
     @Test(expected = UserNotFoundException::class)
@@ -93,7 +98,6 @@ class UserServiceTest {
         }
         val userMock = mockk<Student> {
             every { id } returns USER_ID
-            every { username } returns USER_NAME
             every { firstName } returns USER_FIRST_NAME
             every { lastName } returns USER_LAST_NAME
             every { dni } returns USER_DNI
@@ -113,7 +117,6 @@ class UserServiceTest {
 
         assertEquals(USER_ID, actual.id)
         assertTrue(actual.isStudent)
-        assertEquals(USER_NAME, actual.username)
         assertEquals(USER_FIRST_NAME, actual.firstName)
         assertEquals(USER_LAST_NAME, actual.lastName)
         assertEquals(USER_EMAIL, actual.email)
@@ -149,7 +152,6 @@ class UserServiceTest {
     fun `given a director when call getById then it should UserResponseDTO`() {
         val userMock = mockk<Student> {
             every { id } returns USER_ID
-            every { username } returns USER_NAME
             every { firstName } returns USER_FIRST_NAME
             every { lastName } returns USER_LAST_NAME
             every { dni } returns USER_DNI
@@ -164,7 +166,6 @@ class UserServiceTest {
 
         assertEquals(USER_ID, actual.id)
         assertFalse(actual.isStudent)
-        assertEquals(USER_NAME, actual.username)
         assertEquals(USER_FIRST_NAME, actual.firstName)
         assertEquals(USER_LAST_NAME, actual.lastName)
         assertEquals(USER_EMAIL, actual.email)
