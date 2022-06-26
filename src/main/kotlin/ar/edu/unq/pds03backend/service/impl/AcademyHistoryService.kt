@@ -1,6 +1,8 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.academyHistory.StudiedDegreeDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvAcademyHistoryRequestDTO
+import ar.edu.unq.pds03backend.mapper.StudiedDegreeMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IAcademyHistoryService
@@ -71,5 +73,11 @@ class AcademyHistoryService(
                 )
             )
         }
+    }
+
+    override fun getAllStudiedDegrees(): List<StudiedDegreeDTO> {
+        val studiedDegrees = studiedDegreeRepository.findAll()
+        val studiedDegreesDTO = studiedDegrees.map { StudiedDegreeMapper.toDTO(it) }
+        return studiedDegreesDTO
     }
 }

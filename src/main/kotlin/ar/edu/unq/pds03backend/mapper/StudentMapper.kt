@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.mapper
 import ar.edu.unq.pds03backend.dto.student.StudentResponseDTO
 import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
+import ar.edu.unq.pds03backend.dto.student.SimpleStudentResponseDTO
 import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.model.Student
 import ar.edu.unq.pds03backend.model.Warning
@@ -16,7 +17,12 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
         email = student.email,
         legajo = student.legajo,
         maxCoefficient = student.maxCoefficient(),
-        enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
+        enrolledDegrees = student.enrolledDegrees.map {
+            EnrolledDegreeResponseDTO.Mapper(
+                it,
+                student.getStudiedDegreeCoefficient(it)
+            ).map()
+        },
     )
 
     fun toStudentWithQuotesAndSubjectsResponseDTO(
@@ -32,9 +38,27 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
             legajo = student.legajo,
             enrolledSubjects = student.enrolledCourses.groupBy { it.subject }
                 .map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) },
-            quoteRequests = quoteRequestsWithWarnings.map { QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it.first, it.second) },
+            quoteRequests = quoteRequestsWithWarnings.map {
+                QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(
+                    it.first,
+                    it.second
+                )
+            },
             maxCoefficient = student.maxCoefficient(),
-            enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
+            enrolledDegrees = student.enrolledDegrees.map {
+                EnrolledDegreeResponseDTO.Mapper(
+                    it,
+                    student.getStudiedDegreeCoefficient(it)
+                ).map()
+            },
         )
 
+    fun toSimpleStudentResponseDTO(student: Student): SimpleStudentResponseDTO = SimpleStudentResponseDTO(
+        student.id!!,
+        student.firstName,
+        student.lastName,
+        student.dni,
+        student.email,
+        student.legajo
+    )
 }

@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.GenericResponse
+import ar.edu.unq.pds03backend.dto.academyHistory.StudiedDegreeDTO
 import ar.edu.unq.pds03backend.service.IAcademyHistoryService
 import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/academy_history")
@@ -24,5 +26,11 @@ class AcademyHistoryController(
         val data = csvService.parseAcademyHistoriesFile(file)
         academyHistoryService.updateAcademyHistory(data)
         return GenericResponse(HttpStatus.OK,"imported successfully")
+    }
+
+    @GetMapping()
+    @LogExecution
+    fun getAllStudiedDegrees(@RequestParam idStudent: Optional<Long>, @RequestParam idDegree: Optional<Long>): List<StudiedDegreeDTO> {
+        return academyHistoryService.getAllStudiedDegrees()
     }
 }
