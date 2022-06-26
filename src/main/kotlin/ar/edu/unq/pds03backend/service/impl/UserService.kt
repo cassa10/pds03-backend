@@ -5,26 +5,49 @@ import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
 import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
+import ar.edu.unq.pds03backend.exception.UserAlreadyExistException
+import ar.edu.unq.pds03backend.exception.UserIsNotStudentException
 import ar.edu.unq.pds03backend.exception.UserNotFoundException
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.IUserRepository
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
+import ar.edu.unq.pds03backend.service.IPasswordService
 import ar.edu.unq.pds03backend.service.IUserService
+import ar.edu.unq.pds03backend.service.email.IEmailSender
 import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
 class UserService(
     @Autowired private val userRepository: IUserRepository,
+    @Autowired private val passwordService: IPasswordService,
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
+    @Autowired private val emailSender: IEmailSender,
 ) : IUserService {
+    @Transactional
+    override fun createStudent(user: User): User {
+        if(!user.isStudent()) throw UserIsNotStudentException()
+        val maybeUser = userRepository.findByDniOrEmail(user.dni, user.email)
+        if(maybeUser.isPresent) throw UserAlreadyExistException()
 
+        val newPassword = passwordService.generatePassword()
+        user.password = passwordService.encryptPassword(newPassword)
+        val savedUser = userRepository.save(user)
+        emailSender.sendNewPasswordMailToUser(user, newPassword)
+        return savedUser
+    }
+
+    @Transactional
+    override fun update(user: User) {
+        userRepository.save(user)
+    }
     override fun findByEmailAndDni(email: String, dni: String): Optional<User> =
         userRepository.findByEmailAndDni(email, dni)
 
@@ -61,7 +84,6 @@ class UserService(
         return UserResponseDTO(
             id = user.id!!,
             isStudent = user.isStudent(),
-            username = user.username,
             firstName = user.firstName,
             lastName = user.lastName,
             dni = user.dni,

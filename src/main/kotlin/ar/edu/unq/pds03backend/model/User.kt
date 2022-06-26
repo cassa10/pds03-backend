@@ -21,13 +21,10 @@ abstract class User(
     val dni: String,
 
     @Column(nullable = false)
-    val password: String,
+    var password: String,
 
     @Column(unique = true, nullable = false)
     val email: String,
-
-    @Column(unique = true, nullable = false)
-    val username: String,
 )
 {
     fun isStudent(): Boolean = false

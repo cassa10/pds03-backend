@@ -8,7 +8,6 @@ import ar.edu.unq.pds03backend.model.QuoteState
 data class UserResponseDTO(
     val id: Long,
     val isStudent: Boolean,
-    val username: String,
     val firstName: String,
     val lastName: String,
     val dni: String,

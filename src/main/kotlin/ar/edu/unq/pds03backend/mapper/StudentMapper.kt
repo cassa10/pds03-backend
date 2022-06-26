@@ -15,7 +15,6 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
         dni = student.dni,
         email = student.email,
         legajo = student.legajo,
-        username = student.username,
         maxCoefficient = student.maxCoefficient(),
         enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
     )
@@ -31,7 +30,6 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
             dni = student.dni,
             email = student.email,
             legajo = student.legajo,
-            username = student.username,
             enrolledSubjects = student.enrolledCourses.groupBy { it.subject }
                 .map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) },
             quoteRequests = quoteRequestsWithWarnings.map { QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it.first, it.second) },

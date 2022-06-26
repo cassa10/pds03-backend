@@ -34,7 +34,6 @@ private const val STUDENT_LAST_NAME = "Student last name"
 private const val STUDENT_DNI = "Student dni"
 private const val STUDENT_EMAIL = "Student email"
 private const val STUDENT_LEGAJO = "Student legajo"
-private const val STUDENT_USERNAME = "Student username"
 private const val DEGREE_ID: Long = 1
 private const val DEGREE_NAME = "Degree name"
 private const val DEGREE_ACRONYM = "Degree acronym"
@@ -286,7 +285,6 @@ class QuoteRequestServiceTest {
             every { dni } returns STUDENT_DNI
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
-            every { username } returns STUDENT_USERNAME
             every { maxCoefficient() } returns 0f
             every { enrolledDegrees } returns listOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
@@ -338,7 +336,6 @@ class QuoteRequestServiceTest {
                 assertEquals(STUDENT_DNI, dni)
                 assertEquals(STUDENT_EMAIL, email)
                 assertEquals(STUDENT_LEGAJO, legajo)
-                assertEquals(STUDENT_USERNAME, username)
                 assertEquals(0f, maxCoefficient)
                 with(enrolledDegrees[0]) {
                     assertEquals(DEGREE_ID, id)
@@ -472,7 +469,6 @@ class QuoteRequestServiceTest {
             every { dni } returns STUDENT_DNI
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
-            every { username } returns STUDENT_USERNAME
             every { maxCoefficient() } returns 0f
             every { enrolledDegrees } returns listOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
@@ -544,7 +540,6 @@ class QuoteRequestServiceTest {
             every { dni } returns STUDENT_DNI
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
-            every { username } returns STUDENT_USERNAME
             every { maxCoefficient() } returns 0f
             every { enrolledDegrees } returns listOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT

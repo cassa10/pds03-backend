@@ -9,6 +9,7 @@ private const val DEGREE_ALREADY_EXISTS = "degree already exists"
 private const val QUOTE_REQUEST_ALREADY_EXISTS = "quote request already exists"
 private const val SUBJECT_NAME_ALREADY_EXISTS = "subject name request already exists"
 private const val SEMESTER_ALREADY_EXISTS = "semester already exists"
+private const val USER_ALREADY_EXISTS = "user with dni or email already exists"
 
 
 
@@ -23,3 +24,6 @@ class SubjectNameAlreadyExistsException : AlreadyExistsException(SUBJECT_NAME_AL
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = SEMESTER_ALREADY_EXISTS)
 class SemesterAlreadyExistException: AlreadyExistsException(SEMESTER_ALREADY_EXISTS)
+
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = USER_ALREADY_EXISTS)
+class UserAlreadyExistException: AlreadyExistsException(USER_ALREADY_EXISTS)

@@ -10,8 +10,7 @@ class Director(
     lastName: String,
     dni: String,
     email: String,
-    username: String,
     password: String,
-) : User(id, firstName, lastName, dni, email, username, password){
+) : User(id=id,firstName=firstName,lastName=lastName,dni=dni,password=password,email=email){
     override fun role(): Role = Role.DIRECTOR
 }
