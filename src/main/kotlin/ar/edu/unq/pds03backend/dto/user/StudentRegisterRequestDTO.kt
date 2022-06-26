@@ -18,12 +18,13 @@ class StudentRegisterRequestDTO(
     val email: String,
     var legajo: String = "",
 ) {
+    fun getDni(): String = dni.toString()
     fun mapToUser(): User =
         Student(
             id = null,
             firstName = firstName,
             lastName = lastName,
-            dni = dni.toString(),
+            dni = getDni(),
             email = email,
             password = "",
             legajo = legajo,

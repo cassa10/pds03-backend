@@ -45,14 +45,10 @@ class AuthService(
     }
 
     override fun reestablishPassword(dni: String) {
-        val user = getUserByDni(dni)
-        if (!user.isStudent()) throw UserIsNotStudentException()
         val newPlainPassword = passwordService.generatePassword()
-        user.password = passwordService.encryptPassword(newPlainPassword)
-        userService.update(user)
+        val user = userService.updatePassword(dni, passwordService.encryptPassword(newPlainPassword))
         emailSender.sendNewPasswordMailToUser(user, newPlainPassword)
     }
-
 
     private fun getUserByDni(dni: String): User {
         return userService.findByDni(dni).orElseThrow { throw UserNotFoundException() }

@@ -25,4 +25,10 @@ class UserController(@Autowired private val userService: IUserService) {
         return GenericResponse(HttpStatus.OK, "user created successfully")
     }
 
+    @PutMapping("/student/{id}")
+    fun update(@PathVariable @Valid id: Long, @RequestBody @Valid studentUpdateReq: StudentRegisterRequestDTO): GenericResponse {
+        userService.update(id, studentUpdateReq)
+        return GenericResponse(HttpStatus.OK, "user updated successfully")
+    }
+
 }

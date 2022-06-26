@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.service.impl
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
 import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
+import ar.edu.unq.pds03backend.dto.user.StudentRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
 import ar.edu.unq.pds03backend.exception.UserAlreadyExistException
@@ -45,9 +46,26 @@ class UserService(
     }
 
     @Transactional
-    override fun update(user: User) {
+    override fun update(id: Long, studentUpdateReq: StudentRegisterRequestDTO) {
+        val user = getUser(id)
+        if(!user.isStudent()) throw UserIsNotStudentException()
+        user.dni = studentUpdateReq.getDni()
+        user.email = studentUpdateReq.email
+        user.firstName = studentUpdateReq.firstName
+        user.lastName = studentUpdateReq.lastName
+        val userWithAlreadyUsedData = userRepository.findByDniOrEmail(user.dni, user.email)
+        if(userWithAlreadyUsedData.isPresent) throw UserAlreadyExistException()
         userRepository.save(user)
     }
+
+    @Transactional
+    override fun updatePassword(dni: String, password: String): User {
+        val user = getUserByDni(dni)
+        if (!user.isStudent()) throw UserIsNotStudentException()
+        user.password = password
+        return userRepository.save(user)
+    }
+
     override fun findByEmailAndDni(email: String, dni: String): Optional<User> =
         userRepository.findByEmailAndDni(email, dni)
 
@@ -100,6 +118,10 @@ class UserService(
         val maybeUser = userRepository.findById(id)
         if (!maybeUser.isPresent) throw UserNotFoundException()
         return maybeUser.get()
+    }
+
+    private fun getUserByDni(dni: String): User {
+        return userRepository.findByDni(dni).orElseThrow { throw UserNotFoundException() }
     }
 
     private fun getCurrentSemester(): Semester {
