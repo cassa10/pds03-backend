@@ -1,7 +1,9 @@
 -- Recommendation: Execute script in order.
 
 -- News:
--- INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('', '', '', '', '2022-05-18 14:30:00'::timestamp);
+INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Gabriela los aprobo', 'Gabriela Arévalo aprobó a todos los alumnos de la materia Práctica de desarrollo de software porque pudo ver que son todos muy buenos profesionales.','https://www.uniagustiniana.edu.co/sites/default/files/styles/noticia_imagen_min_width_992px/public/noticias/2019-10/grado1.jpg?itok=Dy2atdiC', 'recibidos-unq-image','2022-06-28 14:30:00'::timestamp);
+INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Vampiros en la Unque', 'Se reportaron varios acontecimientos extraños en los pasillos de la UNQUE, algunos alumnos aseguran haber visto sujetos colmilludos merodeando cerca del laboratorio de Biotecnología.', 'https://static.eldiario.es/clip/0fe5d46c-ca93-41d6-8c17-c333d1793ab8_16-9-aspect-ratio_default_0.jpg', 'vampiros-unq-image', '2022-05-18 14:30:00'::timestamp);
+INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Confirmado: Fidel es un robot', 'Los últimos estudios entre alumnos logro determinar que Fidel es un Super Robot llamado Lambda creado en lo que fue una vez la URSS.', 'https://i.ytimg.com/vi/goDjvGP_1o0/maxresdefault.jpg', 'img-fidel-alt', '2022-05-10 12:30:00'::timestamp);
 
 -- Validation Configuration (only prerequisite subjects -correlativas-)
 INSERT INTO configurable_validation(validation, active) VALUES (0, true);
