@@ -14,7 +14,7 @@ class DegreeTest {
     @Test
     fun testGivenNewDegreeWithNoSubjectsWhenAddANewSubjectThenReturnACollectionWithThatSubject() {
         val degree = Degree.Builder().build()
-        val subject = Subject.Builder().withName("Subject 1").build()
+        val subject = Subject.Builder().withName("Subject 1").withModule(Module()).build()
         degree.addSubject(subject)
         assertEquals(degree.subjects.count(), 1)
         assertTrue(degree.subjects.contains(subject))
@@ -33,8 +33,8 @@ class DegreeTest {
     @Test
     fun testGivenNewDegreeWithNoSubjectsWhenAddTwoDifferentSubjectsThenReturnACollectionWithThatSubjects() {
         val degree = Degree.Builder().build()
-        val subject1 = Subject.Builder().withName("Subject 1").build()
-        val subject2 = Subject.Builder().withName("Subject 2").build()
+        val subject1 = Subject.Builder().withName("Subject 1").withModule(Module()).build()
+        val subject2 = Subject.Builder().withName("Subject 2").withModule(Module()).build()
         degree.addSubject(subject1)
         degree.addSubject(subject2)
         assertEquals(degree.subjects.count(), 2)
@@ -45,9 +45,9 @@ class DegreeTest {
     @Test
     fun testGivenNewDegreeWithThreeSubjectsWhenDeleteOneSubjectsThenReturnACollectionWithThatSubjectsWithoutDeletedOne() {
         val degree = Degree.Builder().build()
-        val subject1 = Subject.Builder().withName("Subject 1").build()
-        val subject2 = Subject.Builder().withName("Subject 2").build()
-        val subject3 = Subject.Builder().withName("Subject 3").build()
+        val subject1 = Subject.Builder().withName("Subject 1").withModule(Module()).build()
+        val subject2 = Subject.Builder().withName("Subject 2").withModule(Module()).build()
+        val subject3 = Subject.Builder().withName("Subject 3").withModule(Module()).build()
         degree.addSubject(subject1)
         degree.addSubject(subject2)
         degree.addSubject(subject3)
