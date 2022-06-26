@@ -23,7 +23,7 @@ class DegreeTest {
     @Test
     fun testGivenNewDegreeWithNoSubjectsWhenAddTwiceANewSubjectThenReturnACollectionWithThatSubjectOnlyAddedOneTime() {
         val degree = Degree.Builder().build()
-        val subject1 = Subject.Builder().withName("Subject 1").build()
+        val subject1 = Subject.Builder().withName("Subject 1").withModule(Module()).build()
         degree.addSubject(subject1)
         degree.addSubject(subject1)
         assertEquals(degree.subjects.count(), 1)

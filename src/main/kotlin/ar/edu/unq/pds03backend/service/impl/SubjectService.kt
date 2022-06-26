@@ -38,7 +38,11 @@ class SubjectService(
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
         validateSubjectNameAlreadyExist(subjectRequestDTO.name)
         val subjectsFounded = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
-        val addedSubject = subjectRepository.save(Subject.Builder().withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded).build())
+
+        val module = Module()
+        //TODO: obtener modulo de la bd
+        val addedSubject = subjectRepository.save(Subject.Builder(module = module).withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded).build())
+
         degreesFounded.forEach { it.addSubject(addedSubject) }
         degreeRepository.saveAll(degreesFounded)
     }
