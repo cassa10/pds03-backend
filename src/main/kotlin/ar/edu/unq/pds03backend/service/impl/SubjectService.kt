@@ -23,6 +23,7 @@ class SubjectService(
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val configurableValidationRepository: IConfigurableValidationRepository,
+    @Autowired private val moduleRepository: IModuleRepository
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -38,10 +39,14 @@ class SubjectService(
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
         validateSubjectNameAlreadyExist(subjectRequestDTO.name)
         val subjectsFounded = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
+        val maybeModule = moduleRepository.findById(subjectRequestDTO.moduleId)
+        if (!maybeModule.isPresent)
+            throw ModuleNotFoundException()
 
-        val module = Module()
-        //TODO: obtener modulo de la bd
-        val addedSubject = subjectRepository.save(Subject.Builder(module = module).withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded).build())
+        val addedSubject = subjectRepository.save(
+            Subject.Builder().withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded)
+                .withModule(maybeModule.get()).build()
+        )
 
         degreesFounded.forEach { it.addSubject(addedSubject) }
         degreeRepository.saveAll(degreesFounded)
@@ -65,6 +70,12 @@ class SubjectService(
         eliminatedDegrees.forEach {
             it.deleteSubject(subjectToUpdate)
         }
+
+        val maybeModule = moduleRepository.findById(subjectRequestDTO.moduleId)
+        if (!maybeModule.isPresent)
+            throw ModuleNotFoundException()
+        subjectToUpdate.module = maybeModule.get()
+
         degreeRepository.saveAll(eliminatedDegrees)
     }
 
@@ -108,8 +119,10 @@ class SubjectService(
             .filter(handleGetCurrentCoursesFilter(student))
 
         //TODO: Refactor to jpql
-        val currentCoursesRequested = quoteRequestRepository.findAllCoursesWithQuoteRequestInStatesAndStudentIdAndCourseSemesterId(
-            QuoteStateHelper.getPendingStates(), idStudent, currentSemester.id!!)
+        val currentCoursesRequested =
+            quoteRequestRepository.findAllCoursesWithQuoteRequestInStatesAndStudentIdAndCourseSemesterId(
+                QuoteStateHelper.getPendingStates(), idStudent, currentSemester.id!!
+            )
         if (currentCoursesRequested.isNotEmpty())
             currentCourses = currentCourses.minus(currentCoursesRequested.toSet())
 
@@ -140,7 +153,7 @@ class SubjectService(
 
     private fun getSemester(year: Int, isSndSemester: Boolean): Semester {
         val maybeSemester = semesterRepository.findByYearAndIsSndSemester(year, isSndSemester)
-        if(!maybeSemester.isPresent) throw SemesterNotFoundException()
+        if (!maybeSemester.isPresent) throw SemesterNotFoundException()
         return maybeSemester.get()
     }
 
@@ -152,8 +165,8 @@ class SubjectService(
 
     private fun handleGetCurrentCoursesFilter(student: Student): (Course) -> Boolean {
         if (getPrerequisiteSubjectsValidation().active) {
-            return {course -> student.canCourseSubjectWithPrerequisiteSubjects(course.subject)}
+            return { course -> student.canCourseSubjectWithPrerequisiteSubjects(course.subject) }
         }
-        return {course -> student.canCourseSubject(course.subject)}
+        return { course -> student.canCourseSubject(course.subject) }
     }
 }

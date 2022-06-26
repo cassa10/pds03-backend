@@ -14,6 +14,7 @@ private const val SUBJECT_NOT_FOUND = "Subject not found"
 private const val ANY_DEGREE_NOT_FOUND = "any degree not found"
 private const val CONFIGURABLE_VALIDATION_NOT_FOUND = "configurable validation not found"
 private const val PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND = "prerequisite subjects validation configuration not found"
+private const val MODULE_NOT_FOUND = "Module not found"
 
 abstract class NotFoundException(message: String) : RuntimeException(message)
 
@@ -49,3 +50,6 @@ class PrerequisiteSubjectsValidationNotFoundException: NotFoundException(PREREQU
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = NEW_NOT_FOUND)
 class NewNotFoundException: NotFoundException(NEW_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = MODULE_NOT_FOUND)
+class ModuleNotFoundException: NotFoundException(MODULE_NOT_FOUND)
