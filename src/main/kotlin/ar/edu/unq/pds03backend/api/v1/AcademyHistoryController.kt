@@ -31,6 +31,11 @@ class AcademyHistoryController(
     @GetMapping()
     @LogExecution
     fun getAllStudiedDegrees(@RequestParam idStudent: Optional<Long>, @RequestParam idDegree: Optional<Long>): List<StudiedDegreeDTO> {
-        return academyHistoryService.getAllStudiedDegrees()
+        return when {
+            idDegree.isPresent && idStudent.isPresent -> academyHistoryService.getAllStudiedDegreesByStudentAndDegree(idStudent.get(), idDegree.get())
+            idDegree.isPresent -> academyHistoryService.getAllStudiedDegreesByDegree(idDegree.get())
+            idStudent.isPresent -> academyHistoryService.getAllStudiedDegreesByStudent(idStudent.get())
+            else -> academyHistoryService.getAllStudiedDegrees()
+        }
     }
 }

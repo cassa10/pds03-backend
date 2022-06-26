@@ -26,14 +26,20 @@ class AcademyHistoryService(
             val carrera = it.key.second
             val data = it.value
 
-            val coeficiente = data.filter { it.resultado != StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() }.map { it.nota }.average().toFloat()
+            val coeficiente =
+                data.filter { it.resultado != StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() }
+                    .map { it.nota }.average().toFloat()
             val (maybeDegree, maybeStudent) = importStudiedDegree(carrera, legajo, coeficiente)
 
             importStudiedSubjects(data, maybeDegree, maybeStudent)
         }
     }
 
-    private fun importStudiedDegree(carrera: Int, legajo: String, coeficiente: Float): Pair<Optional<Degree>, Optional<Student>> {
+    private fun importStudiedDegree(
+        carrera: Int,
+        legajo: String,
+        coeficiente: Float
+    ): Pair<Optional<Degree>, Optional<Student>> {
         val maybeDegree = degreeRepository.findByGuaraniCode(carrera)
         val maybeStudent = studentRepository.findByLegajo(legajo)
         //TODO: Crear usuario en caso de que no exista
@@ -75,9 +81,15 @@ class AcademyHistoryService(
         }
     }
 
-    override fun getAllStudiedDegrees(): List<StudiedDegreeDTO> {
-        val studiedDegrees = studiedDegreeRepository.findAll()
-        val studiedDegreesDTO = studiedDegrees.map { StudiedDegreeMapper.toDTO(it) }
-        return studiedDegreesDTO
-    }
+    override fun getAllStudiedDegrees(): List<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAll().map { StudiedDegreeMapper.toDTO(it) }
+
+    override fun getAllStudiedDegreesByStudent(idStudent: Long): List<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAllByStudentId(idStudent).map { StudiedDegreeMapper.toDTO(it) }
+
+    override fun getAllStudiedDegreesByDegree(idDegree: Long): List<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAllByDegreeId(idDegree).map { StudiedDegreeMapper.toDTO(it) }
+
+    override fun getAllStudiedDegreesByStudentAndDegree(idStudent: Long, idDegree: Long): List<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree).map { StudiedDegreeMapper.toDTO(it) }
 }
