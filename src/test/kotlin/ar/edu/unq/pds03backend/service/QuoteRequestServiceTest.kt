@@ -197,7 +197,7 @@ class QuoteRequestServiceTest {
         }
 
         val optionalConfigValidationMock = mockk<Optional<ConfigurableValidation>> {
-            every { isEmpty } returns true
+            every { isPresent.not() } returns true
             every { isPresent } returns false
         }
 
