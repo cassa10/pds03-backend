@@ -8,4 +8,5 @@ data class SubjectRequestDTO(
     @field:NotEmpty(message = "'degreeIds' must not be empty") val degreeIds: Collection<Long>,
     @field:NotBlank(message = "'name' must not be blank") val name: String,
     @field:NotNull(message = "'prerequisiteSubjects' must not be null") val prerequisiteSubjects: Collection<Long>,
+    @field:NotNull(message = "'module' must not be null") val moduleId: Long,
 )
