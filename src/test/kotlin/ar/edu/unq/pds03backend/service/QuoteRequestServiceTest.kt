@@ -13,6 +13,7 @@ import io.mockk.mockk
 import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.springframework.data.domain.Sort
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.*
@@ -297,7 +298,7 @@ class QuoteRequestServiceTest {
             every { comment } returns COMMENT
             every { createdOn } returns LocalDateTime.MAX
         }
-        every { quoteRequestRepository.findAllByInStates(any(), any()) } returns listOf(quoteRequestMock)
+        every { quoteRequestRepository.findAllByInStates(any(), any<Sort>()) } returns listOf(quoteRequestMock)
 
         val actual = quoteRequestService.getAll(setOf(mockk()))
 
@@ -378,7 +379,7 @@ class QuoteRequestServiceTest {
         }
         every { courseRepository.findById(any()) } returns Optional.of(courseMock)
         every { studentRepository.findById(any()) } returns Optional.of(studentMock)
-        every { quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+        every { quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(any(), any(), any(), any<Sort>()) } returns emptyList()
 
         val actual = quoteRequestService.getAllByCourseAndStudent(COURSE_ID, STUDENT_ID, emptySet())
 
@@ -402,7 +403,7 @@ class QuoteRequestServiceTest {
             every { id } returns COURSE_ID
         }
         every { courseRepository.findById(any()) } returns Optional.of(courseMock)
-        every { quoteRequestRepository.findAllByCourseIdAndInStates(any(), any(), any()) } returns emptyList()
+        every { quoteRequestRepository.findAllByCourseIdAndInStates(any(), any(), any<Sort>()) } returns emptyList()
 
         val actual = quoteRequestService.getAllByCourse(COURSE_ID, emptySet())
 
@@ -420,7 +421,7 @@ class QuoteRequestServiceTest {
         }
         every { studentRepository.findById(any()) } returns Optional.of(studentMock)
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
-        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any()) } returns emptyList()
+        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any<Sort>()) } returns emptyList()
 
         val actual = quoteRequestService.getAllCurrentSemesterByStudent(STUDENT_ID, emptySet())
 

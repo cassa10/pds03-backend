@@ -7,6 +7,8 @@ import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IAcademyHistoryService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -84,12 +86,24 @@ class AcademyHistoryService(
     override fun getAllStudiedDegrees(): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAll().map { StudiedDegreeMapper.toDTO(it) }
 
+    override fun getAllStudiedDegrees(pageable: Pageable): Page<StudiedDegreeDTO> =
+            studiedDegreeRepository.findAll(pageable).map(StudiedDegreeMapper::toDTO)
+
     override fun getAllStudiedDegreesByStudent(idStudent: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByStudentId(idStudent).map { StudiedDegreeMapper.toDTO(it) }
+
+    override fun getAllStudiedDegreesByStudent(idStudent: Long, pageable: Pageable): Page<StudiedDegreeDTO> =
+            studiedDegreeRepository.findAllByStudentId(idStudent, pageable).map(StudiedDegreeMapper::toDTO)
 
     override fun getAllStudiedDegreesByDegree(idDegree: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByDegreeId(idDegree).map { StudiedDegreeMapper.toDTO(it) }
 
+    override fun getAllStudiedDegreesByDegree(idDegree: Long, pageable: Pageable): Page<StudiedDegreeDTO>  =
+            studiedDegreeRepository.findAllByDegreeId(idDegree, pageable).map(StudiedDegreeMapper::toDTO)
+
     override fun getAllStudiedDegreesByStudentAndDegree(idStudent: Long, idDegree: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree).map { StudiedDegreeMapper.toDTO(it) }
+
+    override fun getAllStudiedDegreesByStudentAndDegree(idStudent: Long, idDegree: Long, pageable: Pageable): Page<StudiedDegreeDTO> =
+            studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree, pageable).map(StudiedDegreeMapper::toDTO)
 }

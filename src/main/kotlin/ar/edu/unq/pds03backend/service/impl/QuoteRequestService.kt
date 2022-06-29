@@ -18,6 +18,9 @@ import ar.edu.unq.pds03backend.service.IQuoteRequestService
 import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -93,6 +96,11 @@ class QuoteRequestService(
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
+    override fun getAll(quoteStates: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestResponseDTO> {
+        val quoteRequests = quoteRequestRepository.findAllByInStates(quoteStates, pageable)
+        return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
+    }
+
     override fun getAllByCourseAndStudent(
         idCourse: Long,
         idStudent: Long,
@@ -112,12 +120,36 @@ class QuoteRequestService(
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
+    override fun getAllByCourseAndStudent(idCourse: Long, idStudent: Long, quoteStates: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestResponseDTO> {
+        val course = courseRepository.findById(idCourse)
+        if (!course.isPresent) throw CourseNotFoundException()
+
+        val student = getStudent(idStudent)
+
+        val quoteRequests = quoteRequestRepository.findAllByCourseIdAndStudentIdAndInStates(
+                course.get().id!!,
+                student.id!!,
+                quoteStates,
+                pageable
+        )
+        return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
+    }
+
     override fun getAllByCourse(idCourse: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO> {
         val course = courseRepository.findById(idCourse)
         if (!course.isPresent) throw CourseNotFoundException()
 
         val quoteRequests =
             quoteRequestRepository.findAllByCourseIdAndInStates(course.get().id!!, quoteStates, getSortByCreatedOnAsc())
+        return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
+    }
+
+    override fun getAllByCourse(idCourse: Long, quoteStates: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestResponseDTO> {
+        val course = courseRepository.findById(idCourse)
+        if (!course.isPresent) throw CourseNotFoundException()
+
+        val quoteRequests =
+                quoteRequestRepository.findAllByCourseIdAndInStates(course.get().id!!, quoteStates, pageable)
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
@@ -133,6 +165,19 @@ class QuoteRequestService(
             quoteStates,
             getSortByCreatedOnAsc()
         )
+        return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
+    }
+
+    override fun getAllCurrentSemesterByStudent(idStudent: Long, quoteStates: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestResponseDTO> {
+        val student = getStudent(idStudent)
+        val currentSemester = getCurrentSemester()
+        val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(
+                student.id!!,
+                currentSemester.id!!,
+                quoteStates,
+                pageable
+        )
+
         return quoteRequests.map { QuoteRequestMapper.toDTO(it) }
     }
 
@@ -153,6 +198,27 @@ class QuoteRequestService(
                 quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
             ).map(it)
         }
+    }
+
+    override fun getQuoteRequestSubjects(states: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestSubjectPendingResponseDTO> {
+        val semester = getCurrentSemester()
+        val quoteRequestSubjectsPending =
+                quoteRequestRepository.findAllByInStatesAndCourseSemesterId(states, semester.id!!, pageable)
+
+        // TODO (REFACTOR): refactor in query
+        val list = mutableListOf<Long>()
+        val res = quoteRequestSubjectsPending.filter {
+            !list.contains(it.course.id).apply {
+                list.add(it.course.id!!)
+            }
+        }.map {
+            QuoteRequestSubjectMapper(
+                    quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), it.course.id!!),
+                    quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
+            ).map(it)
+        }
+
+        return PageImpl(res.toList())
     }
 
     @Transactional

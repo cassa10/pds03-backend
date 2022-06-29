@@ -3,10 +3,11 @@ package ar.edu.unq.pds03backend.service.impl
 import ar.edu.unq.pds03backend.dto.news.NewRequestDTO
 import ar.edu.unq.pds03backend.exception.NewNotFoundException
 import ar.edu.unq.pds03backend.model.New
-import ar.edu.unq.pds03backend.model.QuoteRequest
 import ar.edu.unq.pds03backend.repository.INewRepository
 import ar.edu.unq.pds03backend.service.INewService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,6 +19,9 @@ class NewService(
 ) : INewService {
     override fun getAll(): List<New> =
         newRepository.findAll(Sort.by(Sort.Direction.DESC, New.createdOnFieldName))
+
+    override fun getAll(pageable: Pageable): Page<New>  =
+            newRepository.findAll(pageable)
 
     override fun get(id: Long): New =
         getNewsById(id)
