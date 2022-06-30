@@ -11,4 +11,5 @@ interface IDegreeRepository : JpaRepository<Degree, Long> {
 
     @Query("SELECT ed.degree FROM ExternalDegree ed WHERE ed.guarani_code = :guarani_code")
     fun findByGuaraniCode(guarani_code: Int): Optional<Degree>
+    fun findByAcronym(degreeAcronym: String): Optional<Degree>
 }

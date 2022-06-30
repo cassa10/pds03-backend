@@ -114,6 +114,25 @@ class UserService(
         )
     }
 
+    override fun createOrUpdateStudents(students: List<Student>) {
+        students.forEach {
+            val maybeUser = userRepository.findByDni(it.dni)
+            if(maybeUser.isPresent.not()){
+                createStudent(it)
+            }else{
+                addStudentEnrolledDegreesAndUpdate(maybeUser.get(), it.enrolledDegrees)
+            }
+        }
+    }
+
+    @Transactional
+    fun addStudentEnrolledDegreesAndUpdate(user: User, degrees: Collection<Degree>) {
+        if(user.isStudent().not()) throw UserIsNotStudentException()
+        val studentToUpdate = user as Student
+        degrees.forEach { studentToUpdate.addEnrolledDegree(it) }
+        userRepository.save(studentToUpdate)
+    }
+
     private fun getUser(id: Long): User {
         val maybeUser = userRepository.findById(id)
         if (!maybeUser.isPresent) throw UserNotFoundException()

@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
@@ -19,14 +20,21 @@ import java.util.concurrent.Executor
 @Configuration
 @EnableSwagger2
 @EnableAsync
-class AppConfig {
+class AppConfig(
+    @Value("\${task_executor.core_pool_size}")
+    private val corePoolSize:Int,
+    @Value("\${task_executor.max_pool_size}")
+    private val maxPoolSize:Int,
+    @Value("\${task_executor.queue_capacity}")
+    private val queueCapacity:Int,
+) {
 
     @Bean("threadPoolTaskExecutor")
     fun taskExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor()
-        executor.corePoolSize = 2
-        executor.maxPoolSize = 10
-        executor.setQueueCapacity(20)
+        executor.corePoolSize = corePoolSize
+        executor.maxPoolSize = maxPoolSize
+        executor.setQueueCapacity(queueCapacity)
         executor.initialize()
         return executor
     }
