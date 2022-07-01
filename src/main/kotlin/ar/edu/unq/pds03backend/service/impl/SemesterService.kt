@@ -11,6 +11,8 @@ import ar.edu.unq.pds03backend.model.Semester
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
 import ar.edu.unq.pds03backend.service.ISemesterService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -28,6 +30,10 @@ class SemesterService(@Autowired val semesterRepository: ISemesterRepository) : 
 
     override fun getAll(): List<SemesterResponseDTO> {
         return semesterRepository.findAll().map{ SemesterMapper.toDTO(it) }
+    }
+
+    override fun getAll(pageable: Pageable): Page<SemesterResponseDTO> {
+        return semesterRepository.findAll(pageable).map{ SemesterMapper.toDTO(it) }
     }
 
     @Transactional

@@ -14,6 +14,7 @@ import io.mockk.mockk
 import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.springframework.data.domain.Sort
 import java.util.*
 
 private const val USER_ID: Long = 1
@@ -111,7 +112,7 @@ class UserServiceTest {
         }
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(mockk(relaxed = true))
         every { userRepository.findById(any()) } returns Optional.of(userMock)
-        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any()) } returns listOf(quoteRequestMock)
+        every { quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(any(), any(), any(), any<Sort>()) } returns listOf(quoteRequestMock)
 
         val actual = userService.getById(USER_ID)
 
