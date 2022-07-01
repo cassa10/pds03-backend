@@ -60,12 +60,15 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
     @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
     fun findAllStudentsWithQuoteRequestInStatesAndCourseSemesterId(quoteStates: Set<QuoteState>, semesterId: Long): List<Student>
 
+    @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
+    fun findAllStudentsWithQuoteRequestInStatesAndCourseSemesterId(quoteStates: Set<QuoteState>, semesterId: Long, pageable: Pageable): Page<Student>
+
     @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.course.subject.id = :idSubject AND q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
     fun findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(quoteStates: Set<QuoteState>, idSubject: Long, semesterId: Long): List<Student>
 
+    @Query("SELECT DISTINCT q.student FROM QuoteRequest q WHERE q.course.subject.id = :idSubject AND q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
+    fun findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(quoteStates: Set<QuoteState>, idSubject: Long, semesterId: Long, pageable: Pageable): Page<Student>
+
     @Query("SELECT q FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
     fun findAllByInStatesAndCourseSemesterId(quoteStates: Set<QuoteState>, semesterId: Long, sort: Sort): List<QuoteRequest>
-
-    @Query("SELECT q FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND q.state IN (:quoteStates) ORDER BY q.createdOn")
-    fun findAllByInStatesAndCourseSemesterId(quoteStates: Set<QuoteState>, semesterId: Long, pageable: Pageable): Page<QuoteRequest>
 }

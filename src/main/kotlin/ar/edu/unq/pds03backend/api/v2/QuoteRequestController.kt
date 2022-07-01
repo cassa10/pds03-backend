@@ -2,6 +2,8 @@ package ar.edu.unq.pds03backend.api.v2
 
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesAndSubjectsResponseDTO
+import ar.edu.unq.pds03backend.dto.student.StudentWithQuotesInfoResponseDTO
 import ar.edu.unq.pds03backend.exception.InvalidQuoteStateRequestException
 import ar.edu.unq.pds03backend.model.QuoteState
 import ar.edu.unq.pds03backend.service.IQuoteRequestService
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.Optional
+import javax.validation.Valid
 
 @RestController(value = "V2QuoteRequestController")
 @RequestMapping("/api/v2/quoteRequest")
@@ -31,10 +34,15 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
         }
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/students")
     @LogExecution
-    fun getQuoteRequestSubjects(@RequestParam states: Optional<String>, pageable: Pageable): Page<QuoteRequestSubjectPendingResponseDTO> =
-            quoteRequestService.getQuoteRequestSubjects(getQueryQuoteStates(states), pageable)
+    fun findAllStudentsWithQuoteRequest(@RequestParam states: Optional<String>, pageable: Pageable): Page<StudentWithQuotesInfoResponseDTO> =
+            quoteRequestService.findAllStudentsWithQuoteRequestCurrentSemester(getQueryQuoteStates(states), pageable)
+
+    @GetMapping("/students/subject/{idSubject}")
+    @LogExecution
+    fun findAllStudentsWithQuoteRequestInSubject(@PathVariable @Valid idSubject: Long, @RequestParam states: Optional<String>, pageable: Pageable): Page<StudentWithQuotesAndSubjectsResponseDTO> =
+            quoteRequestService.findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject, getQueryQuoteStates(states), pageable)
 
     private fun getQueryQuoteStates(states: Optional<String>): Set<QuoteState> {
         if(states.isPresent.not()) return QuoteState.values().toSet()

@@ -200,27 +200,6 @@ class QuoteRequestService(
         }
     }
 
-    override fun getQuoteRequestSubjects(states: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestSubjectPendingResponseDTO> {
-        val semester = getCurrentSemester()
-        val quoteRequestSubjectsPending =
-                quoteRequestRepository.findAllByInStatesAndCourseSemesterId(states, semester.id!!, pageable)
-
-        // TODO (REFACTOR): refactor in query
-        val list = mutableListOf<Long>()
-        val res = quoteRequestSubjectsPending.filter {
-            !list.contains(it.course.id).apply {
-                list.add(it.course.id!!)
-            }
-        }.map {
-            QuoteRequestSubjectMapper(
-                    quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), it.course.id!!),
-                    quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
-            ).map(it)
-        }
-
-        return PageImpl(res.toList())
-    }
-
     @Transactional
     override fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO) {
         //TODO (JWT): Add JWT and validate if it belongs to DIRECTOR rol type.
@@ -238,6 +217,20 @@ class QuoteRequestService(
                 QuoteStateHelper.getPendingStates(),
                 it.id!!,
                 semester.id!!
+            )
+            StudentWithQuotesInfoResponseDTO.Mapper(it, numberOfPendingQuoteRequest).map()
+        }
+    }
+
+    override fun findAllStudentsWithQuoteRequestCurrentSemester(states: Set<QuoteState>, pageable: Pageable): Page<StudentWithQuotesInfoResponseDTO> {
+        val semester = getCurrentSemester()
+        val studentsWithQuoteRequests =
+                quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndCourseSemesterId(states, semester.id!!, pageable)
+        return studentsWithQuoteRequests.map {
+            val numberOfPendingQuoteRequest = quoteRequestRepository.countByInStatesAndStudentIdAndCourseSemesterId(
+                    QuoteStateHelper.getPendingStates(),
+                    it.id!!,
+                    semester.id!!
             )
             StudentWithQuotesInfoResponseDTO.Mapper(it, numberOfPendingQuoteRequest).map()
         }
@@ -261,6 +254,25 @@ class QuoteRequestService(
             )
             val quoteRequestWithWarnings =
                 quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
+            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithWarnings)
+        }
+    }
+
+    override fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject: Long, states: Set<QuoteState>, pageable: Pageable): Page<StudentWithQuotesAndSubjectsResponseDTO> {
+        val currentSemester = getCurrentSemester()
+        val studentsWithQuoteRequestsToSubject =
+                quoteRequestRepository.findAllStudentsWithQuoteRequestInStatesAndSubjectIdAndCourseSemesterId(
+                        states, idSubject, currentSemester.id!!, pageable
+                )
+        return studentsWithQuoteRequestsToSubject.map { student ->
+            val quoteRequests = quoteRequestRepository.findAllByStudentIdAndCourseSemesterIdAndInStates(
+                    student.id!!,
+                    currentSemester.id!!,
+                    QuoteStateHelper.getAllStates(),
+                    getSortByCreatedOnAsc()
+            )
+            val quoteRequestWithWarnings =
+                    quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
             StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithWarnings)
         }
     }

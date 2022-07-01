@@ -24,10 +24,11 @@ interface IQuoteRequestService {
     fun getAllCurrentSemesterByStudent(idStudent: Long, quoteStates: Set<QuoteState>): List<QuoteRequestResponseDTO>
     fun getAllCurrentSemesterByStudent(idStudent: Long, quoteStates: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestResponseDTO>
     fun getQuoteRequestSubjects(states: Set<QuoteState>): List<QuoteRequestSubjectPendingResponseDTO>
-    fun getQuoteRequestSubjects(states: Set<QuoteState>, pageable: Pageable): Page<QuoteRequestSubjectPendingResponseDTO>
     fun addAdminComment(idQuoteRequest: Long, adminCommentRequestDTO: AdminCommentRequestDTO)
     fun findAllStudentsWithQuoteRequestCurrentSemester(states: Set<QuoteState>): List<StudentWithQuotesInfoResponseDTO>
+    fun findAllStudentsWithQuoteRequestCurrentSemester(states: Set<QuoteState>, pageable: Pageable): Page<StudentWithQuotesInfoResponseDTO>
     fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject: Long, states: Set<QuoteState>): List<StudentWithQuotesAndSubjectsResponseDTO>
+    fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject: Long, states: Set<QuoteState>, pageable: Pageable): Page<StudentWithQuotesAndSubjectsResponseDTO>
     fun delete(id: Long)
     fun findStudentWithQuoteRequests(idStudent: Long, states: Set<QuoteState>): StudentWithRequestedQuotesResponseDTO
     fun acceptQuoteRequest(id: Long)
