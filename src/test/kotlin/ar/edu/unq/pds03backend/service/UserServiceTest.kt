@@ -105,7 +105,7 @@ class UserServiceTest {
             every { isStudent() } returns true
             every { legajo } returns USER_LEGAJO
             every { maxCoefficient() } returns USER_MAX_COEFFICIENT
-            every { enrolledDegrees } returns listOf(enrolledDegreeMock)
+            every { enrolledDegrees } returns mutableListOf(enrolledDegreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns COEFFICIENT
             every { enrolledCourses } returns mutableListOf(enrolledCourseMock)
         }

@@ -28,7 +28,7 @@ class StudentRegisterRequestDTO(
             email = email,
             password = "",
             legajo = legajo,
-            enrolledDegrees = listOf(),
+            enrolledDegrees = mutableListOf(),
             degree_histories = listOf(),
             enrolledCourses = mutableListOf(),
         )

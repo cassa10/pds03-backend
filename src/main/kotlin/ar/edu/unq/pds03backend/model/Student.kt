@@ -20,7 +20,7 @@ class Student(
         joinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "degree_id", referencedColumnName = "id")],
     )
-    val enrolledDegrees: Collection<Degree>,
+    val enrolledDegrees: MutableCollection<Degree>,
 
     @OneToMany(mappedBy = "student")
     val degree_histories: Collection<StudiedDegree>,
@@ -78,6 +78,12 @@ class Student(
         return canCourseSubject(subject) && passedAllPrerequisiteSubjects(subject)
     }
 
+    fun addEnrolledDegree(degree: Degree) {
+        if (enrolledDegrees.none { it.id == degree.id }){
+            enrolledDegrees.add(degree)
+        }
+    }
+
 
     data class Builder(
         var id: Long? = null,
@@ -87,12 +93,12 @@ class Student(
         var email: String = "",
         var password: String = "",
         var legajo: String = "",
-        var enrolledDegrees: Collection<Degree> = listOf(),
+        var enrolledDegrees: MutableCollection<Degree> = mutableListOf(),
         var degree_histories: Collection<StudiedDegree> = listOf(),
         var enrolledCourses: MutableCollection<Course> = mutableListOf(),
     ) {
 
-        fun build(): Student = Student(id, firstName,lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
+        fun build(): Student = Student(id, firstName, lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
         fun withDni(dni: String) = apply {this.dni = dni}
         fun withLegajo(legajo: String) = apply {this.legajo = legajo}
     }

@@ -60,6 +60,12 @@ class DegreeService(@Autowired private val degreeRepository: IDegreeRepository) 
         degreeRepository.delete(degree.get())
     }
 
+    override fun findByAcronym(degreeAcronym: String): Degree {
+        val maybeDegree = degreeRepository.findByAcronym(degreeAcronym)
+        if (maybeDegree.isPresent.not()) throw DegreeNotFoundException()
+        return maybeDegree.get()
+    }
+
     private fun toResponseDTO(degree: Degree): DegreeResponseDTO {
         return DegreeResponseDTO.Mapper(degree).map()
     }

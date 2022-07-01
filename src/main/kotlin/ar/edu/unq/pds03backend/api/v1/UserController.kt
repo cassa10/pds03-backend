@@ -3,17 +3,22 @@ package ar.edu.unq.pds03backend.api.v1
 import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.user.StudentRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
-import ar.edu.unq.pds03backend.service.IAuthService
+import ar.edu.unq.pds03backend.model.Student
+import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/user")
-class UserController(@Autowired private val userService: IUserService) {
+class UserController(
+    @Autowired private val userService: IUserService,
+    @Autowired private val csvService: ICsvService,
+) {
 
     @GetMapping("/{id}")
     @LogExecution
@@ -31,4 +36,11 @@ class UserController(@Autowired private val userService: IUserService) {
         return GenericResponse(HttpStatus.OK, "user updated successfully")
     }
 
+    @PostMapping("/register/student/massive")
+    @LogExecution
+    fun massiveCreation(@RequestParam("file") file: MultipartFile): GenericResponse {
+        val students = csvService.parseStudents(file)
+        userService.createOrUpdateStudents(students)
+        return GenericResponse(HttpStatus.OK,"massive registration successfully with ${students.size} user")
+    }
 }

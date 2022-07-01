@@ -286,7 +286,7 @@ class QuoteRequestServiceTest {
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
             every { maxCoefficient() } returns 0f
-            every { enrolledDegrees } returns listOf(degreeMock)
+            every { enrolledDegrees } returns mutableListOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
         }
         val quoteRequestMock = mockk<QuoteRequest> {
@@ -470,7 +470,7 @@ class QuoteRequestServiceTest {
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
             every { maxCoefficient() } returns 0f
-            every { enrolledDegrees } returns listOf(degreeMock)
+            every { enrolledDegrees } returns mutableListOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
             every { enrolledCourses } returns mutableListOf(mockk(relaxed = true))
         }
@@ -541,7 +541,7 @@ class QuoteRequestServiceTest {
             every { email } returns STUDENT_EMAIL
             every { legajo } returns STUDENT_LEGAJO
             every { maxCoefficient() } returns 0f
-            every { enrolledDegrees } returns listOf(degreeMock)
+            every { enrolledDegrees } returns mutableListOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
             every { enrolledCourses } returns mutableListOf(mockk(relaxed = true))
             every { passedAllPrerequisiteSubjects(any()) } returns true
