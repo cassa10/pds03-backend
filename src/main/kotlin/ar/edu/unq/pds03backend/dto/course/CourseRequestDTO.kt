@@ -17,5 +17,7 @@ data class CourseRequestDTO(
     val totalQuotes: Int,
     @field:NotEmpty(message = "'hours' must not be empty")
     @field:Valid
-    val hours: List<HourRequestDTO>
+    val hours: List<HourRequestDTO>,
+    @field:NotBlank(message = "'location' must not be blank")
+    val location: String
 )

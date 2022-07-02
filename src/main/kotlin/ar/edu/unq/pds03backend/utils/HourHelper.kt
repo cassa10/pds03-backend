@@ -9,22 +9,26 @@ import java.util.Locale
 object HourHelper {
     fun parseLocalTime(time: String): LocalTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"))
 
-    fun parseHour(dayAndLocalTimes: String): Hour {
+    fun parseHours(daysAndLocalTimes: String): MutableList<Hour> =
+        daysAndLocalTimes.split(" / ").map { dayAndLocalTimes -> parseHour(dayAndLocalTimes) }.toMutableList()
+
+    private fun parseHour(dayAndLocalTimes: String): Hour {
         val values = dayAndLocalTimes.split(" ")
-        return Hour(from = parseLocalTime(values[1]), to = parseLocalTime(values[2]), day = parseDayOfWeek(values[0]))
+        val day = parseDayOfWeek(values[0])
+        val fromHour = parseLocalTime(values[1])
+        val toHour = parseLocalTime(values[3])
+        return Hour(from = fromHour, to = toHour, day = day)
     }
 
     private fun parseDayOfWeek(dayOfWeek: String): DayOfWeek {
         return when (dayOfWeek.uppercase(Locale.getDefault())) {
-            "LUNES" -> DayOfWeek.MONDAY
-            "MARTES" -> DayOfWeek.TUESDAY
-            "MIÉRCOLES" -> DayOfWeek.WEDNESDAY
-            "MIERCOLES" -> DayOfWeek.WEDNESDAY
-            "JUEVES" -> DayOfWeek.THURSDAY
-            "VIERNES" -> DayOfWeek.FRIDAY
-            "SÁBADO" -> DayOfWeek.SATURDAY
-            "SABADO" -> DayOfWeek.SATURDAY
-            "DOMINGO" -> DayOfWeek.SUNDAY
+            "LUN", "LUNES" -> DayOfWeek.MONDAY
+            "MAR", "MARTES" -> DayOfWeek.TUESDAY
+            "MIE", "MIÉRCOLES", "MIERCOLES" -> DayOfWeek.WEDNESDAY
+            "JUE", "JUEVES" -> DayOfWeek.THURSDAY
+            "VIE", "VIERNES" -> DayOfWeek.FRIDAY
+            "SAB", "SÁBADO", "SABADO" -> DayOfWeek.SATURDAY
+            "DOM", "DOMINGO" -> DayOfWeek.SUNDAY
             else -> throw IllegalArgumentException()
         }
     }
