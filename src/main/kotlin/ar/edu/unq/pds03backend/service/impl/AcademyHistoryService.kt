@@ -23,28 +23,28 @@ class AcademyHistoryService(
 ) : IAcademyHistoryService {
 
     override fun updateAcademyHistory(data: List<CsvAcademyHistoryRequestDTO>) {
-        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.legajo, it.carrera) }
+        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.dni, it.codigoCarrera) }
         dataGroupByStudentAndDegree.forEach { it ->
-            val legajo = it.key.first
-            val carrera = it.key.second
+            val dni = it.key.first
+            val codigoCarrera = it.key.second
             val data = it.value
 
             val coeficiente =
                 data.filter { it.resultado != StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() }
-                    .map { it.nota }.average().toFloat()
-            val (maybeDegree, maybeStudent) = importStudiedDegree(carrera, legajo, coeficiente)
+                    .map { it.nota.toInt() }.average().toFloat()
+            val (maybeDegree, maybeStudent) = importStudiedDegree(codigoCarrera, dni, coeficiente)
 
             importStudiedSubjects(data, maybeDegree, maybeStudent)
         }
     }
 
     private fun importStudiedDegree(
-        carrera: Int,
-        legajo: String,
+        codigoCarrera: String,
+        dni: String,
         coeficiente: Float
     ): Pair<Optional<Degree>, Optional<Student>> {
-        val maybeDegree = degreeRepository.findByGuaraniCode(carrera)
-        val maybeStudent = studentRepository.findByLegajo(legajo)
+        val maybeDegree = degreeRepository.findByGuaraniCode(codigoCarrera)
+        val maybeStudent = studentRepository.findByDni(dni)
         //TODO: Crear usuario en caso de que no exista
 
         var maybeStudiedDegree =
@@ -61,7 +61,7 @@ class AcademyHistoryService(
         maybeStudent: Optional<Student>
     ) {
         data.forEach { it ->
-            val maybeSubject = subjectRepository.findByGuaraniCode(it.materia)
+            val maybeSubject = subjectRepository.findByGuaraniCode(it.codigoMateria)
             val maybeStudiedDegree =
                 studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
             val status: StatusStudiedCourse = when (it.resultado) {
@@ -72,7 +72,7 @@ class AcademyHistoryService(
             }
             studiedSubjectRepository.save(
                 StudiedSubject(
-                    null, maybeSubject.get(), it.nota, status, maybeStudiedDegree.get()
+                    null, maybeSubject.get(), it.nota.toInt(), status, maybeStudiedDegree.get()
                 )
             )
         }

@@ -10,6 +10,6 @@ interface IDegreeRepository : JpaRepository<Degree, Long> {
     fun findByNameAndAcronym(name: String, acronym: String): Optional<Degree>
 
     @Query("SELECT ed.degree FROM ExternalDegree ed WHERE ed.guarani_code = :guarani_code")
-    fun findByGuaraniCode(guarani_code: Int): Optional<Degree>
+    fun findByGuaraniCode(guarani_code: String): Optional<Degree>
     fun findByAcronym(degreeAcronym: String): Optional<Degree>
 }
