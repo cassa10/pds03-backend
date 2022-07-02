@@ -79,17 +79,19 @@ class CourseService(
             )
             if (!maybeSemester.isPresent) throw SemesterNotFoundException()
 
-            val maybeSubject = subjectRepository.findByGuaraniCode(it.materia)
-            if (!maybeSubject.isPresent) throw SubjectNotFoundException()
+            val maybeSubject = subjectRepository.findByGuaraniCode(it.codigoMateria)
+            if (!maybeSubject.isPresent)
+                return@forEach
 
             val maybeCourse = courseRepository.findByNameAndSemesterIdAndSubjectId(
                 it.comision,
                 maybeSemester.get().id!!,
                 maybeSubject.get().id!!
             )
-            if (maybeCourse.isPresent) return
+            if (maybeCourse.isPresent)
+                return@forEach
 
-            val hours = it.horarios.split("-").map { horario -> HourHelper.parseHour(horario) }.toMutableList()
+            val hours = if (it.horarios.isNullOrEmpty()) mutableListOf() else HourHelper.parseHours(it.horarios)
 
             courseRepository.save(
                 Course(
@@ -129,7 +131,8 @@ class CourseService(
     }
 
     private fun mapCourseToDTO(course: Course): CourseResponseDTO {
-        val requestedQuotes = quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), course.id!!)
+        val requestedQuotes =
+            quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), course.id!!)
         val acceptedQuotes = quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), course.id!!)
         return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes)
     }

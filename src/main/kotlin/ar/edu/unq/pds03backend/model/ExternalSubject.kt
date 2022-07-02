@@ -13,5 +13,5 @@ class ExternalSubject(
     val subject: Subject,
 
     @Column(unique = true, nullable = false)
-    val guarani_code: Int
-    )
+    val guarani_code: String
+)
