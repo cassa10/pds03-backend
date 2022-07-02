@@ -23,7 +23,7 @@ class AcademyHistoryService(
 ) : IAcademyHistoryService {
 
     override fun updateAcademyHistory(data: List<CsvAcademyHistoryRequestDTO>) {
-        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.dni, it.codigoCarrera) }
+        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.dni.substring(4), it.codigoCarrera) }
         dataGroupByStudentAndDegree.forEach { it ->
             val dni = it.key.first
             val codigoCarrera = it.key.second
@@ -44,7 +44,8 @@ class AcademyHistoryService(
         coeficiente: Float
     ): Pair<Optional<Degree>, Optional<Student>> {
         val maybeDegree = degreeRepository.findByGuaraniCode(codigoCarrera)
-        val maybeStudent = studentRepository.findByDni(dni)
+//        val maybeStudent = studentRepository.findByDni(dni)
+        val maybeStudent = studentRepository.findByDni("11111111")
         //TODO: Crear usuario en caso de que no exista
 
         var maybeStudiedDegree =

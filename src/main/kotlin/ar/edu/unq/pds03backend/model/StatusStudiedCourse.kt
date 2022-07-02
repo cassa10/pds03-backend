@@ -19,5 +19,7 @@ enum class StatusStudiedCourse {
 
     open fun passed(): Boolean = false
     open fun inProgress(): Boolean = false
+
+    //TODO: Cambiar por los nuevos valores del csv
     open fun toValueOfAcademyHistoriesFile(): String = "Pendiente aprobación"
 }
