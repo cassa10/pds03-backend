@@ -23,7 +23,7 @@ class Student(
     val enrolledDegrees: MutableCollection<Degree>,
 
     @OneToMany(mappedBy = "student")
-    val degree_histories: Collection<StudiedDegree>,
+    val degreeHistories: MutableCollection<StudiedDegree>,
 
     @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
     @JoinTable(
@@ -38,7 +38,7 @@ class Student(
     override fun role(): Role = Role.STUDENT
 
     fun isStudyingOrEnrolled(subject: Subject): Boolean =
-        isEnrolled(subject) || degree_histories.any { studiedDegree ->
+        isEnrolled(subject) || degreeHistories.any { studiedDegree ->
             studiedDegree.studied_subjects.any { it.subject == subject && it.inProgress() }
         }
 
@@ -50,18 +50,18 @@ class Student(
     fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
     fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
 
-    fun anyCoefficientIsGreaterThan(number: Float) = degree_histories.any {it.coefficient >= number}
+    fun anyCoefficientIsGreaterThan(number: Float) = degreeHistories.any {it.coefficient >= number}
 
     fun maxCoefficient(): Float {
-        if (degree_histories.isEmpty()) return 0f
-        return degree_histories.maxOf { it.coefficient }
+        if (degreeHistories.isEmpty()) return 0f
+        return degreeHistories.maxOf { it.coefficient }
     }
 
-    fun getStudiedDegreeCoefficient(degree: Degree): Float = degree_histories.find { it.degree == degree }?.coefficient ?: 0f
+    fun getStudiedDegreeCoefficient(degree: Degree): Float = degreeHistories.find { it.degree == degree }?.coefficient ?: 0f
 
     fun getPassedSubjects(): List<Subject> {
         val result: MutableList<Subject> = mutableListOf()
-        degree_histories.forEach { studiedDegree ->
+        degreeHistories.forEach { studiedDegree ->
             result.addAll(studiedDegree.studied_subjects.filter{ it.passed() }.map{ it.subject })
         }
         return result
@@ -84,6 +84,38 @@ class Student(
         }
     }
 
+    //addStudiedDegree: Return true if add element
+    fun addStudiedDegree(studiedDegree: StudiedDegree): Boolean {
+        if (degreeHistories.none { it.degree.id == studiedDegree.degree.id }){
+            studiedDegree.student = this
+            degreeHistories.add(studiedDegree)
+            return true
+        }
+        return false
+    }
+
+    fun addOrUpdateStudiedDegree(studiedDegree: StudiedDegree) {
+        if (addStudiedDegree(studiedDegree).not()){
+            degreeHistories.forEach {
+                if (it.degree.id == studiedDegree.degree.id ) {
+                    it.isRegular = studiedDegree.isRegular
+                    it.plan = studiedDegree.plan
+                    it.quality = studiedDegree.quality
+                    it.registryState = studiedDegree.registryState
+                    it.location = studiedDegree.location
+                }
+            }
+        }
+    }
+
+    fun getStudiedDegreeByDegree(degree: Degree): StudiedDegree =
+        degreeHistories.find { it.degree.id == degree.id }!!
+
+    fun existStudiedDegreeWithQuoteRequestCondition(degrees: MutableCollection<Degree>): Boolean =
+        degreeHistories.any { studiedDegree ->
+            degrees.any { studiedDegree.degree.id == it.id && studiedDegree.isQuoteRequestCondition() }
+        }
+
 
     data class Builder(
         var id: Long? = null,
@@ -94,7 +126,7 @@ class Student(
         var password: String = "",
         var legajo: String = "",
         var enrolledDegrees: MutableCollection<Degree> = mutableListOf(),
-        var degree_histories: Collection<StudiedDegree> = listOf(),
+        var degree_histories: MutableCollection<StudiedDegree> = mutableListOf(),
         var enrolledCourses: MutableCollection<Course> = mutableListOf(),
     ) {
 

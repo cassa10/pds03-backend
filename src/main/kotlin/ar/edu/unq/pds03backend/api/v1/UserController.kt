@@ -1,9 +1,9 @@
 package ar.edu.unq.pds03backend.api.v1
 
 import ar.edu.unq.pds03backend.dto.GenericResponse
+import ar.edu.unq.pds03backend.dto.user.DirectorRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.StudentRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
-import ar.edu.unq.pds03backend.model.Student
 import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
@@ -25,9 +25,15 @@ class UserController(
     fun getById(@PathVariable @Valid id: Long): UserResponseDTO = userService.getById(id)
 
     @PostMapping("/register/student")
-    fun create(@RequestBody @Valid studentRegisterReq: StudentRegisterRequestDTO): GenericResponse {
-        userService.createStudent(studentRegisterReq.mapToUser())
-        return GenericResponse(HttpStatus.OK, "user created successfully")
+    fun createStudent(@RequestBody @Valid studentRegisterReq: StudentRegisterRequestDTO): GenericResponse {
+        userService.createUser(studentRegisterReq.mapToUser())
+        return GenericResponse(HttpStatus.OK, "student created successfully")
+    }
+
+    @PostMapping("/register/director")
+    fun createDirector(@RequestBody @Valid directorRegisterDTO: DirectorRegisterRequestDTO): GenericResponse {
+        userService.createUser(directorRegisterDTO.mapToUser())
+        return GenericResponse(HttpStatus.OK, "student created successfully")
     }
 
     @PutMapping("/student/{id}")

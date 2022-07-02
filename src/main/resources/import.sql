@@ -32,8 +32,6 @@ INSERT INTO modules(name) VALUES ('Seminario Final');
 INSERT INTO modules(name) VALUES ('Taller de Formación Humanística');
 INSERT INTO modules(name) VALUES ('Otros requerimientos');
 
-INSERT INTO studied_degrees(student_id, degree_id, coefficient) VALUES (4, 1, 7.0);
-
 -- Relation with Users and Degrees
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,1);
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (1,2);
@@ -45,6 +43,18 @@ INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,1);
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (3,2);
 
 INSERT INTO student_enrolled_degree(student_id, degree_id) VALUES (4,1);
+
+-- Studied degrees (must exist one per student_enrolled_degree)
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (1, 1, 4.0, '2015', 0, 0, true, 'Bernal');
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (1, 2, 3.0, '2015', 0, 0, true, 'Bernal');
+
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (2, 1, 3.0, '2015', 0, 0, true, 'Bernal');
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (2, 2, 5.0, '2015', 0, 0, true, 'Bernal');
+
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (3, 1, 9.0, '2015', 0, 0, true, 'Bernal');
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (3, 2, 8.0, '2015', 0, 0, true, 'Bernal');
+
+INSERT INTO studied_degrees(student_id, degree_id, coefficient, plan, registry_state, quality, is_regular, location) VALUES (4, 1, 7.0, '2015', 0, 0, true, 'Bernal');
 
 -- Subjects:
 

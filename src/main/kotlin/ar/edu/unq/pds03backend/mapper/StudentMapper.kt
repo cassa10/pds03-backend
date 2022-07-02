@@ -20,7 +20,8 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
         enrolledDegrees = student.enrolledDegrees.map {
             EnrolledDegreeResponseDTO.Mapper(
                 it,
-                student.getStudiedDegreeCoefficient(it)
+                student.getStudiedDegreeCoefficient(it),
+                student.getStudiedDegreeByDegree(it)
             ).map()
         },
     )
@@ -48,7 +49,8 @@ object StudentMapper : Mapper<Student, StudentResponseDTO> {
             enrolledDegrees = student.enrolledDegrees.map {
                 EnrolledDegreeResponseDTO.Mapper(
                     it,
-                    student.getStudiedDegreeCoefficient(it)
+                    student.getStudiedDegreeCoefficient(it),
+                    student.getStudiedDegreeByDegree(it)
                 ).map()
             },
         )

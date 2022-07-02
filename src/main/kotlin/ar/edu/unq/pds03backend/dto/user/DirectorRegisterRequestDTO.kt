@@ -1,10 +1,11 @@
 package ar.edu.unq.pds03backend.dto.user
 
+import ar.edu.unq.pds03backend.model.Director
 import ar.edu.unq.pds03backend.model.Student
 import ar.edu.unq.pds03backend.model.User
 import javax.validation.constraints.*
 
-class StudentRegisterRequestDTO(
+class DirectorRegisterRequestDTO(
     @field:NotBlank(message = "firstName mustn't be blank")
     val firstName: String,
     @field:NotBlank(message = "lastName mustn't be blank")
@@ -16,20 +17,15 @@ class StudentRegisterRequestDTO(
     @field:NotBlank(message = "email mustn't be blank")
     @field:Email(message = "invalid email")
     val email: String,
-    var legajo: String = "",
 ) {
+
     fun getDni(): String = dni.toString()
-    fun mapToUser(): User =
-        Student(
+    fun mapToUser(): User = Director(
             id = null,
             firstName = firstName,
             lastName = lastName,
             dni = getDni(),
             email = email,
             password = "",
-            legajo = legajo,
-            enrolledDegrees = mutableListOf(),
-            degreeHistories = mutableListOf(),
-            enrolledCourses = mutableListOf(),
-        )
+    )
 }

@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.exception.UserNotFoundException
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
+import ar.edu.unq.pds03backend.repository.IStudiedDegreeRepository
 import ar.edu.unq.pds03backend.repository.IUserRepository
 import ar.edu.unq.pds03backend.service.email.IEmailSender
 import ar.edu.unq.pds03backend.service.impl.UserService
@@ -54,12 +55,15 @@ class UserServiceTest {
     @RelaxedMockK
     private lateinit var semesterRepository: ISemesterRepository
 
+    @RelaxedMockK
+    private lateinit var studiedDegreeRepository: IStudiedDegreeRepository
+
     private lateinit var userService: IUserService
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        userService = UserService(userRepository, passwordService, quoteRequestRepository, semesterRepository, emailSender)
+        userService = UserService(userRepository, passwordService, quoteRequestRepository, semesterRepository, emailSender, studiedDegreeRepository)
     }
 
     @Test(expected = UserNotFoundException::class)
@@ -97,6 +101,15 @@ class UserServiceTest {
             every { name } returns DEGREE_NAME
             every { acronym } returns DEGREE_ACRONYM
         }
+        val studiedDegreeMock = mockk<StudiedDegree> {
+            every { degree } returns enrolledDegreeMock
+            every { coefficient } returns 0f
+            every { registryState } returns RegistryState.ACCEPTED
+            every { quality } returns QualityState.ACTIVE
+            every { isRegular } returns true
+            every { location } returns "Bernal"
+            every { plan } returns "2015"
+        }
         val userMock = mockk<Student> {
             every { id } returns USER_ID
             every { firstName } returns USER_FIRST_NAME
@@ -109,6 +122,8 @@ class UserServiceTest {
             every { enrolledDegrees } returns mutableListOf(enrolledDegreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns COEFFICIENT
             every { enrolledCourses } returns mutableListOf(enrolledCourseMock)
+            every { degreeHistories } returns mutableListOf(studiedDegreeMock)
+            every { getStudiedDegreeByDegree(any()) } returns studiedDegreeMock
         }
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(mockk(relaxed = true))
         every { userRepository.findById(any()) } returns Optional.of(userMock)
