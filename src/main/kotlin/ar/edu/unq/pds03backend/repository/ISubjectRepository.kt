@@ -11,4 +11,7 @@ interface ISubjectRepository : JpaRepository<Subject, Long> {
 
     @Query("SELECT es.subject FROM ExternalSubject es WHERE es.guarani_code = :guarani_code")
     fun findByGuaraniCode(guarani_code: Int): Optional<Subject>
+
+    @Query("SELECT es.subject FROM ExternalSubject es WHERE es.guarani_code = :guarani_code")
+    fun findByGuaraniCode(guarani_code: String): Optional<Subject>
 }
