@@ -13,6 +13,8 @@ private const val QUOTE_REQUEST_CANNOT_DELETE = "quote request cannot be deleted
 private const val QUOTE_REQUEST_CANNOT_CREATE_EXPIRED = "quote request cannot be created because current semester limit dates have expired"
 private const val STUDENT_NOT_APPLY_WITH_PREREQUISITE_SUBJECTS = "student is not passed all prerequisite subjects of some subject"
 private const val USER_IS_NOT_STUDENT = "user is not student"
+private const val USER_IS_NOT_DIRECTOR = "user is not director"
+private const val STUDENT_NOT_APPLY_WITH_DEGREE_CONDITIONS = "student not apply with  degree conditions. Degree conditions are registry_state: ACCEPTED, quality: ACTIVE and isRegular: TRUE"
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = SUBJECT_CANNOT_DELETE)
 class CannotDeleteSubjectWithCoursesException: CannotProceedException(SUBJECT_CANNOT_DELETE)
@@ -26,6 +28,9 @@ class StudentHasAlreadyEnrolledSubject: CannotProceedException(STUDENT_HAS_ALREA
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = STUDENT_NOT_ENROLLED_IN_SOME_DEGREE)
 class StudentNotEnrolledInSomeDegree: CannotProceedException(STUDENT_NOT_ENROLLED_IN_SOME_DEGREE)
 
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = STUDENT_NOT_APPLY_WITH_DEGREE_CONDITIONS)
+class StudentNotApplyWithStudiedDegreeConditions: CannotProceedException(STUDENT_NOT_APPLY_WITH_DEGREE_CONDITIONS)
+
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = QUOTE_REQUEST_CANNOT_DELETE)
 class CannotDeleteQuoteRequestException: CannotProceedException(QUOTE_REQUEST_CANNOT_DELETE)
 
@@ -37,3 +42,6 @@ class StudentNotApplyWithPrerequisiteSubjects: CannotProceedException(STUDENT_NO
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = USER_IS_NOT_STUDENT)
 class UserIsNotStudentException: CannotProceedException(USER_IS_NOT_STUDENT)
+
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = USER_IS_NOT_DIRECTOR)
+class UserIsNotDirectorException: CannotProceedException(USER_IS_NOT_DIRECTOR)

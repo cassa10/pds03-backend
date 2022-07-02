@@ -15,6 +15,7 @@ private const val ANY_DEGREE_NOT_FOUND = "any degree not found"
 private const val CONFIGURABLE_VALIDATION_NOT_FOUND = "configurable validation not found"
 private const val PREREQUISITE_SUBJECTS_VALIDATION_NOT_FOUND = "prerequisite subjects validation configuration not found"
 private const val MODULE_NOT_FOUND = "Module not found"
+private const val STUDIED_DEGREE_NOT_FOUND = "studied degree not found. Suggestion: import student in register students csv with present degree"
 
 abstract class NotFoundException(message: String) : RuntimeException(message)
 
@@ -53,3 +54,6 @@ class NewNotFoundException: NotFoundException(NEW_NOT_FOUND)
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = MODULE_NOT_FOUND)
 class ModuleNotFoundException: NotFoundException(MODULE_NOT_FOUND)
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = STUDIED_DEGREE_NOT_FOUND)
+class StudiedDegreeNotFoundException: NotFoundException(STUDIED_DEGREE_NOT_FOUND)

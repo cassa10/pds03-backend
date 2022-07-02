@@ -2,11 +2,11 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.csv.CsvAcademyHistoryRequestDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvAcademyOfferRequestDTO
+import ar.edu.unq.pds03backend.dto.csv.CsvStudentWithDegreeDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvStudentRequestDTO
 import ar.edu.unq.pds03backend.exception.CsvImportException
 import ar.edu.unq.pds03backend.exception.EmptyFileException
 import ar.edu.unq.pds03backend.model.Degree
-import ar.edu.unq.pds03backend.model.Student
 import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.IDegreeService
 import com.opencsv.bean.CsvToBean
@@ -34,25 +34,25 @@ class CsvService(
     override fun parseAcademyOfferFile(file: MultipartFile): List<CsvAcademyOfferRequestDTO> =
         parseCsv(file) { createCSVAcademyOfferToBean(it).parse() }
 
-    override fun parseStudents(file: MultipartFile): List<Student> {
+    override fun parseStudents(file: MultipartFile): List<CsvStudentWithDegreeDTO> {
         val parsedStudents = parseCsv(file) { createCSVUserToBean(it).parse() }
         var degree: Degree? = null
-        return parsedStudents.map {
+        return parsedStudents.sortedBy { it.degree }.map {
             if (degree == null || degree!!.acronym != it.getDegreeAcronym()){
-                degree = tryToGetDegree(it.getDegreeAcronym())
+                degree = getDegreeByAcronym(it.getDegreeAcronym())
             }
-            it.map(degree)
+            it.map(degree!!)
         }
     }
 
-    private fun tryToGetDegree(acronym: String): Degree? {
-        var degree: Degree? = null
+    private fun getDegreeByAcronym(acronym: String): Degree {
         try {
-            degree = degreeService.findByAcronym(acronym)
+            return degreeService.findByAcronym(acronym)
         } catch (e: Exception) {
             logger.error("error when find degree with acronym: ${acronym}, exception message: ${e.message}")
+            //Throw exception anyway
+            throw e
         }
-        return degree
     }
 
     //TODO Refactor: mapper to class with interface

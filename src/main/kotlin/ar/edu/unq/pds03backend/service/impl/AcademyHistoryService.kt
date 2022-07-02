@@ -2,6 +2,7 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.academyHistory.StudiedDegreeDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvAcademyHistoryRequestDTO
+import ar.edu.unq.pds03backend.exception.StudiedDegreeNotFoundException
 import ar.edu.unq.pds03backend.mapper.StudiedDegreeMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
@@ -48,13 +49,7 @@ class AcademyHistoryService(
 
         var maybeStudiedDegree =
             studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
-        if (!maybeStudiedDegree.isPresent) {
-            studiedDegreeRepository.save(
-                StudiedDegree(
-                    null, maybeDegree.get(), maybeStudent.get(), coeficiente, mutableListOf()
-                )
-            )
-        }
+        if (!maybeStudiedDegree.isPresent) throw StudiedDegreeNotFoundException()
         //TODO: Contemplar el caso de que ya haya información del alumno para la carrera. No importar todas las materias, agregar solo las que no estén registradas
 
         return Pair(maybeDegree, maybeStudent)

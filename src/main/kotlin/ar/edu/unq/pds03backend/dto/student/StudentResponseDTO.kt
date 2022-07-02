@@ -41,7 +41,7 @@ class StudentWithQuotesInfoResponseDTO(
                 legajo = student.legajo,
                 requested_quotes = numberOfPendingQuoteRequest,
                 maxCoefficient = student.maxCoefficient(),
-                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
+                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it), student.getStudiedDegreeByDegree(it)).map() },
             )
     }
 }
@@ -68,7 +68,7 @@ class StudentWithRequestedQuotesResponseDTO(
                 email = student.email,
                 legajo = student.legajo,
                 maxCoefficient = student.maxCoefficient(),
-                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map() },
+                enrolledDegrees = student.enrolledDegrees.map { EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it), student.getStudiedDegreeByDegree(it)).map() },
                 enrolledCourses = student.enrolledCourses.map {
                     CourseWithSubjectInfoResponseDTO.Mapper(it).map()
                 },

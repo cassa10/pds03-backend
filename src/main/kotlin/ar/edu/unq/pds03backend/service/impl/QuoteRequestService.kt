@@ -19,7 +19,6 @@ import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -54,9 +53,9 @@ class QuoteRequestService(
         if (courses.isEmpty()) throw CourseNotFoundException()
 
         val student = getStudent(quoteRequestRequestDTO.idStudent)
-
         if (courses.any { !student.isStudyingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
         if (courses.any { student.isStudyingOrEnrolled(it.subject) }) throw StudentHasAlreadyEnrolledSubject()
+        if (courses.any { !student.existStudiedDegreeWithQuoteRequestCondition(it.subject.degrees) }) throw StudentNotApplyWithStudiedDegreeConditions()
 
         val prerequisiteSubjectsValidation = getPrerequisiteSubjectsValidation()
         if (prerequisiteSubjectsValidation.validate(courses.any { !student.passedAllPrerequisiteSubjects(it.subject) })) throw StudentNotApplyWithPrerequisiteSubjects()

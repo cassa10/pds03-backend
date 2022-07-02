@@ -11,6 +11,11 @@ object StudiedDegreeMapper : Mapper<StudiedDegree, StudiedDegreeDTO> {
             coefficient = studiedDegree.coefficient,
             degree = SimpleDegreeResponseDTO(studiedDegree.degree.id!!, studiedDegree.degree.name, studiedDegree.degree.acronym),
             student = StudentMapper.toSimpleStudentResponseDTO(studiedDegree.student),
-            studiedSubjects = studiedDegree.studied_subjects.map { StudiedSubjectMapper.toDTO(it) }
+            studiedSubjects = studiedDegree.studied_subjects.map { StudiedSubjectMapper.toDTO(it) },
+            registryState = studiedDegree.registryState,
+            plan = studiedDegree.plan,
+            quality = studiedDegree.quality,
+            isRegular = studiedDegree.isRegular,
+            location = studiedDegree.location,
         )
 }

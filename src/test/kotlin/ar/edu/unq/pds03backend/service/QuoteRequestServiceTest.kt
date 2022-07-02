@@ -195,6 +195,7 @@ class QuoteRequestServiceTest {
         val studentMock = mockk<Student>(relaxed = true) {
             every { isStudyingAnyDegree(any()) } returns true
             every { isStudyingOrEnrolled(any()) } returns false
+            every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns true
         }
 
         val optionalConfigValidationMock = mockk<Optional<ConfigurableValidation>> {
@@ -206,6 +207,31 @@ class QuoteRequestServiceTest {
         every { courseRepository.findAllById(any()) } returns listOf(courseMock)
         every { studentRepository.findById(STUDENT_ID) } returns Optional.of(studentMock)
         every { configurableValidationRepository.findByValidation(Validation.PREREQUISITE_SUBJECTS) } returns optionalConfigValidationMock
+
+        quoteRequestService.create(quoteRequestRequestDto)
+    }
+
+    @Test(expected = StudentNotApplyWithStudiedDegreeConditions::class)
+    fun `given a student who does not meet studied degree conditions when create quote request then it should throw StudentNotApplyWithStudiedDegreeConditions`() {
+        val courseMock = mockk<Course>(relaxed = true)
+        val quoteRequestRequestDto = mockk<QuoteRequestRequestDTO> {
+            every { idCourses } returns listOf(1)
+            every { idStudent } returns STUDENT_ID
+        }
+
+        val semesterMock = mockk<Semester> {
+            every { isAcceptQuoteRequestsAvailable() } returns true
+        }
+
+        val studentMock = mockk<Student>(relaxed = true) {
+            every { isStudyingAnyDegree(any()) } returns true
+            every { isStudyingOrEnrolled(any()) } returns false
+            every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns false
+        }
+
+        every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
+        every { courseRepository.findAllById(any()) } returns listOf(courseMock)
+        every { studentRepository.findById(STUDENT_ID) } returns Optional.of(studentMock)
 
         quoteRequestService.create(quoteRequestRequestDto)
     }
@@ -225,6 +251,7 @@ class QuoteRequestServiceTest {
         val studentMock = mockk<Student>(relaxed = true) {
             every { isStudyingAnyDegree(any()) } returns true
             every { isStudyingOrEnrolled(any()) } returns false
+            every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns true
         }
 
         val configValidation = mockk<ConfigurableValidation> {
@@ -279,6 +306,15 @@ class QuoteRequestServiceTest {
             every { name } returns DEGREE_NAME
             every { acronym } returns DEGREE_ACRONYM
         }
+        val studiedDegreeMock = mockk<StudiedDegree> {
+            every { degree } returns degreeMock
+            every { coefficient } returns 7f
+            every { registryState } returns RegistryState.ACCEPTED
+            every { quality } returns QualityState.ACTIVE
+            every { isRegular } returns true
+            every { location } returns "Bernal"
+            every { plan } returns "2015"
+        }
         val studentMock = mockk<Student> {
             every { id } returns STUDENT_ID
             every { firstName } returns STUDENT_FIRST_NAME
@@ -289,6 +325,8 @@ class QuoteRequestServiceTest {
             every { maxCoefficient() } returns 0f
             every { enrolledDegrees } returns mutableListOf(degreeMock)
             every { getStudiedDegreeCoefficient(any()) } returns STUDENT_COEFFICIENT
+            every { degreeHistories } returns mutableListOf(studiedDegreeMock)
+            every { getStudiedDegreeByDegree(any()) } returns studiedDegreeMock
         }
         val quoteRequestMock = mockk<QuoteRequest> {
             every { id } returns QUOTE_REQUEST_ID

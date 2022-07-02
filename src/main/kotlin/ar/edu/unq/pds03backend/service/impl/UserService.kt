@@ -1,18 +1,17 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.csv.CsvStudentWithDegreeDTO
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
 import ar.edu.unq.pds03backend.dto.user.SimpleEnrolledSubjectsDataDTO
 import ar.edu.unq.pds03backend.dto.user.StudentRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
-import ar.edu.unq.pds03backend.exception.SemesterNotFoundException
-import ar.edu.unq.pds03backend.exception.UserAlreadyExistException
-import ar.edu.unq.pds03backend.exception.UserIsNotStudentException
-import ar.edu.unq.pds03backend.exception.UserNotFoundException
+import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.IUserRepository
 import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
 import ar.edu.unq.pds03backend.repository.ISemesterRepository
+import ar.edu.unq.pds03backend.repository.IStudiedDegreeRepository
 import ar.edu.unq.pds03backend.service.IPasswordService
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.service.email.IEmailSender
@@ -31,13 +30,13 @@ class UserService(
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val emailSender: IEmailSender,
+    @Autowired private val studiedDegreeRepository: IStudiedDegreeRepository,
 ) : IUserService {
+
     @Transactional
-    override fun createStudent(user: User): User {
-        if(!user.isStudent()) throw UserIsNotStudentException()
+    override fun createUser(user: User): User {
         val maybeUser = userRepository.findByDniOrEmail(user.dni, user.email)
         if(maybeUser.isPresent) throw UserAlreadyExistException()
-
         val newPassword = passwordService.generatePassword()
         user.password = passwordService.encryptPassword(newPassword)
         val savedUser = userRepository.save(user)
@@ -88,7 +87,7 @@ class UserService(
             val student = user as Student
             legajo = student.legajo
             enrolledDegrees = student.enrolledDegrees.map {
-                EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it)).map()
+                EnrolledDegreeResponseDTO.Mapper(it, student.getStudiedDegreeCoefficient(it), student.getStudiedDegreeByDegree(it)).map()
             }
             maxCoefficient = student.maxCoefficient()
             enrolledSubjects = student.enrolledCourses.map {
@@ -114,23 +113,38 @@ class UserService(
         )
     }
 
-    override fun createOrUpdateStudents(students: List<Student>) {
-        students.forEach {
-            val maybeUser = userRepository.findByDni(it.dni)
+    override fun createOrUpdateStudents(studentsDTO: List<CsvStudentWithDegreeDTO>) {
+        studentsDTO.forEach {
+            val maybeUser = userRepository.findByDni(it.student.dni)
+            val degree = it.degree
+            val studiedDegree = StudiedDegree.Builder().withDegree(degree)
+                .withPlan(it.plan).withQuality(it.quality).withIsRegular(it.isRegular)
+                .withRegistryState(it.registryState).withLocation(it.location)
+                .build()
             if(maybeUser.isPresent.not()){
-                createStudent(it)
+                createDegreeHistoryAndStudent(it.student, studiedDegree)
             }else{
-                addStudentEnrolledDegreesAndUpdate(maybeUser.get(), it.enrolledDegrees)
+                addStudentEnrolledAndStudiedDegreeAndUpdate(maybeUser.get(), degree, studiedDegree)
             }
         }
     }
 
     @Transactional
-    fun addStudentEnrolledDegreesAndUpdate(user: User, degrees: Collection<Degree>) {
+    fun createDegreeHistoryAndStudent(student:Student, studiedDegree: StudiedDegree) {
+        studiedDegree.student = createUser(student) as Student
+        studiedDegreeRepository.save(studiedDegree)
+    }
+
+    @Transactional
+    fun addStudentEnrolledAndStudiedDegreeAndUpdate(user: User, degree: Degree, studiedDegree: StudiedDegree) {
         if(user.isStudent().not()) throw UserIsNotStudentException()
         val studentToUpdate = user as Student
-        degrees.forEach { studentToUpdate.addEnrolledDegree(it) }
+        studentToUpdate.addEnrolledDegree(degree)
         userRepository.save(studentToUpdate)
+        studentToUpdate.addOrUpdateStudiedDegree(studiedDegree)
+        studentToUpdate.degreeHistories.forEach {
+            studiedDegreeRepository.save(it)
+        }
     }
 
     private fun getUser(id: Long): User {
