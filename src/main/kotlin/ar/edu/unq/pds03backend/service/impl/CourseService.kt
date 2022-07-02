@@ -47,6 +47,7 @@ class CourseService(
                 assigned_teachers = courseRequestDTO.assignedTeachers.joinToString(),
                 total_quotes = courseRequestDTO.totalQuotes,
                 hours = hours,
+                location = courseRequestDTO.location
             )
         )
     }
@@ -100,7 +101,8 @@ class CourseService(
                     name = it.comision,
                     assigned_teachers = it.profesores,
                     total_quotes = it.cupo,
-                    hours = hours
+                    hours = hours,
+                    location = it.ubicacion
                 )
             )
         }

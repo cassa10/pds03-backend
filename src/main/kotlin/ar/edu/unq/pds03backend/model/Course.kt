@@ -27,7 +27,10 @@ class Course(
         var total_quotes: Int,
 
         @OneToMany(cascade =  [CascadeType.ALL])
-        var hours: MutableCollection<Hour>
+        var hours: MutableCollection<Hour>,
+
+        @Column(nullable = false)
+        var location: String,
 )
 {
         fun isCurrent(): Boolean = semester.isCurrent()
