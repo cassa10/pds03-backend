@@ -1,9 +1,6 @@
 package ar.edu.unq.pds03backend.repository
 
-import ar.edu.unq.pds03backend.model.Course
-import ar.edu.unq.pds03backend.model.QuoteRequest
-import ar.edu.unq.pds03backend.model.QuoteState
-import ar.edu.unq.pds03backend.model.Student
+import ar.edu.unq.pds03backend.model.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -20,6 +17,12 @@ interface IQuoteRequestRepository : JpaRepository<QuoteRequest, Long> {
 
     @Query("SELECT COUNT(q) FROM QuoteRequest q WHERE q.student.id = :studentId AND q.course.semester.id = :semesterId AND q.state IN (:quoteStates)")
     fun countByInStatesAndStudentIdAndCourseSemesterId(quoteStates: Set<QuoteState>, studentId: Long, semesterId: Long): Int
+
+    @Query("SELECT COUNT(q) FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND :degree MEMBER OF q.course.subject.degrees AND q.state IN (:quoteStates)")
+    fun countByDegreeAndSemesterIdAndInQuoteStates(quoteStates: Set<QuoteState>, semesterId: Long, degree: Degree): Int
+
+    @Query("SELECT COUNT(q) FROM QuoteRequest q WHERE q.course.semester.id = :semesterId AND :studentId = q.student.id AND :degree MEMBER OF q.course.subject.degrees AND q.state IN (:quoteStates)")
+    fun countByDegreeAndStudentIdAndSemesterIdAndInQuoteStates(quoteStates: Set<QuoteState>, studentId: Long, semesterId: Long, degree: Degree): Int
 
     //filters
     fun findByCourseIdAndStudentId(idCourse: Long, idStudent: Long): Optional<QuoteRequest>

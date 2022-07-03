@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeStatisticsResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
@@ -32,6 +33,7 @@ class QuoteRequestService(
     @Autowired private val studentRepository: IStudentRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val configurableValidationRepository: IConfigurableValidationRepository,
+    @Autowired private val degreeRepository: IDegreeRepository,
 ) : IQuoteRequestService {
 
     companion object {
@@ -324,6 +326,29 @@ class QuoteRequestService(
         val quoteRequest = getQuoteRequest(id)
         quoteRequest.rollbackToPending()
         quoteRequestRepository.save(quoteRequest)
+    }
+
+    override fun getAllStatistics(): List<DegreeStatisticsResponseDTO> {
+        //TODO (JWT):  Add JWT and validate if it belongs to DIRECTOR rol type.
+        val degrees = degreeRepository.findAll()
+        val currentSemesterId = getCurrentSemester().id!!
+        return degrees.map {
+            val pendingQuotes = quoteRequestRepository.countByDegreeAndSemesterIdAndInQuoteStates(QuoteStateHelper.getPendingStates(), currentSemesterId, it)
+            val approvedQuotes = quoteRequestRepository.countByDegreeAndSemesterIdAndInQuoteStates(setOf(QuoteState.APPROVED), currentSemesterId, it)
+            val revokedQuotes = quoteRequestRepository.countByDegreeAndSemesterIdAndInQuoteStates(setOf(QuoteState.REVOKED), currentSemesterId, it)
+            DegreeStatisticsResponseDTO.Mapper(it, pendingQuotes, approvedQuotes, revokedQuotes).map()
+        }
+    }
+
+    override fun getStatisticsByStudentId(studentId: Long): List<DegreeStatisticsResponseDTO> {
+        val degrees = degreeRepository.findAll()
+        val currentSemesterId = getCurrentSemester().id!!
+        return degrees.map {
+            val pendingQuotes = quoteRequestRepository.countByDegreeAndStudentIdAndSemesterIdAndInQuoteStates(QuoteStateHelper.getPendingStates(), studentId, currentSemesterId, it)
+            val approvedQuotes = quoteRequestRepository.countByDegreeAndStudentIdAndSemesterIdAndInQuoteStates(setOf(QuoteState.APPROVED), studentId, currentSemesterId, it)
+            val revokedQuotes = quoteRequestRepository.countByDegreeAndStudentIdAndSemesterIdAndInQuoteStates(setOf(QuoteState.REVOKED), studentId, currentSemesterId, it)
+            DegreeStatisticsResponseDTO.Mapper(it, pendingQuotes, approvedQuotes, revokedQuotes).map()
+        }
     }
 
     private fun getQuoteRequest(id: Long): QuoteRequest {

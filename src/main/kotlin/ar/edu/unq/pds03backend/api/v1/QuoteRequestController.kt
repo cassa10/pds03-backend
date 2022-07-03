@@ -3,6 +3,7 @@ package ar.edu.unq.pds03backend.api.v1
 import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeStatisticsResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithWarningsResponseDTO
@@ -104,6 +105,14 @@ class QuoteRequestController(@Autowired private val quoteRequestService: IQuoteR
     fun rollbackToPendingQuoteRequest(@PathVariable @Valid id: Long): GenericResponse {
         quoteRequestService.rollbackToPendingRequest(id)
         return GenericResponse(HttpStatus.OK, "quote request rollback to pending successfully")
+    }
+
+    @GetMapping("/statistics")
+    fun getStatistics(@RequestParam idStudent: Optional<Long>): List<DegreeStatisticsResponseDTO> {
+        return when {
+            idStudent.isPresent -> quoteRequestService.getStatisticsByStudentId(idStudent.get())
+                else -> quoteRequestService.getAllStatistics()
+        }
     }
 
     private fun getQueryQuoteStates(states: Optional<String>): Set<QuoteState> {

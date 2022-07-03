@@ -1,6 +1,7 @@
 package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.dto.QuoteRequestSubjectPendingResponseDTO
+import ar.edu.unq.pds03backend.dto.degree.DegreeStatisticsResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.AdminCommentRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestRequestDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestResponseDTO
@@ -34,4 +35,6 @@ interface IQuoteRequestService {
     fun acceptQuoteRequest(id: Long)
     fun revokeQuoteRequest(id: Long)
     fun rollbackToPendingRequest(id: Long)
+    fun getAllStatistics(): List<DegreeStatisticsResponseDTO>
+    fun getStatisticsByStudentId(studentId: Long): List<DegreeStatisticsResponseDTO>
 }
