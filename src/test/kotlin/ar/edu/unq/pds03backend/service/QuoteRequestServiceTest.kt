@@ -55,6 +55,10 @@ class QuoteRequestServiceTest {
     @RelaxedMockK
     private lateinit var semesterRepository: ISemesterRepository
 
+
+    @RelaxedMockK
+    private lateinit var degreeRepository: IDegreeRepository
+
     @RelaxedMockK
     private lateinit var configurableValidationRepository: IConfigurableValidationRepository
 
@@ -68,7 +72,8 @@ class QuoteRequestServiceTest {
                 courseRepository,
                 studentRepository,
                 semesterRepository,
-                configurableValidationRepository
+                configurableValidationRepository,
+                degreeRepository
         )
     }
 
