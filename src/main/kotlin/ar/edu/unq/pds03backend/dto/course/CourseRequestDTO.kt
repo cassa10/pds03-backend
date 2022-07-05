@@ -8,6 +8,8 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 
 data class CourseRequestDTO(
+    @field:NotBlank(message = "'externalId' must not be blank")
+    val externalId: String,
     @field:NotBlank(message = "'name' must not be blank")
     val name: String,
     @field:NotEmpty(message = "'assignedTeachers' must not be empty")

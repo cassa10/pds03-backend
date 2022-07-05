@@ -1,9 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
-import ar.edu.unq.pds03backend.dto.csv.CsvAcademyHistoryRequestDTO
-import ar.edu.unq.pds03backend.dto.csv.CsvAcademyOfferRequestDTO
-import ar.edu.unq.pds03backend.dto.csv.CsvStudentWithDegreeDTO
-import ar.edu.unq.pds03backend.dto.csv.CsvStudentRequestDTO
+import ar.edu.unq.pds03backend.dto.csv.*
 import ar.edu.unq.pds03backend.exception.CsvImportException
 import ar.edu.unq.pds03backend.exception.EmptyFileException
 import ar.edu.unq.pds03backend.model.Degree
@@ -34,8 +31,8 @@ class CsvService(
     override fun parseAcademyOfferFile(file: MultipartFile): List<CsvAcademyOfferRequestDTO> =
         parseCsv(file) { createCSVAcademyOfferToBean(it).parse() }
 
-    override fun parseStudents(file: MultipartFile): List<CsvStudentWithDegreeDTO> {
-        val parsedStudents = parseCsv(file) { createCSVUserToBean(it).parse() }
+    override fun parseStudentsWithDegree(file: MultipartFile): List<CsvStudentWithDegreeDTO> {
+        val parsedStudents = parseCsv(file) { createCSVStudentToBean(it).parse() }
         var degree: Degree? = null
         return parsedStudents.sortedBy { it.degree }.map {
             if (degree == null || degree!!.acronym != it.getDegreeAcronym()){
@@ -44,6 +41,9 @@ class CsvService(
             it.map(degree!!)
         }
     }
+
+    override fun parseStudentsCoursesRegistration(file: MultipartFile): List<CsvStudentCourseRegistrationRequestDTO> =
+        parseCsv(file) { createCSVStudentCourseRegistrationToBean(it).parse() }
 
     private fun getDegreeByAcronym(acronym: String): Degree {
         try {
@@ -55,7 +55,6 @@ class CsvService(
         }
     }
 
-    //TODO Refactor: mapper to class with interface
     private fun <T> parseCsv(file: MultipartFile, mapper: (BufferedReader?) -> List<T>): List<T> {
         validateFileIsNotEmpty(file)
         var fileReader: BufferedReader? = null
@@ -72,7 +71,7 @@ class CsvService(
         }
     }
 
-    private fun createCSVUserToBean(fileReader: BufferedReader?): CsvToBean<CsvStudentRequestDTO> =
+    private fun createCSVStudentToBean(fileReader: BufferedReader?): CsvToBean<CsvStudentRequestDTO> =
         CsvToBeanBuilder<CsvStudentRequestDTO>(fileReader)
             .withType(CsvStudentRequestDTO::class.java)
             .withIgnoreLeadingWhiteSpace(true)
@@ -87,6 +86,12 @@ class CsvService(
     private fun createCSVAcademyOfferToBean(fileReader: BufferedReader?): CsvToBean<CsvAcademyOfferRequestDTO> =
         CsvToBeanBuilder<CsvAcademyOfferRequestDTO>(fileReader)
             .withType(CsvAcademyOfferRequestDTO::class.java)
+            .withIgnoreLeadingWhiteSpace(true)
+            .build()
+
+    private fun createCSVStudentCourseRegistrationToBean(fileReader: BufferedReader?): CsvToBean<CsvStudentCourseRegistrationRequestDTO> =
+        CsvToBeanBuilder<CsvStudentCourseRegistrationRequestDTO>(fileReader)
+            .withType(CsvStudentCourseRegistrationRequestDTO::class.java)
             .withIgnoreLeadingWhiteSpace(true)
             .build()
 

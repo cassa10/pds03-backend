@@ -308,6 +308,8 @@ class QuoteRequestService(
         val quoteRequest = getQuoteRequest(id)
         //Validate if student was already accepted in other quote request on same subject
         if (quoteRequest.student.isEnrolled(quoteRequest.course.subject)) throw StudentHasAlreadyEnrolledSubject()
+        val currentQuotes = quoteRequest.course.total_quotes - courseRepository.countByEnrolledStudentsInCourse(quoteRequest.course.id!!)
+        if (currentQuotes <= 0) throw CourseWithNoQuotes()
         quoteRequest.accept()
         quoteRequestRepository.save(quoteRequest)
     }

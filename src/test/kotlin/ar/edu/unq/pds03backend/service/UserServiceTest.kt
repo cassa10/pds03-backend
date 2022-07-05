@@ -2,10 +2,7 @@ package ar.edu.unq.pds03backend.service
 
 import ar.edu.unq.pds03backend.exception.UserNotFoundException
 import ar.edu.unq.pds03backend.model.*
-import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
-import ar.edu.unq.pds03backend.repository.ISemesterRepository
-import ar.edu.unq.pds03backend.repository.IStudiedDegreeRepository
-import ar.edu.unq.pds03backend.repository.IUserRepository
+import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.email.IEmailSender
 import ar.edu.unq.pds03backend.service.impl.UserService
 import io.mockk.MockKAnnotations
@@ -58,12 +55,15 @@ class UserServiceTest {
     @RelaxedMockK
     private lateinit var studiedDegreeRepository: IStudiedDegreeRepository
 
+    @RelaxedMockK
+    private lateinit var courseRepository: ICourseRepository
+
     private lateinit var userService: IUserService
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        userService = UserService(userRepository, passwordService, quoteRequestRepository, semesterRepository, emailSender, studiedDegreeRepository)
+        userService = UserService(userRepository, passwordService, quoteRequestRepository, semesterRepository, emailSender, studiedDegreeRepository, courseRepository)
     }
 
     @Test(expected = UserNotFoundException::class)

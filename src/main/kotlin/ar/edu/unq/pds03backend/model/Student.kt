@@ -47,7 +47,11 @@ class Student(
     fun isStudyingAnyDegree(degrees: Collection<Degree>): Boolean =
         enrolledDegrees.any { enrolledDegree -> degrees.any { enrolledDegree.id!! == it.id!! } }
 
-    fun addEnrolledCourse(course: Course) = enrolledCourses.add(course)
+    fun addEnrolledCourse(course: Course) {
+        if(enrolledCourses.none { it.id == course.id }){
+            enrolledCourses.add(course)
+        }
+    }
     fun deleteEnrolledCourse(course: Course) = enrolledCourses.remove(course)
 
     fun anyCoefficientIsGreaterThan(number: Float) = degreeHistories.any {it.coefficient >= number}

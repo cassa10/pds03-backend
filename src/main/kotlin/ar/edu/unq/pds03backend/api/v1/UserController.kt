@@ -45,8 +45,16 @@ class UserController(
     @PostMapping("/register/student/massive")
     @LogExecution
     fun massiveCreation(@RequestParam("file") file: MultipartFile): GenericResponse {
-        val students = csvService.parseStudents(file)
-        userService.createOrUpdateStudents(students)
-        return GenericResponse(HttpStatus.OK,"massive registration successfully with ${students.size} user")
+        val students = csvService.parseStudentsWithDegree(file)
+        val successfulEntries = userService.createOrUpdateStudents(students)
+        return GenericResponse(HttpStatus.OK,"massive registration with ${students.size} entries was successfullly with $successfulEntries entries")
+    }
+
+    @PostMapping("/student/enrolled/courses/current")
+    @LogExecution
+    fun massiveCourseRegistration(@RequestParam("file") file: MultipartFile): GenericResponse {
+        val courseRegistration = csvService.parseStudentsCoursesRegistration(file)
+        val successfulEntries = userService.importMassiveCourseRegistration(courseRegistration)
+        return GenericResponse(HttpStatus.OK,"massive course registration with ${courseRegistration.size} entries was successfully with $successfulEntries entries")
     }
 }

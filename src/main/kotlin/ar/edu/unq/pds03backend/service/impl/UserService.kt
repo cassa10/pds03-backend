@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.csv.CsvStudentCourseRegistrationRequestDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvStudentWithDegreeDTO
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.dto.user.RequestedSubjectsDTO
@@ -8,15 +9,14 @@ import ar.edu.unq.pds03backend.dto.user.StudentRegisterRequestDTO
 import ar.edu.unq.pds03backend.dto.user.UserResponseDTO
 import ar.edu.unq.pds03backend.exception.*
 import ar.edu.unq.pds03backend.model.*
-import ar.edu.unq.pds03backend.repository.IUserRepository
-import ar.edu.unq.pds03backend.repository.IQuoteRequestRepository
-import ar.edu.unq.pds03backend.repository.ISemesterRepository
-import ar.edu.unq.pds03backend.repository.IStudiedDegreeRepository
+import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IPasswordService
 import ar.edu.unq.pds03backend.service.IUserService
 import ar.edu.unq.pds03backend.service.email.IEmailSender
+import ar.edu.unq.pds03backend.service.logger.LogExecution
 import ar.edu.unq.pds03backend.utils.QuoteStateHelper
 import ar.edu.unq.pds03backend.utils.SemesterHelper
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -31,8 +31,11 @@ class UserService(
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val emailSender: IEmailSender,
     @Autowired private val studiedDegreeRepository: IStudiedDegreeRepository,
+    @Autowired private val courseRepository: ICourseRepository,
 ) : IUserService {
-
+    companion object {
+        private val logger = KotlinLogging.logger { }
+    }
     @Transactional
     override fun createUser(user: User): User {
         val maybeUser = userRepository.findByDniOrEmail(user.dni, user.email)
@@ -113,8 +116,10 @@ class UserService(
         )
     }
 
-    override fun createOrUpdateStudents(studentsDTO: List<CsvStudentWithDegreeDTO>) {
+    override fun createOrUpdateStudents(studentsDTO: List<CsvStudentWithDegreeDTO>): Int {
+        var successfulEntries = 0
         studentsDTO.forEach {
+            var errorFound = false
             val maybeUser = userRepository.findByDni(it.student.dni)
             val degree = it.degree
             val studiedDegree = StudiedDegree.Builder().withDegree(degree)
@@ -124,9 +129,39 @@ class UserService(
             if(maybeUser.isPresent.not()){
                 createDegreeHistoryAndStudent(it.student, studiedDegree)
             }else{
-                addStudentEnrolledAndStudiedDegreeAndUpdate(maybeUser.get(), degree, studiedDegree)
+                errorFound = addStudentEnrolledAndStudiedDegreeAndUpdate(maybeUser.get(), degree, studiedDegree)
+            }
+            if (errorFound.not()) {
+                successfulEntries++
             }
         }
+        return successfulEntries
+    }
+
+    override fun importMassiveCourseRegistration(courseRegistration: List<CsvStudentCourseRegistrationRequestDTO>): Int {
+        var student: Student? = null
+        var successfulEntries = 0
+        courseRegistration.sortedBy { it.getStudentDni() }.forEach {
+            try {
+                if(student == null || student!!.dni != it.getStudentDni()){
+                    student = getStudentByDni(it.getStudentDni())
+                }
+                val course = getCurrentCourseByExternalId(it.getCourseExternalId())
+                addEnrolledCourseAndUpdateStudent(student!!, course)
+                successfulEntries++
+            }catch (e:Exception){
+                logger.error("cannot import $it with student dni: ${it.getStudentDni()} and course externalId: ${it.getCourseExternalId()}. Exception message: ${e.message}")
+            }
+        }
+        return successfulEntries
+    }
+
+    @Transactional
+    fun addEnrolledCourseAndUpdateStudent(student: Student, course: Course) {
+        if (!student.isStudyingAnyDegree(course.subject.degrees)) throw StudentNotEnrolledInSomeDegree()
+        if (student.isStudyingOrEnrolled(course.subject)) throw StudentHasAlreadyEnrolledSubject()
+        student.addEnrolledCourse(course)
+        userRepository.save(student)
     }
 
     @Transactional
@@ -136,15 +171,22 @@ class UserService(
     }
 
     @Transactional
-    fun addStudentEnrolledAndStudiedDegreeAndUpdate(user: User, degree: Degree, studiedDegree: StudiedDegree) {
-        if(user.isStudent().not()) throw UserIsNotStudentException()
-        val studentToUpdate = user as Student
-        studentToUpdate.addEnrolledDegree(degree)
-        userRepository.save(studentToUpdate)
-        studentToUpdate.addOrUpdateStudiedDegree(studiedDegree)
-        studentToUpdate.degreeHistories.forEach {
-            studiedDegreeRepository.save(it)
+    fun addStudentEnrolledAndStudiedDegreeAndUpdate(user: User, degree: Degree, studiedDegree: StudiedDegree): Boolean {
+        var errorFound = false
+        try {
+            if(user.isStudent().not()) throw UserIsNotStudentException()
+            val studentToUpdate = user as Student
+            studentToUpdate.addEnrolledDegree(degree)
+            userRepository.save(studentToUpdate)
+            studentToUpdate.addOrUpdateStudiedDegree(studiedDegree)
+            studentToUpdate.degreeHistories.forEach {
+                studiedDegreeRepository.save(it)
+            }
+        }catch (e: Exception){
+            errorFound = true
+            logger.error("cannot update student with dni: ${user.dni}. Exception message: ${e.message}")
         }
+        return errorFound
     }
 
     private fun getUser(id: Long): User {
@@ -168,4 +210,14 @@ class UserService(
     }
 
     private fun getSortByCreatedOnAsc(): Sort = Sort.by(Sort.Direction.ASC, QuoteRequest.createdOnFieldName)
+
+    private fun getStudentByDni(dni: String): Student {
+        val user = getUserByDni(dni)
+        if (!user.isStudent()) throw UserIsNotStudentException()
+        return user as Student
+    }
+
+    private fun getCurrentCourseByExternalId(externalId: String): Course =
+        courseRepository.findByExternalIdAndSemesterId(externalId, getCurrentSemester().id!!).orElseThrow { throw CourseNotFoundException() }
+
 }
