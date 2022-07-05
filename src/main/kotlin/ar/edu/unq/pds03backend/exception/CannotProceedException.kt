@@ -15,6 +15,7 @@ private const val STUDENT_NOT_APPLY_WITH_PREREQUISITE_SUBJECTS = "student is not
 private const val USER_IS_NOT_STUDENT = "user is not student"
 private const val USER_IS_NOT_DIRECTOR = "user is not director"
 private const val STUDENT_NOT_APPLY_WITH_DEGREE_CONDITIONS = "student not apply with  degree conditions. Degree conditions are registry_state: ACCEPTED, quality: ACTIVE and isRegular: TRUE"
+private const val COURSE_WITH_NO_QUOTES = "course with no quotes"
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = SUBJECT_CANNOT_DELETE)
 class CannotDeleteSubjectWithCoursesException: CannotProceedException(SUBJECT_CANNOT_DELETE)
@@ -45,3 +46,6 @@ class UserIsNotStudentException: CannotProceedException(USER_IS_NOT_STUDENT)
 
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = USER_IS_NOT_DIRECTOR)
 class UserIsNotDirectorException: CannotProceedException(USER_IS_NOT_DIRECTOR)
+
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = COURSE_WITH_NO_QUOTES)
+class CourseWithNoQuotes: CannotProceedException(COURSE_WITH_NO_QUOTES)

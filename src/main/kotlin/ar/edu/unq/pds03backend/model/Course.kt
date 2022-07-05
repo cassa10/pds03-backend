@@ -31,6 +31,9 @@ class Course(
 
         @Column(nullable = false)
         var location: String,
+
+        @Column(name = "external_id", nullable = false)
+        var externalId: String,
 )
 {
         fun isCurrent(): Boolean = semester.isCurrent()

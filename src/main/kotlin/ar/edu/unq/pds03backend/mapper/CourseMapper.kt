@@ -8,7 +8,7 @@ import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
 import ar.edu.unq.pds03backend.model.Course
 
 object CourseMapper {
-    fun toDTO(course: Course, requestedQuotes: Int, acceptedQuotes: Int): CourseResponseDTO = CourseResponseDTO(
+    fun toDTO(course: Course, requestedQuotes: Int, acceptedQuotes: Int, usedQuotes: Int): CourseResponseDTO = CourseResponseDTO(
         id = course.id!!,
         semester = SemesterMapper.toDTO(course.semester),
         subject = SubjectMapper.toSimpleDTO(course.subject),
@@ -16,7 +16,7 @@ object CourseMapper {
         assigned_teachers = course.assigned_teachers,
         hours = course.hours.map { HourResponseDTO.Mapper(it).map() },
         totalQuotes = course.total_quotes,
-        currentQuotes = course.total_quotes - acceptedQuotes,
+        currentQuotes = course.total_quotes - usedQuotes,
         acceptedQuotes = acceptedQuotes,
         requestedQuotes = requestedQuotes,
     )

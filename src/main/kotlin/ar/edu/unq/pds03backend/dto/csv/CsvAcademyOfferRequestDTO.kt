@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.dto.csv
 
+import ar.edu.unq.pds03backend.utils.CsvCourseHelper
 import com.opencsv.bean.CsvBindByName
 
 data class CsvAcademyOfferRequestDTO(
@@ -18,4 +19,6 @@ data class CsvAcademyOfferRequestDTO(
     
     var profesores: String = "",
     var cupo: Int = 30,
-)
+){
+    fun getExternalId(): String = CsvCourseHelper.getExternalId(comision)
+}

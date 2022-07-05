@@ -38,9 +38,16 @@ class CourseService(
     @Transactional
     override fun create(idSemester: Long, idSubject: Long, courseRequestDTO: CourseRequestDTO) {
         val (semester, subject) = getSemesterAndSubject(idSemester, idSubject)
+        val maybeCourse = courseRepository.findByExternalIdAndSemesterIdAndSubjectId(
+            courseRequestDTO.externalId,
+            semester.id!!,
+            subject.id!!
+        )
+        if (maybeCourse.isPresent) throw CourseAlreadyExist()
         val hours = mapHours(courseRequestDTO.hours)
         courseRepository.save(
             Course(
+                externalId = courseRequestDTO.externalId,
                 semester = semester,
                 subject = subject,
                 name = courseRequestDTO.name,
@@ -84,18 +91,19 @@ class CourseService(
             if (!maybeSubject.isPresent)
                 return@forEach
 
-            val maybeCourse = courseRepository.findByNameAndSemesterIdAndSubjectId(
-                it.comision,
+            val maybeCourse = courseRepository.findByExternalIdAndSemesterIdAndSubjectId(
+                it.getExternalId(),
                 maybeSemester.get().id!!,
                 maybeSubject.get().id!!
             )
             if (maybeCourse.isPresent)
                 return@forEach
 
-            val hours = if (it.horarios.isNullOrEmpty()) mutableListOf() else HourHelper.parseHours(it.horarios)
+            val hours = if (it.horarios.isEmpty()) mutableListOf() else HourHelper.parseHours(it.horarios)
 
             courseRepository.save(
                 Course(
+                    externalId = it.getExternalId(),
                     semester = maybeSemester.get(),
                     subject = maybeSubject.get(),
                     name = it.comision,
@@ -136,6 +144,7 @@ class CourseService(
         val requestedQuotes =
             quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), course.id!!)
         val acceptedQuotes = quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), course.id!!)
-        return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes)
+        val usedQuotes = courseRepository.countByEnrolledStudentsInCourse(course.id!!)
+        return CourseMapper.toDTO(course, requestedQuotes, acceptedQuotes, usedQuotes)
     }
 }
