@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface IStudentRepository : JpaRepository<Student, Long> {
-    fun findByLegajo(legajo: String): Optional<Student>
+    fun findByDni(dni: String): Optional<Student>
 }

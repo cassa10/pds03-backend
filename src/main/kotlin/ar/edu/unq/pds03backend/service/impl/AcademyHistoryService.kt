@@ -2,16 +2,15 @@ package ar.edu.unq.pds03backend.service.impl
 
 import ar.edu.unq.pds03backend.dto.academyHistory.StudiedDegreeDTO
 import ar.edu.unq.pds03backend.dto.csv.CsvAcademyHistoryRequestDTO
-import ar.edu.unq.pds03backend.exception.StudiedDegreeNotFoundException
 import ar.edu.unq.pds03backend.mapper.StudiedDegreeMapper
 import ar.edu.unq.pds03backend.model.*
 import ar.edu.unq.pds03backend.repository.*
 import ar.edu.unq.pds03backend.service.IAcademyHistoryService
+import ar.edu.unq.pds03backend.utils.StatusStudiedCourseHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class AcademyHistoryService(
@@ -23,56 +22,36 @@ class AcademyHistoryService(
 ) : IAcademyHistoryService {
 
     override fun updateAcademyHistory(data: List<CsvAcademyHistoryRequestDTO>) {
-        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.legajo, it.carrera) }
-        dataGroupByStudentAndDegree.forEach { it ->
-            val legajo = it.key.first
-            val carrera = it.key.second
-            val data = it.value
+        val dataGroupByStudentAndDegree = data.groupBy { Pair(it.dni.substring(4), it.codigoCarrera) }
 
-            val coeficiente =
-                data.filter { it.resultado != StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() }
-                    .map { it.nota }.average().toFloat()
-            val (maybeDegree, maybeStudent) = importStudiedDegree(carrera, legajo, coeficiente)
+        dataGroupByStudentAndDegree.forEach {
+            val maybeDegree = degreeRepository.findByGuaraniCode(it.key.second)
+            val maybeStudent = studentRepository.findByDni(it.key.first)
+            if (!maybeStudent.isPresent) return@forEach
 
-            importStudiedSubjects(data, maybeDegree, maybeStudent)
+            var maybeStudiedDegree =
+                studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
+            if (!maybeStudiedDegree.isPresent) return@forEach
+
+            importStudiedSubjects(it.value, maybeStudiedDegree.get())
         }
     }
 
-    private fun importStudiedDegree(
-        carrera: Int,
-        legajo: String,
-        coeficiente: Float
-    ): Pair<Optional<Degree>, Optional<Student>> {
-        val maybeDegree = degreeRepository.findByGuaraniCode(carrera)
-        val maybeStudent = studentRepository.findByLegajo(legajo)
-        //TODO: Crear usuario en caso de que no exista
+    //TODO: Contemplar que el alumno ya tenga materias cursadas y agregar solo las que no estén registradas
+    private fun importStudiedSubjects(data: List<CsvAcademyHistoryRequestDTO>, studiedDegree: StudiedDegree) {
+        data.forEach {
+            val maybeSubject = subjectRepository.findByGuaraniCode(it.codigoMateria)
+            if (!maybeSubject.isPresent) return@forEach
 
-        var maybeStudiedDegree =
-            studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
-        if (!maybeStudiedDegree.isPresent) throw StudiedDegreeNotFoundException()
-        //TODO: Contemplar el caso de que ya haya información del alumno para la carrera. No importar todas las materias, agregar solo las que no estén registradas
+            val status: StatusStudiedCourse =
+                StatusStudiedCourseHelper.parseResultColumnAcademyHistoryFile(it.resultado)
 
-        return Pair(maybeDegree, maybeStudent)
-    }
-
-    private fun importStudiedSubjects(
-        data: List<CsvAcademyHistoryRequestDTO>,
-        maybeDegree: Optional<Degree>,
-        maybeStudent: Optional<Student>
-    ) {
-        data.forEach { it ->
-            val maybeSubject = subjectRepository.findByGuaraniCode(it.materia)
-            val maybeStudiedDegree =
-                studiedDegreeRepository.findByDegreeIdAndStudentId(maybeDegree.get().id!!, maybeStudent.get().id!!)
-            val status: StatusStudiedCourse = when (it.resultado) {
-                StatusStudiedCourse.IN_PROGRESS.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.IN_PROGRESS
-                StatusStudiedCourse.APPROVAL.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.APPROVAL
-                StatusStudiedCourse.PROMOTED.toValueOfAcademyHistoriesFile() -> StatusStudiedCourse.PROMOTED
-                else -> StatusStudiedCourse.PENDING_APPROVAL
-            }
             studiedSubjectRepository.save(
                 StudiedSubject(
-                    null, maybeSubject.get(), it.nota, status, maybeStudiedDegree.get()
+                    subject = maybeSubject.get(),
+                    mark = it.nota.toIntOrNull(),
+                    status = status,
+                    studiedDegree = studiedDegree
                 )
             )
         }
@@ -82,23 +61,28 @@ class AcademyHistoryService(
         studiedDegreeRepository.findAll().map { StudiedDegreeMapper.toDTO(it) }
 
     override fun getAllStudiedDegrees(pageable: Pageable): Page<StudiedDegreeDTO> =
-            studiedDegreeRepository.findAll(pageable).map(StudiedDegreeMapper::toDTO)
+        studiedDegreeRepository.findAll(pageable).map(StudiedDegreeMapper::toDTO)
 
     override fun getAllStudiedDegreesByStudent(idStudent: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByStudentId(idStudent).map { StudiedDegreeMapper.toDTO(it) }
 
     override fun getAllStudiedDegreesByStudent(idStudent: Long, pageable: Pageable): Page<StudiedDegreeDTO> =
-            studiedDegreeRepository.findAllByStudentId(idStudent, pageable).map(StudiedDegreeMapper::toDTO)
+        studiedDegreeRepository.findAllByStudentId(idStudent, pageable).map(StudiedDegreeMapper::toDTO)
 
     override fun getAllStudiedDegreesByDegree(idDegree: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByDegreeId(idDegree).map { StudiedDegreeMapper.toDTO(it) }
 
-    override fun getAllStudiedDegreesByDegree(idDegree: Long, pageable: Pageable): Page<StudiedDegreeDTO>  =
-            studiedDegreeRepository.findAllByDegreeId(idDegree, pageable).map(StudiedDegreeMapper::toDTO)
+    override fun getAllStudiedDegreesByDegree(idDegree: Long, pageable: Pageable): Page<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAllByDegreeId(idDegree, pageable).map(StudiedDegreeMapper::toDTO)
 
     override fun getAllStudiedDegreesByStudentAndDegree(idStudent: Long, idDegree: Long): List<StudiedDegreeDTO> =
         studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree).map { StudiedDegreeMapper.toDTO(it) }
 
-    override fun getAllStudiedDegreesByStudentAndDegree(idStudent: Long, idDegree: Long, pageable: Pageable): Page<StudiedDegreeDTO> =
-            studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree, pageable).map(StudiedDegreeMapper::toDTO)
+    override fun getAllStudiedDegreesByStudentAndDegree(
+        idStudent: Long,
+        idDegree: Long,
+        pageable: Pageable
+    ): Page<StudiedDegreeDTO> =
+        studiedDegreeRepository.findAllByStudentIdAndDegreeId(idStudent, idDegree, pageable)
+            .map(StudiedDegreeMapper::toDTO)
 }

@@ -19,8 +19,8 @@ INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VAL
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
 INSERT INTO degrees(acronym, name) VALUES ('LI', 'Licenciatura en Informática');
 
-INSERT INTO external_degrees(degree_id, guarani_code) VALUES (1, 1);
-INSERT INTO external_degrees(degree_id, guarani_code) VALUES (2, 2);
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (1, 'P');
+INSERT INTO external_degrees(degree_id, guarani_code) VALUES (2, 'W');
 
 -- Modules:
 INSERT INTO modules(name) VALUES ('Ciclo Introductorio');

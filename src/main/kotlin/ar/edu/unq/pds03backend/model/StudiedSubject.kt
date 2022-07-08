@@ -7,7 +7,7 @@ import javax.persistence.*;
 class StudiedSubject(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name="subject_id")

@@ -13,5 +13,5 @@ class ExternalDegree(
     val degree: Degree,
 
     @Column(unique = true, nullable = false)
-    val guarani_code: Int
+    val guarani_code: String
     )
