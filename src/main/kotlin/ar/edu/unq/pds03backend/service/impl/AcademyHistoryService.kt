@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class AcademyHistoryService(
@@ -39,23 +40,35 @@ class AcademyHistoryService(
     }
 
     //TODO: Contemplar que el alumno ya tenga materias cursadas y agregar solo las que no estén registradas
-    @Transactional
     fun importStudiedSubjects(data: List<CsvAcademyHistoryRequestDTO>, studiedDegree: StudiedDegree) {
         data.forEach {
             val maybeSubject = subjectRepository.findByGuaraniCode(it.codigoMateria)
             if (!maybeSubject.isPresent) return@forEach
 
-            val status: StatusStudiedCourse =
-                StatusStudiedCourseHelper.parseResultColumnAcademyHistoryFile(it.resultado)
+            val mark = it.nota.toIntOrNull()
+            val status = StatusStudiedCourseHelper.parseResultColumnAcademyHistoryFile(it.resultado)
+            val date = LocalDate.parse(it.fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
 
-            studiedSubjectRepository.save(
-                StudiedSubject(
-                    subject = maybeSubject.get(),
-                    mark = it.nota.toIntOrNull(),
-                    status = status,
-                    studiedDegree = studiedDegree
+            val maybeStudiedSubject =
+                studiedSubjectRepository.findBySubjectIdAndStudiedDegreeId(maybeSubject.get().id!!, studiedDegree.id!!)
+
+            if (maybeStudiedSubject.isPresent && date > maybeStudiedSubject.get().date) {
+                val studiedSubject = maybeStudiedSubject.get()
+                studiedSubject.mark = mark
+                studiedSubject.status = status
+                studiedSubject.date = date
+                studiedSubjectRepository.save(studiedSubject)
+            } else {
+                studiedSubjectRepository.save(
+                    StudiedSubject(
+                        subject = maybeSubject.get(),
+                        mark = mark,
+                        status = status,
+                        date = date,
+                        studiedDegree = studiedDegree
+                    )
                 )
-            )
+            }
         }
     }
 
