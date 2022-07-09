@@ -4,6 +4,7 @@ import ar.edu.unq.pds03backend.dto.course.CourseResponseDTO
 import ar.edu.unq.pds03backend.dto.course.HourResponseDTO
 import ar.edu.unq.pds03backend.dto.course.SimpleCourseForSubjectDTO
 import ar.edu.unq.pds03backend.dto.course.SimpleCourseResponseDTO
+import ar.edu.unq.pds03backend.dto.quoteRequest.SimpleCourseForSubjectWithQuoteInfoDTO
 import ar.edu.unq.pds03backend.dto.subject.SimpleSubjectResponseDTO
 import ar.edu.unq.pds03backend.model.Course
 
@@ -33,4 +34,12 @@ object CourseMapper {
 
     fun toSimpleForSubjectDTO(course: Course): SimpleCourseForSubjectDTO =
         SimpleCourseForSubjectDTO(id = course.id!!, name = course.name)
+
+    fun toSimpleCourseForSubjectWithQuoteInfoDTO(course: Course, availableQuotes: Int, requestedQuotes: Int): SimpleCourseForSubjectWithQuoteInfoDTO =
+        SimpleCourseForSubjectWithQuoteInfoDTO(
+            id = course.id!!,
+            name = course.name,
+            availableQuotes = availableQuotes,
+            requestedQuotes = requestedQuotes,
+        )
 }

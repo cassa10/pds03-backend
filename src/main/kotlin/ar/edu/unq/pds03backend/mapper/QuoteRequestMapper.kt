@@ -17,10 +17,10 @@ object QuoteRequestMapper : Mapper<QuoteRequest, QuoteRequestResponseDTO> {
         )
     }
 
-    fun toQuoteRequestWithoutStudentResponseDTO(quoteRequest: QuoteRequest, warnings: List<Warning>): QuoteRequestWithoutStudentResponseDTO =
+    fun toQuoteRequestWithoutStudentResponseDTO(quoteRequest: QuoteRequest, availableQuotes: Int, requestedQuotes: Int, warnings: List<Warning>): QuoteRequestWithoutStudentResponseDTO =
         QuoteRequestWithoutStudentResponseDTO(
             id = quoteRequest.id!!,
-            course = CourseMapper.toSimpleForSubjectDTO(quoteRequest.course),
+            course = CourseMapper.toSimpleCourseForSubjectWithQuoteInfoDTO(quoteRequest.course, availableQuotes, requestedQuotes),
             subject = SubjectMapper.toDTO(quoteRequest.course.subject),
             state = quoteRequest.state,
             comment = quoteRequest.comment,

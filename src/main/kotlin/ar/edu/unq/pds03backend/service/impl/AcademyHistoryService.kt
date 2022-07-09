@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AcademyHistoryService(
@@ -38,7 +39,8 @@ class AcademyHistoryService(
     }
 
     //TODO: Contemplar que el alumno ya tenga materias cursadas y agregar solo las que no estén registradas
-    private fun importStudiedSubjects(data: List<CsvAcademyHistoryRequestDTO>, studiedDegree: StudiedDegree) {
+    @Transactional
+    fun importStudiedSubjects(data: List<CsvAcademyHistoryRequestDTO>, studiedDegree: StudiedDegree) {
         data.forEach {
             val maybeSubject = subjectRepository.findByGuaraniCode(it.codigoMateria)
             if (!maybeSubject.isPresent) return@forEach

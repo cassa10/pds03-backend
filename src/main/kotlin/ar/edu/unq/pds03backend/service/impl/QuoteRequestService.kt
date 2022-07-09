@@ -196,7 +196,7 @@ class QuoteRequestService(
         }.map {
             QuoteRequestSubjectMapper(
                 quoteRequestRepository.countByInStatesAndCourseId(setOf(QuoteState.APPROVED), it.course.id!!),
-                quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), it.course.id!!)
+                getRequestedQuotes(it.course.id!!)
             ).map(it)
         }
     }
@@ -253,12 +253,13 @@ class QuoteRequestService(
                 QuoteStateHelper.getAllStates(),
                 getSortByCreatedOnAsc()
             )
-            val quoteRequestWithWarnings =
-                quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
-            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithWarnings)
+            val quoteRequestWithAdditionalInfo =
+                quoteRequests.map { quoteReq -> QuoteRequestWithAdditionalInfo(quoteRequest = quoteReq, warnings = getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }, availableQuotes = getCurrentQuotes(quoteReq.course.total_quotes, quoteReq.course.id!!), requestedQuotes = getRequestedQuotes(quoteReq.course.id!!)) }
+            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithAdditionalInfo)
         }
     }
 
+    //TODO: Refactor in func
     override fun findAllStudentsWithQuoteRequestInSubjectCurrentSemester(idSubject: Long, states: Set<QuoteState>, pageable: Pageable): Page<StudentWithQuotesAndSubjectsResponseDTO> {
         val currentSemester = getCurrentSemester()
         val studentsWithQuoteRequestsToSubject =
@@ -272,11 +273,14 @@ class QuoteRequestService(
                     QuoteStateHelper.getAllStates(),
                     getSortByCreatedOnAsc()
             )
-            val quoteRequestWithWarnings =
-                    quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
-            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithWarnings)
+            val quoteRequestWithAdditionalInfo =
+                    quoteRequests.map { quoteReq -> QuoteRequestWithAdditionalInfo(quoteRequest = quoteReq, warnings = getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }, availableQuotes = getCurrentQuotes(quoteReq.course.total_quotes, quoteReq.course.id!!), requestedQuotes = getRequestedQuotes(quoteReq.course.id!!) ) }
+            StudentMapper.toStudentWithQuotesAndSubjectsResponseDTO(student, quoteRequestWithAdditionalInfo)
         }
     }
+
+    private fun getRequestedQuotes(courseId: Long): Int =
+        quoteRequestRepository.countByInStatesAndCourseId(QuoteStateHelper.getPendingStates(), courseId)
 
     @Transactional
     override fun delete(id: Long) {
@@ -297,9 +301,9 @@ class QuoteRequestService(
             currentSemester.id!!,
             getSortByCreatedOnAsc()
         )
-        val quoteRequestWithWarnings =
-            quoteRequests.map { quoteReq -> Pair(quoteReq, getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }) }
-        return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequestWithWarnings).map()
+        val quoteRequestWithAdditionalInfo =
+            quoteRequests.map { quoteReq -> QuoteRequestWithAdditionalInfo(quoteRequest = quoteReq, warnings = getQuoteRequestWarningSeekers().mapNotNull { it.apply(quoteReq) }, availableQuotes = getCurrentQuotes(quoteReq.course.total_quotes, quoteReq.course.id!!), requestedQuotes = getRequestedQuotes(quoteReq.course.id!!)) }
+        return StudentWithRequestedQuotesResponseDTO.Mapper(student, quoteRequestWithAdditionalInfo).map()
     }
 
     @Transactional
@@ -308,11 +312,14 @@ class QuoteRequestService(
         val quoteRequest = getQuoteRequest(id)
         //Validate if student was already accepted in other quote request on same subject
         if (quoteRequest.student.isEnrolled(quoteRequest.course.subject)) throw StudentHasAlreadyEnrolledSubject()
-        val currentQuotes = quoteRequest.course.total_quotes - courseRepository.countByEnrolledStudentsInCourse(quoteRequest.course.id!!)
+
+        val currentQuotes = getCurrentQuotes(quoteRequest.course.total_quotes, quoteRequest.course.id!!)
         if (currentQuotes <= 0) throw CourseWithNoQuotes()
         quoteRequest.accept()
         quoteRequestRepository.save(quoteRequest)
     }
+
+    private fun getCurrentQuotes(totalQuotes: Int, courseId: Long) = totalQuotes - courseRepository.countByEnrolledStudentsInCourse(courseId)
 
     @Transactional
     override fun revokeQuoteRequest(id: Long) {
