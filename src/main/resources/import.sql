@@ -116,6 +116,12 @@ INSERT INTO subjects(name, module_id) VALUES ('Desarrollo de Aplicaciones', 5);
 INSERT INTO subjects(name, module_id) VALUES ('Introducción a la Programación Cuántica', 5);
 INSERT INTO subjects(name, module_id) VALUES ('Redes Neuronales', 5);
 INSERT INTO subjects(name, module_id) VALUES ('Ciencia de Datos', 5);
+INSERT INTO subjects(name, module_id) VALUES ('Algoritmos Avanzados', 5);
+INSERT INTO subjects(name, module_id) VALUES ('Ludificación', 5);
+INSERT INTO subjects(name, module_id) VALUES ('Ciencia Ciudadana y Colaboración Abierta y Distribuida', 5);
+INSERT INTO subjects(name, module_id) VALUES ('Programación Funcional Avanzada', 5);
+INSERT INTO subjects(name, module_id) VALUES ('Calidad del Software', 5);
+
 
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (1, '80000');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (2, '80003');
@@ -169,11 +175,17 @@ INSERT INTO external_subjects(subject_id, guarani_code) VALUES (49, '1319');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (50, '1059');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (51, '751');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (52, '752');
-INSERT INTO external_subjects(subject_id, guarani_code) VALUES (53, '90000');
-INSERT INTO external_subjects(subject_id, guarani_code) VALUES (54, '90028');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (53, '90028');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (54, '90000');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (55, '1046');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (56, '1709');
 INSERT INTO external_subjects(subject_id, guarani_code) VALUES (57, '940');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (58, '1745');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (59, '1466');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (60, '1711');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (61, '1710');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (62, '1708');
+INSERT INTO external_subjects(subject_id, guarani_code) VALUES (63, '1707');
 
 
 INSERT INTO prerequisite_subjects(subject_id, prerequisite_subject_id) VALUES (4, 3);

@@ -4,9 +4,8 @@ import ar.edu.unq.pds03backend.dto.course.CourseWithSubjectInfoResponseDTO
 import ar.edu.unq.pds03backend.dto.quoteRequest.QuoteRequestWithoutStudentResponseDTO
 import ar.edu.unq.pds03backend.dto.degree.EnrolledDegreeResponseDTO
 import ar.edu.unq.pds03backend.mapper.QuoteRequestMapper
-import ar.edu.unq.pds03backend.model.QuoteRequest
+import ar.edu.unq.pds03backend.model.QuoteRequestWithAdditionalInfo
 import ar.edu.unq.pds03backend.model.Student
-import ar.edu.unq.pds03backend.model.Warning
 
 data class StudentResponseDTO(
     val id: Long,
@@ -58,7 +57,7 @@ class StudentWithRequestedQuotesResponseDTO(
     val enrolledCourses: List<CourseWithSubjectInfoResponseDTO>,
     val quoteRequests: List<QuoteRequestWithoutStudentResponseDTO>,
 ) {
-    class Mapper(private val student: Student, private val quoteRequestsWithWarnings: List<Pair<QuoteRequest, List<Warning>>>) {
+    class Mapper(private val student: Student, private val quoteRequestsWithWarnings: List<QuoteRequestWithAdditionalInfo>) {
         fun map(): StudentWithRequestedQuotesResponseDTO =
             StudentWithRequestedQuotesResponseDTO(
                 id = student.id!!,
@@ -73,7 +72,12 @@ class StudentWithRequestedQuotesResponseDTO(
                     CourseWithSubjectInfoResponseDTO.Mapper(it).map()
                 },
                 quoteRequests = quoteRequestsWithWarnings.map {
-                    QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(it.first, it.second)
+                    QuoteRequestMapper.toQuoteRequestWithoutStudentResponseDTO(
+                        quoteRequest = it.quoteRequest,
+                        warnings = it.warnings,
+                        availableQuotes = it.availableQuotes,
+                        requestedQuotes = it.requestedQuotes,
+                    )
                 },
             )
     }

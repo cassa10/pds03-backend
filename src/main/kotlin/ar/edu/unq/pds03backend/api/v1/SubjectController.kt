@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import javax.validation.Valid
 
@@ -62,5 +63,12 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
             idStudent.isPresent -> subjectService.getAllCurrentByStudent(idStudent.get())
             else -> subjectService.getAllCurrent()
         }
+    }
+
+    @PostMapping("/subjects/import")
+    @LogExecution
+    fun importSubjectsCsv(@RequestParam("file") file: MultipartFile): GenericResponse {
+        //TODO: Add Parser Csv and persistence
+        return GenericResponse(HttpStatus.OK,"imported successfully")
     }
 }
