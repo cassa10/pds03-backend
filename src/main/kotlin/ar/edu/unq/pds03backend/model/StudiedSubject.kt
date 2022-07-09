@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.model
 
+import java.time.LocalDate
 import javax.persistence.*;
 
 @Entity
@@ -14,10 +15,13 @@ class StudiedSubject(
     val subject: Subject,
 
     @Column(nullable = true)
-    val mark: Int?,
+    var mark: Int?,
 
     @Column(nullable = false)
-    val status: StatusStudiedCourse,
+    var status: StatusStudiedCourse,
+
+    @Column(nullable = false)
+    var date: LocalDate,
 
     @ManyToOne
     @JoinColumn(name="studiedDegree_id")
