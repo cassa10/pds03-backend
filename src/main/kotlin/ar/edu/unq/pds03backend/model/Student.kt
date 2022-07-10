@@ -120,6 +120,9 @@ class Student(
             degrees.any { studiedDegree.degree.id == it.id && studiedDegree.isQuoteRequestCondition() }
         }
 
+    fun isNotStudyingInCourseLocation(course: Course) =
+        degreeHistories.none { it.location == course.location }
+
 
     data class Builder(
         var id: Long? = null,

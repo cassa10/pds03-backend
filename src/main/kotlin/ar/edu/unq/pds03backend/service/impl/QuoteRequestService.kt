@@ -58,6 +58,7 @@ class QuoteRequestService(
         if (courses.any { !student.isStudyingAnyDegree(it.subject.degrees) }) throw StudentNotEnrolledInSomeDegree()
         if (courses.any { student.isStudyingOrEnrolled(it.subject) }) throw StudentHasAlreadyEnrolledSubject()
         if (courses.any { !student.existStudiedDegreeWithQuoteRequestCondition(it.subject.degrees) }) throw StudentNotApplyWithStudiedDegreeConditions()
+        if (courses.any { student.isNotStudyingInCourseLocation(it) }) throw StudentNotApplyWithDegreeLocation()
 
         val prerequisiteSubjectsValidation = getPrerequisiteSubjectsValidation()
         if (prerequisiteSubjectsValidation.validate(courses.any { !student.passedAllPrerequisiteSubjects(it.subject) })) throw StudentNotApplyWithPrerequisiteSubjects()
