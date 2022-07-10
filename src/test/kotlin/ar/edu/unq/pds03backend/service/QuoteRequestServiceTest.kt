@@ -201,6 +201,7 @@ class QuoteRequestServiceTest {
             every { isStudyingAnyDegree(any()) } returns true
             every { isStudyingOrEnrolled(any()) } returns false
             every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns true
+            every { isNotStudyingInCourseLocation(any()) } returns false
         }
 
         val optionalConfigValidationMock = mockk<Optional<ConfigurableValidation>> {
@@ -241,6 +242,32 @@ class QuoteRequestServiceTest {
         quoteRequestService.create(quoteRequestRequestDto)
     }
 
+    @Test(expected = StudentNotApplyWithDegreeLocation::class)
+    fun `given a student who does not meet studied degree location when create quote request then it should throw StudentNotApplyWithDegreeLocation`() {
+        val courseMock = mockk<Course>(relaxed = true)
+        val quoteRequestRequestDto = mockk<QuoteRequestRequestDTO> {
+            every { idCourses } returns listOf(1)
+            every { idStudent } returns STUDENT_ID
+        }
+
+        val semesterMock = mockk<Semester> {
+            every { isAcceptQuoteRequestsAvailable() } returns true
+        }
+
+        val studentMock = mockk<Student>(relaxed = true) {
+            every { isStudyingAnyDegree(any()) } returns true
+            every { isStudyingOrEnrolled(any()) } returns false
+            every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns true
+            every { isNotStudyingInCourseLocation(any()) } returns true
+        }
+
+        every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
+        every { courseRepository.findAllById(any()) } returns listOf(courseMock)
+        every { studentRepository.findById(STUDENT_ID) } returns Optional.of(studentMock)
+
+        quoteRequestService.create(quoteRequestRequestDto)
+    }
+
     @Test(expected = StudentNotApplyWithPrerequisiteSubjects::class)
     fun `given a student who does not meet prerequisites when create quote request then it should throw StudentNotApplyWithPrerequisiteSubjects`() {
         val courseMock = mockk<Course>(relaxed = true)
@@ -257,6 +284,7 @@ class QuoteRequestServiceTest {
             every { isStudyingAnyDegree(any()) } returns true
             every { isStudyingOrEnrolled(any()) } returns false
             every { existStudiedDegreeWithQuoteRequestCondition(any()) } returns true
+            every { isNotStudyingInCourseLocation(any()) } returns false
         }
 
         val configValidation = mockk<ConfigurableValidation> {

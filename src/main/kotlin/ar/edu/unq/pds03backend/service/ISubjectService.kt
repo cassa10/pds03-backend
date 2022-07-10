@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.service
 
+import ar.edu.unq.pds03backend.dto.csv.CsvSubjectWithPrerequisite
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
@@ -16,4 +17,5 @@ interface ISubjectService {
     fun getAllCurrent(): List<SubjectWithCoursesResponseDTO>
     fun getAllCurrentByDegree(idDegree: Long): List<SubjectWithCoursesResponseDTO>
     fun getAllCurrentByStudent(idStudent: Long): List<SubjectWithCoursesResponseDTO>
+    fun createSubjects(subjectsCsv: List<CsvSubjectWithPrerequisite>)
 }

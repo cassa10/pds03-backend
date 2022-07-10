@@ -1,5 +1,6 @@
 package ar.edu.unq.pds03backend.service.impl
 
+import ar.edu.unq.pds03backend.dto.csv.CsvSubjectWithPrerequisite
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
@@ -26,7 +27,8 @@ class SubjectService(
     @Autowired private val quoteRequestRepository: IQuoteRequestRepository,
     @Autowired private val semesterRepository: ISemesterRepository,
     @Autowired private val configurableValidationRepository: IConfigurableValidationRepository,
-    @Autowired private val moduleRepository: IModuleRepository
+    @Autowired private val moduleRepository: IModuleRepository,
+    @Autowired private val externalSubjectRepository: IExternalSubjectRepository,
 ) : ISubjectService {
 
     override fun getById(id: Long): SubjectResponseDTO {
@@ -95,6 +97,58 @@ class SubjectService(
         degrees.forEach { it.deleteSubject(subject) }
         degreeRepository.saveAll(degrees)
         subjectRepository.delete(subject)
+    }
+
+    //TODO Refactor: Improve forEach's
+    override fun createSubjects(subjectsCsv: List<CsvSubjectWithPrerequisite>) {
+        val defaultModule = getDefaultModule()
+        subjectsCsv.forEach {
+            handleCreateOrUpdateSubject(
+                Subject(id = null, name = it.subjectName, degrees = mutableListOf(it.degree), module = defaultModule, prerequisiteSubjects = mutableListOf()),
+                it.degree,
+                it.externalSubjectId
+            )
+        }
+        subjectsCsv.forEach {
+            if (it.prerequisiteSubjectsExternalIds.isNotEmpty()){
+                updatePrerequisiteSubjects(it.externalSubjectId, it.prerequisiteSubjectsExternalIds)
+            }
+        }
+    }
+
+    @Transactional
+    fun handleCreateOrUpdateSubject(subject: Subject, degree: Degree, externalSubjectId: String) {
+        val maybeSubject = subjectRepository.findByGuaraniCode(externalSubjectId)
+        val subjectSaved: Subject
+        if(maybeSubject.isPresent.not()){
+            subjectSaved = subjectRepository.save(subject)
+            externalSubjectRepository.save(
+                ExternalSubject(
+                    id = null,
+                    subject = subjectSaved,
+                    guarani_code = externalSubjectId,
+                )
+            )
+        }else {
+            subjectSaved = maybeSubject.get()
+        }
+        degree.addSubject(subjectSaved)
+        degreeRepository.save(degree)
+    }
+
+    @Transactional
+    fun updatePrerequisiteSubjects(externalSubjectId: String, prerequisiteSubjects: List<String>) {
+        val maybeSubject = subjectRepository.findByGuaraniCode(externalSubjectId)
+        if(maybeSubject.isPresent){
+            val subject = maybeSubject.get()
+            prerequisiteSubjects.forEach {
+                val maybePrerequisiteSubject = subjectRepository.findByGuaraniCode(it)
+                if (maybePrerequisiteSubject.isPresent){
+                    subject.addPrerequisiteSubject(maybePrerequisiteSubject.get())
+                }
+            }
+            subjectRepository.save(subject)
+        }
     }
 
     override fun getAllCurrent(): List<SubjectWithCoursesResponseDTO> {
@@ -176,4 +230,7 @@ class SubjectService(
         }
         return { course -> student.canCourseSubject(course.subject) }
     }
+
+    private fun getDefaultModule(): Module =
+        moduleRepository.findByName("Núcleo de orientación").orElseThrow {throw ModuleNotFoundException()}
 }

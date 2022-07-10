@@ -331,6 +331,14 @@ INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 53);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 54);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 54);
 INSERT INTO degree_subject(degree_id, subject_id) VALUES (1, 55);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 56);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 57);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 58);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 59);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 60);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 61);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 62);
+INSERT INTO degree_subject(degree_id, subject_id) VALUES (2, 63);
 
 -- Semesters:
 INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_quote_requests_to) VALUES (false, 2022, '2022-02-01 03:00:00'::timestamp, '2022-10-01 03:00:00'::timestamp);
@@ -339,6 +347,7 @@ INSERT INTO semesters(is_snd_semester, year, accept_quote_requests_from, accept_
 -- Courses - Primary semester
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Susana Grillo', 'C1', 30, 1, 1, '1-1-C1', 'Bernal');
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Susana Grillo', 'C2', 32, 1, 1, '1-1-C2', 'Bernal');
+INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Rodolfo Lopez', 'C1', 40, 1, 1, '1-GB1-C3', 'General Belgrano');
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Alexander', 'C1', 30, 1, 2, '1-2-C1', 'Bernal');
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Alexander', 'C2', 32, 1, 2, '1-2-C2', 'Bernal');
 INSERT INTO courses(assigned_teachers, name, total_quotes, semester_id, subject_id, external_id, location) VALUES ('Flavia Saldaño', 'C1', 30, 1, 3, '1-3-C1', 'Bernal');

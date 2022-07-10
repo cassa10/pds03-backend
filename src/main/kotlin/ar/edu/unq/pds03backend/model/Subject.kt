@@ -31,6 +31,12 @@ class Subject(
     @JoinColumn(name="module_id")
     var module: Module
 ){
+    fun addPrerequisiteSubject(prerequisiteSubject: Subject) {
+        if(prerequisiteSubjects.none { it.id == prerequisiteSubject.id }){
+            prerequisiteSubjects.add(prerequisiteSubject)
+        }
+    }
+
     data class Builder(
         var id: Long? = null,
         var name: String = "",
