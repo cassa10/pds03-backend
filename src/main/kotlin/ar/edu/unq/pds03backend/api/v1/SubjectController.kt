@@ -5,6 +5,7 @@ import ar.edu.unq.pds03backend.dto.GenericResponse
 import ar.edu.unq.pds03backend.dto.subject.SubjectRequestDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectResponseDTO
 import ar.edu.unq.pds03backend.dto.subject.SubjectWithCoursesResponseDTO
+import ar.edu.unq.pds03backend.service.ICsvService
 import ar.edu.unq.pds03backend.service.ISubjectService
 import ar.edu.unq.pds03backend.service.logger.LogExecution
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +19,10 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/v1/subjects")
 @Validated
-class SubjectController(@Autowired private val subjectService: ISubjectService) {
+class SubjectController(
+    @Autowired private val subjectService: ISubjectService,
+    @Autowired private val csvService: ICsvService,
+) {
 
     @GetMapping("/{id}")
     @LogExecution
@@ -65,10 +69,11 @@ class SubjectController(@Autowired private val subjectService: ISubjectService) 
         }
     }
 
-    @PostMapping("/subjects/import")
+    @PostMapping("/import")
     @LogExecution
     fun importSubjectsCsv(@RequestParam("file") file: MultipartFile): GenericResponse {
-        //TODO: Add Parser Csv and persistence
-        return GenericResponse(HttpStatus.OK,"imported successfully")
+        val subjects = csvService.parseSubjectsFile(file)
+        subjectService.createSubjects(subjects)
+        return GenericResponse(HttpStatus.OK,"subjects imported successfully")
     }
 }

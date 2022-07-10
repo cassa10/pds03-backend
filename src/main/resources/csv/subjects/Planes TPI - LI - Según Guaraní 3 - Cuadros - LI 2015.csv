@@ -1,0 +1,73 @@
+Plan LI 2015,Código Materia,Créditos,Materia,Correlatividades,Secuencialidad CI - créditos,Secuencialidad NBW (Núcleo Básico) - créditos,Secuencialidad CB  (W15BO) - créditos
+,,30,,,,,
+Ciclo Introductorio ,80005,10,Elementos de Programación y Lógica,,,,
+CIT 2,80003,10,Matemática,,,,
+,80000,10,Lectura y Escritura Académica,,,,
+,,,,,,,
+NOR-W Otros requerimientos,,12,,,,,
+,90000,6,Inglés II,,20,,
+,90028,6,Inglés I ,,20,,
+,,,,,,,
+NFHW - Taller Formación Humanística,,8,,,,,
+,752,4,TTU,,20,,
+,751,4,TTI,,20,,
+,,,,,,,
+NBW - Nucleo Basico - Diplo - 180 créditos,,180,,,,,
+",1047,8,Laboratorio de Sistemas Operativos y Redes,""{ 1038, 1039 }"",,,"
+,1045,8,Programación Funcional,{ 1036 },,,
+",1044,12,Estrategias de Persistencia,""{ 1035, 1037 }"",,,"
+,1043,12,Construcción de Interfaces de Usuario,{ 1037 },,,
+,1041,8,Matemática II,{ 1033 },,,
+",1039,12,Sistemas Operativos,""{ 487, 1032 }"",,,"
+,1038,12,Redes de Computadoras,{ 1032 },,,
+,1037,12,Programación con Objetos II,{ 1034 },,,
+,1036,12,Estructuras de Datos,{ 487 },,,
+,1035,12,Bases de Datos,,20,,
+,1034,16,Programación con Objetos I ,{ 487 },,,
+",1033,16,Matemática I ,""{ 80005, 80003 }"",,,"
+,1032,12,Organización de Computadoras,{ 80005 },20,,
+,487,16,Introducción a la Programación,{ 80005 },20,,
+,1307,12,Algoritmos,{ 1045 },,,
+,,,,,,,
+Cursos Básicos - 112 créditos,,112,,,,,
+W15BO,1308,8,Ingeniería de Requerimientos,{ 1042 },,138,
+,1306,8,Lenguajes Formales y Automátas,{ 1302 },,138,
+",1305,16,Práctica del Desarrollo de Software,""{ 1043, 1044, 1042 }"",,138,"
+,1304,8,Gestión de Proyectos de Desarrollo de Software,{ 1308 },,138,
+,1303,8,Seguridad de la Información,{ 1047 },,138,
+",1302,12,Lógica y Programación,""{ 487, 1033 }"",,138,"
+,1042,12,Elementos de Ingeniería de Software,{ 1037 },,138,
+,1040,8,Programación Concurrente,{ 1036 },,138,
+,842,8,Matemática III,{ 54 },,138,
+,604,12,Probabilidad y Estadísticas,{ 842 },,138,
+,54,12,Análisis Matemático I,{ 1041 },,138,
+,,|,,,,,
+Cursos Avanzados,,80,,,,,
+W12AV,1316,8,Aspectos Legales,,20,180,56
+",1315,8,Parseo y Generación de Código,""{ 1306, 1312 }"",30,180,56"
+,1314,8,Arquitecturas de Computadoras,{ 1047 },30,180,56
+",1313,12,Arquitectura de Software II,""{ 1310, 1311 }"",30,180,56"
+,1312,8,Características de Lenguajes de Programación,{ 1302 },30,180,56
+",1311,8,Sistemas Distribuidos,""{ 1040, 1047 }"",30,180,56"
+",1310,12,Arquitectura de Software I ,""{ 1040, 1304, 1305, 1303 }"",30,180,56"
+,1309,8,Teoría de la Computación,{ 1306 },30,180,56
+,1051,8,Programación con Objetos III,{ 1037 },30,180,56
+,,,,,,,
+Seminario Final,1317,20,Seminario Final,,30,,
+W12SF,,,,,,,
+Cursos Orientados,,24,,,,,
+W12OR,1745,8,Ciencia de Datos,,,,112
+,1622,8,Seminarios,,,,112
+,1466,8,Algoritmos Avanzados,,,,112
+,1319,8,Semántica de Lenguajes de Programación,,,,112
+,1318,8,Análisis Estáticos de Programas y Herramientas Asociadas,,,,112
+,1059,8,Seminarios sobre Herramientas o Técnicas Puntuales: Tecnología y Sociedad,,,,112
+,1057,8,Derecho de Autor y Derecho de Copia en la Era Digital,,,,112
+,1056,8,Introducción al Desarrollo de Videojuegos,,,,112
+,1055,8,Herramientas Declarativas en Programación,,,,112
+,1054,8,Sistemas de Información Geográfica,,,,112
+,1053,8,Políticas Públicas en la Sociedad de la Información y la Era Digital,,,,112
+,1052,8,Introducción a la Bioinformática,,,,112
+,1049,8,Participación y Gestión en Proyectos de Software Libre,,,,112
+,1048,8,Bases de Datos II,,,,112
+,940,8,Redes Neuronales,,,,112
