@@ -1,4 +1,4 @@
-# UNQUE - pds03-backend [![View in Swagger](http://jessemillar.github.io/view-in-swagger-button/button.svg)](https://pds03-backend.herokuapp.com/)
+# UNQUE - pds03-backend [![Java CI with Maven](https://github.com/cassa10/pds03-backend/actions/workflows/maven.yml/badge.svg)](https://github.com/cassa10/pds03-backend/actions/workflows/maven.yml) [![View in Swagger](http://jessemillar.github.io/view-in-swagger-button/button.svg)](https://pds03-backend.herokuapp.com/) 
 
 # Integrantes
 
