@@ -15,27 +15,28 @@ import org.junit.Test
 import org.springframework.data.domain.Sort
 import java.util.*
 
-private const val USER_ID: Long = 1
-private const val USER_FIRST_NAME = "user first name"
-private const val USER_LAST_NAME = "user last name"
-private const val USER_DNI = "user dni"
-private const val USER_LEGAJO = "user legajo"
-private const val USER_MAX_COEFFICIENT = 10f
-private const val DEGREE_ID: Long = 1
-private const val DEGREE_NAME = "degree name"
-private const val DEGREE_ACRONYM = "degree acronym"
-private const val COEFFICIENT = 7f
-private const val SUBJECT_ID: Long = 1
-private const val SUBJECT_NAME = "subject name"
-private const val COURSE_ID: Long = 1
-private const val COURSE_NAME = "course name"
-private const val COURSE_ASSIGNED_TEACHERS = "course assigned teachers"
-private const val QUOTE_REQUEST_ID: Long = 1
-private const val QUOTE_REQUEST_COMMENT = "quote request comment"
-private const val QUOTE_REQUEST_ADMIN_COMMENT = "quote request admin comment"
-private const val USER_EMAIL = "user email"
-
 class UserServiceTest {
+    companion object {
+        private const val USER_ID: Long = 1
+        private const val USER_FIRST_NAME = "user first name"
+        private const val USER_LAST_NAME = "user last name"
+        private const val USER_DNI = "user dni"
+        private const val USER_LEGAJO = "user legajo"
+        private const val USER_MAX_COEFFICIENT = 10f
+        private const val DEGREE_ID: Long = 1
+        private const val DEGREE_NAME = "degree name"
+        private const val DEGREE_ACRONYM = "degree acronym"
+        private const val COEFFICIENT = 7f
+        private const val SUBJECT_ID: Long = 1
+        private const val SUBJECT_NAME = "subject name"
+        private const val COURSE_ID: Long = 1
+        private const val COURSE_NAME = "course name"
+        private const val COURSE_ASSIGNED_TEACHERS = "course assigned teachers"
+        private const val QUOTE_REQUEST_ID: Long = 1
+        private const val QUOTE_REQUEST_COMMENT = "quote request comment"
+        private const val QUOTE_REQUEST_ADMIN_COMMENT = "quote request admin comment"
+        private const val USER_EMAIL = "user email"
+    }
 
     @RelaxedMockK
     private lateinit var userRepository: IUserRepository
@@ -68,11 +69,8 @@ class UserServiceTest {
 
     @Test(expected = UserNotFoundException::class)
     fun `given a user not found when call getById then it should throw UserNotFoundException`() {
-        val optionalUserMock = mockk<Optional<User>> {
-            every { isPresent } returns false
-        }
+        val optionalUserMock = Optional.empty<User>()
         every { userRepository.findById(any()) } returns optionalUserMock
-
         userService.getById(USER_ID)
     }
 

@@ -18,30 +18,32 @@ import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.*
 
-private const val QUOTE_REQUEST_ID: Long = 1
-private const val STUDENT_ID: Long = 1
-private const val COMMENT = "No puedo cursar en otro horario"
-private const val COURSE_ID: Long = 1
-private const val COURSE_NAME = "Course name"
-private const val SUBJECT_ID: Long = 1
-private const val SUBJECT_NAME = "Subject name"
-private const val COURSE_ASSIGNED_TEACHERS = "Course assigned teachers"
-private const val SEMESTER_ID: Long = 1
-private const val SEMESTER_NAME = "Semester name"
-private const val HOUR_FROM = "Hour from"
-private const val HOUR_TO = "Hour to"
-private const val STUDENT_FIRST_NAME = "Student first name"
-private const val STUDENT_LAST_NAME = "Student last name"
-private const val STUDENT_DNI = "Student dni"
-private const val STUDENT_EMAIL = "Student email"
-private const val STUDENT_LEGAJO = "Student legajo"
-private const val DEGREE_ID: Long = 1
-private const val DEGREE_NAME = "Degree name"
-private const val DEGREE_ACRONYM = "Degree acronym"
-private const val STUDENT_COEFFICIENT = 1f
-private const val HOUR_MESSAGE = "Hour message"
 
 class QuoteRequestServiceTest {
+    companion object {
+        private const val QUOTE_REQUEST_ID: Long = 1
+        private const val STUDENT_ID: Long = 1
+        private const val COMMENT = "No puedo cursar en otro horario"
+        private const val COURSE_ID: Long = 1
+        private const val COURSE_NAME = "Course name"
+        private const val SUBJECT_ID: Long = 1
+        private const val SUBJECT_NAME = "Subject name"
+        private const val COURSE_ASSIGNED_TEACHERS = "Course assigned teachers"
+        private const val SEMESTER_ID: Long = 1
+        private const val SEMESTER_NAME = "Semester name"
+        private const val HOUR_FROM = "Hour from"
+        private const val HOUR_TO = "Hour to"
+        private const val STUDENT_FIRST_NAME = "Student first name"
+        private const val STUDENT_LAST_NAME = "Student last name"
+        private const val STUDENT_DNI = "Student dni"
+        private const val STUDENT_EMAIL = "Student email"
+        private const val STUDENT_LEGAJO = "Student legajo"
+        private const val DEGREE_ID: Long = 1
+        private const val DEGREE_NAME = "Degree name"
+        private const val DEGREE_ACRONYM = "Degree acronym"
+        private const val STUDENT_COEFFICIENT = 1f
+        private const val HOUR_MESSAGE = "Hour message"
+    }
 
     @RelaxedMockK
     private lateinit var quoteRequestRepository: IQuoteRequestRepository
@@ -79,9 +81,7 @@ class QuoteRequestServiceTest {
 
     @Test(expected = SemesterNotFoundException::class)
     fun `given a semester not found when create quote request then it should throw SemesterNotFoundException`() {
-        val optionalSemesterMock = mockk<Optional<Semester>> {
-            every { isPresent } returns false
-        }
+        val optionalSemesterMock = Optional.empty<Semester>()
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns optionalSemesterMock
 
@@ -127,9 +127,7 @@ class QuoteRequestServiceTest {
             every { isAcceptQuoteRequestsAvailable() } returns true
         }
 
-        val optionalStudentMock = mockk<Optional<Student>> {
-            every { isPresent } returns false
-        }
+        val optionalStudentMock = Optional.empty<Student>()
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
         every { courseRepository.findAllById(any()) } returns listOf(courseMock)
@@ -204,10 +202,7 @@ class QuoteRequestServiceTest {
             every { isNotStudyingInCourseLocation(any()) } returns false
         }
 
-        val optionalConfigValidationMock = mockk<Optional<ConfigurableValidation>> {
-            every { isPresent.not() } returns true
-            every { isPresent } returns false
-        }
+        val optionalConfigValidationMock = Optional.empty<ConfigurableValidation>()
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.of(semesterMock)
         every { courseRepository.findAllById(any()) } returns listOf(courseMock)
@@ -421,9 +416,7 @@ class QuoteRequestServiceTest {
 
     @Test(expected = CourseNotFoundException::class)
     fun `given a course id when call get all by course and student but course id not found then it should throw CourseNotFoundException`() {
-        val optionalCourseMock = mockk<Optional<Course>> {
-            every { isPresent } returns false
-        }
+        val optionalCourseMock = Optional.empty<Course>()
         every { courseRepository.findById(any()) } returns optionalCourseMock
 
         quoteRequestService.getAllByCourseAndStudent(COURSE_ID, STUDENT_ID, emptySet())
@@ -431,9 +424,7 @@ class QuoteRequestServiceTest {
 
     @Test(expected = StudentNotFoundException::class)
     fun `given a student id when call get all by course and student but student id not found then it should throw StudentNotFoundException`() {
-        val optionalStudentMock = mockk<Optional<Student>> {
-            every { isPresent } returns false
-        }
+        val optionalStudentMock = Optional.empty<Student>()
         every { courseRepository.findById(any()) } returns Optional.of(mockk())
         every { studentRepository.findById(any()) } returns optionalStudentMock
 
@@ -460,9 +451,7 @@ class QuoteRequestServiceTest {
 
     @Test(expected = CourseNotFoundException::class)
     fun `given a id course when call get all by course but course id not found then it should CourseNotFound`() {
-        val optionalCourseMock = mockk<Optional<Course>> {
-            every { isPresent } returns false
-        }
+        val optionalCourseMock = Optional.empty<Course>()
         every { courseRepository.findById(any()) } returns optionalCourseMock
 
         quoteRequestService.getAllByCourse(COURSE_ID, emptySet())

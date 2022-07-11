@@ -20,9 +20,6 @@ class DegreeAlreadyExistsException : AlreadyExistsException(DEGREE_ALREADY_EXIST
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = QUOTE_REQUEST_ALREADY_EXISTS)
 class QuoteRequestAlreadyExistsException : AlreadyExistsException(QUOTE_REQUEST_ALREADY_EXISTS)
 
-@ResponseStatus(code = HttpStatus.CONFLICT, reason = SUBJECT_NAME_ALREADY_EXISTS)
-class SubjectNameAlreadyExistsException : AlreadyExistsException(SUBJECT_NAME_ALREADY_EXISTS)
-
 @ResponseStatus(code = HttpStatus.CONFLICT, reason = SEMESTER_ALREADY_EXISTS)
 class SemesterAlreadyExistException: AlreadyExistsException(SEMESTER_ALREADY_EXISTS)
 

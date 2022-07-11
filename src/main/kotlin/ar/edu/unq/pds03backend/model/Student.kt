@@ -138,6 +138,7 @@ class Student(
     ) {
 
         fun build(): Student = Student(id, firstName, lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
+        fun withId(id: Long) = apply { this.id = id }
         fun withDni(dni: String) = apply {this.dni = dni}
         fun withLegajo(legajo: String) = apply {this.legajo = legajo}
     }
