@@ -16,11 +16,13 @@ import org.junit.Before
 import org.junit.Test
 import java.util.*
 
-private const val DEGREE_NAME = "Degree name"
-private const val DEGREE_ACRONYM = "Degree acronym"
-private const val DEGREE_ID: Long = 1
-
 class DegreeServiceTest {
+
+    companion object {
+        const val DEGREE_NAME = "Degree name"
+        const val DEGREE_ACRONYM = "Degree acronym"
+        const val DEGREE_ID: Long = 1
+    }
 
     @RelaxedMockK
     private lateinit var degreeRepository: IDegreeRepository
@@ -35,9 +37,7 @@ class DegreeServiceTest {
 
     @Test(expected = DegreeAlreadyExistsException::class)
     fun `given a degree already exist when call create degree then it should throw DegreeAlreadyExistsException`() {
-        val optionalDegreeMock = mockk<Optional<Degree>> {
-            every { isPresent } returns true
-        }
+        val optionalDegreeMock = Optional.of(defaultDegree())
         every { degreeRepository.findByNameAndAcronym(any(), any()) } returns optionalDegreeMock
 
         degreeService.create(mockk(relaxed = true))
@@ -54,9 +54,7 @@ class DegreeServiceTest {
             every { name } returns DEGREE_NAME
             every { acronym } returns DEGREE_ACRONYM
         }
-        val optionalDegreeMock = mockk<Optional<Degree>> {
-            every { isPresent } returns false
-        }
+        val optionalDegreeMock = Optional.empty<Degree>()
         every { degreeRepository.findByNameAndAcronym(any(), any()) } returns optionalDegreeMock
         every { degreeRepository.save(any()) } returns degreeMock
 
@@ -67,9 +65,7 @@ class DegreeServiceTest {
 
     @Test(expected = DegreeNotFoundException::class)
     fun `given a degree not found when call get by id then id should DegreeNotFoundException`() {
-        val optionalDegreeMock = mockk<Optional<Degree>> {
-            every { isPresent } returns false
-        }
+        val optionalDegreeMock = Optional.empty<Degree>()
 
         every { degreeRepository.findById(any()) } returns optionalDegreeMock
 
@@ -117,9 +113,7 @@ class DegreeServiceTest {
 
     @Test(expected = DegreeNotFoundException::class)
     fun `given a degree not found when call update then id should DegreeNotFoundException`() {
-        val optionalDegreeMock = mockk<Optional<Degree>> {
-            every { isPresent } returns false
-        }
+        val optionalDegreeMock = Optional.empty<Degree>()
 
         every { degreeRepository.findById(any()) } returns optionalDegreeMock
 
@@ -147,9 +141,7 @@ class DegreeServiceTest {
 
     @Test(expected = DegreeNotFoundException::class)
     fun `given a degree not found when call delete then id should DegreeNotFoundException`() {
-        val optionalDegreeMock = mockk<Optional<Degree>> {
-            every { isPresent } returns false
-        }
+        val optionalDegreeMock = Optional.empty<Degree>()
 
         every { degreeRepository.findById(any()) } returns optionalDegreeMock
 
@@ -169,4 +161,12 @@ class DegreeServiceTest {
 
         verify { degreeRepository.delete(degreeMock) }
     }
+
+    private fun defaultDegree(): Degree =
+        Degree(
+            id = 1,
+            name = "",
+            acronym = "",
+            subjects = mutableListOf(),
+        )
 }

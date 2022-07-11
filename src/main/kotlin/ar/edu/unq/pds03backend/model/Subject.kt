@@ -9,7 +9,7 @@ class Subject(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     var name: String,
 
     @ManyToMany(
@@ -17,7 +17,7 @@ class Subject(
         cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH],
         fetch = FetchType.EAGER
     )
-    val degrees: MutableCollection<Degree>,
+    var degrees: MutableCollection<Degree>,
 
     @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
     @JoinTable(
@@ -38,15 +38,17 @@ class Subject(
     }
 
     data class Builder(
-        var id: Long? = null,
-        var name: String = "",
-        var degrees: MutableCollection<Degree> = mutableListOf(),
-        var prerequisiteSubjects: MutableCollection<Subject> = mutableListOf(),
-        var module: Module? = null
+        private var id: Long? = null,
+        private var name: String = "",
+        private var degrees: MutableCollection<Degree> = mutableListOf(),
+        private var prerequisiteSubjects: MutableCollection<Subject> = mutableListOf(),
+        private var module: Module = Module()
     ){
-        fun build():Subject = Subject(id, name, degrees, prerequisiteSubjects, module!!)
+        fun build():Subject = Subject(id, name, degrees, prerequisiteSubjects, module)
+        fun withId(id: Long) = apply {this.id = id}
         fun withName(name:String) = apply { this.name = name }
         fun withPrerequisiteSubjects(prerequisiteSubjects: MutableCollection<Subject>) = apply {this.prerequisiteSubjects = prerequisiteSubjects}
         fun withModule(module: Module) = apply { this.module = module }
+        fun withDegrees(degrees: MutableCollection<Degree>) = apply { this.degrees = degrees }
     }
 }

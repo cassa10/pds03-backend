@@ -46,15 +46,12 @@ class SubjectService(
     override fun create(subjectRequestDTO: SubjectRequestDTO) {
         //Adds all found degrees. If some degree doesn't exist, it doesn't add in subject
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
-        validateSubjectNameAlreadyExist(subjectRequestDTO.name)
         val subjectsFounded = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
-        val maybeModule = moduleRepository.findById(subjectRequestDTO.moduleId)
-        if (!maybeModule.isPresent)
-            throw ModuleNotFoundException()
+        val module = getModule(subjectRequestDTO.moduleId)
 
         val addedSubject = subjectRepository.save(
             Subject.Builder().withName(subjectRequestDTO.name).withPrerequisiteSubjects(subjectsFounded)
-                .withModule(maybeModule.get()).build()
+                .withModule(module).build()
         )
 
         degreesFounded.forEach { it.addSubject(addedSubject) }
@@ -66,8 +63,8 @@ class SubjectService(
         val subjectToUpdate = findSubjectByIdAndValidate(id)
         val previousDegrees = subjectToUpdate.degrees
         val degreesFounded = findDegreesAndValidateIfAnyFound(subjectRequestDTO.degreeIds)
-        validateSubjectNameAlreadyExist(subjectRequestDTO.name)
-
+        val module = getModule(subjectRequestDTO.moduleId)
+        subjectToUpdate.module = module
         subjectToUpdate.name = subjectRequestDTO.name
         subjectToUpdate.prerequisiteSubjects = subjectRepository.findAllById(subjectRequestDTO.prerequisiteSubjects)
         subjectRepository.save(subjectToUpdate)
@@ -79,11 +76,6 @@ class SubjectService(
         eliminatedDegrees.forEach {
             it.deleteSubject(subjectToUpdate)
         }
-
-        val maybeModule = moduleRepository.findById(subjectRequestDTO.moduleId)
-        if (!maybeModule.isPresent)
-            throw ModuleNotFoundException()
-        subjectToUpdate.module = maybeModule.get()
 
         degreeRepository.saveAll(eliminatedDegrees)
     }
@@ -159,12 +151,10 @@ class SubjectService(
     }
 
     override fun getAllCurrentByDegree(idDegree: Long): List<SubjectWithCoursesResponseDTO> {
-        val degree = degreeRepository.findById(idDegree)
-        if (!degree.isPresent) throw DegreeNotFoundException()
-
+        val degree = getDegree(idDegree)
         val currentSemester = getCurrentSemester()
         val currentFilteredCourses = courseRepository.findAllBySemesterId(currentSemester.id!!)
-            .filter { course -> course.belongsToDegree(degree.get()) }
+            .filter { course -> course.belongsToDegree(degree) }
 
         val currentFilteredCoursesGroupedBySubject = currentFilteredCourses.groupBy { it.subject }
         return currentFilteredCoursesGroupedBySubject.map { SubjectMapper.toSubjectWithCoursesDTO(it.key, it.value) }
@@ -204,10 +194,6 @@ class SubjectService(
         return degrees
     }
 
-    private fun validateSubjectNameAlreadyExist(name: String) {
-        if (subjectRepository.existsByName(name)) throw SubjectNameAlreadyExistsException()
-    }
-
     private fun getCurrentSemester(): Semester {
         return getSemester(SemesterHelper.currentYear, SemesterHelper.currentIsSecondSemester)
     }
@@ -233,4 +219,10 @@ class SubjectService(
 
     private fun getDefaultModule(): Module =
         moduleRepository.findByName("Núcleo de orientación").orElseThrow {throw ModuleNotFoundException()}
+
+    private fun getModule(moduleId: Long): Module =
+        moduleRepository.findById(moduleId).orElseThrow { throw ModuleNotFoundException() }
+
+    private fun getDegree(idDegree: Long): Degree =
+        degreeRepository.findById(idDegree).orElseThrow { throw DegreeNotFoundException() }
 }

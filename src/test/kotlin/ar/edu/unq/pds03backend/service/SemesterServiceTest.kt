@@ -18,10 +18,12 @@ import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
 import java.util.*
 
-private const val SEMESTER_ID: Long = 1
-private const val SEMESTER_NAME = "semester name"
-
 class SemesterServiceTest {
+
+    companion object {
+        const val SEMESTER_ID: Long = 1
+        const val SEMESTER_NAME = "semester name"
+    }
 
     @RelaxedMockK
     private lateinit var semesterRepository: ISemesterRepository
@@ -36,9 +38,7 @@ class SemesterServiceTest {
 
     @Test(expected = SemesterNotFoundException::class)
     fun `given a semester id not found then call get semester by id then it should throw SemesterNotFoundException`() {
-        val optionalSemesterMock = mockk<Optional<Semester>> {
-            every { isPresent } returns false
-        }
+        val optionalSemesterMock = Optional.empty<Semester>()
 
         every { semesterRepository.findById(any()) } returns optionalSemesterMock
 
@@ -76,9 +76,7 @@ class SemesterServiceTest {
 
     @Test(expected = SemesterNotFoundException::class)
     fun `given a year and isSndSemester not found when call get semester by year and isSndSemester then it should throw SemesterNotFoundException`() {
-        val optionalSemesterMock = mockk<Optional<Semester>> {
-            every { isPresent } returns false
-        }
+        val optionalSemesterMock = Optional.empty<Semester>()
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns optionalSemesterMock
 
@@ -134,9 +132,7 @@ class SemesterServiceTest {
 
     @Test(expected = SemesterAlreadyExistException::class)
     fun `given a SemesterResponseDTO when call create semester exists then it should SemesterAlreadyExistException`() {
-        val optionalSemesterMock = mockk<Optional<Semester>> {
-            every { isPresent } returns true
-        }
+        val optionalSemesterMock = Optional.of(defaultSemester())
 
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns optionalSemesterMock
 
@@ -208,5 +204,9 @@ class SemesterServiceTest {
         semesterService.updateSemester(SEMESTER_ID, updateSemesterReqDTOMock)
 
         verify { semesterRepository.save(semesterMock) }
+    }
+
+    private fun defaultSemester(): Semester {
+        return Semester(id = 1, isSndSemester = true, year = 2000, acceptQuoteRequestsFrom = LocalDateTime.MIN, acceptQuoteRequestsTo = LocalDateTime.MAX)
     }
 }
