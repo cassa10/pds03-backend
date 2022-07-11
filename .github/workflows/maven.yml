@@ -40,5 +40,5 @@ jobs:
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: target/site/jacoco/index.html
+        coverage-reports: target/jacoco.exec
         language: 'kotlin'
