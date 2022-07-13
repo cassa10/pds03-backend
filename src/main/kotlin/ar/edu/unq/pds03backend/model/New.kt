@@ -14,6 +14,8 @@ class New(
     @Column(nullable = false, name = "image_source") var imageSource: String,
     @Column(nullable = false, name = "image_alt") var imageAlt: String,
     @Column(nullable = false, name = "created_on") val createdOn: LocalDateTime,
+    @Column(nullable = false) var writer: String,
+    @Column(nullable = false) var email: String,
 ){
     companion object {
         const val createdOnFieldName = "createdOn"

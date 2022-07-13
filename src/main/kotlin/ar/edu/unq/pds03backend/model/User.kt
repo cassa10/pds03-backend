@@ -23,7 +23,7 @@ abstract class User(
     @Column(nullable = false)
     var password: String,
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     var email: String,
 )
 {

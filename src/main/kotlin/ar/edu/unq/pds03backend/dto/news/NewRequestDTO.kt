@@ -13,4 +13,8 @@ class NewRequestDTO(
     val imageAlt: String,
     @field:NotBlank(message = "'message' must not be blank")
     val message: String,
+    @field:NotBlank(message = "'writer' must not be blank")
+    val writer: String,
+    @field:NotBlank(message = "'email' must not be blank")
+    val email: String,
 )

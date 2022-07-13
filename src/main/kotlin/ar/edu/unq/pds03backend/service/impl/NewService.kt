@@ -35,6 +35,8 @@ class NewService(
                 imageAlt = dto.imageAlt,
                 message = dto.message,
                 createdOn = LocalDateTime.now(),
+                writer = dto.writer,
+                email = dto.email,
             )
         )
     }
@@ -46,6 +48,8 @@ class NewService(
         new.message = dto.message
         new.imageAlt = dto.imageAlt
         new.imageSource = dto.imageSource
+        new.writer = dto.writer
+        new.email = dto.email
         newRepository.save(new)
     }
 

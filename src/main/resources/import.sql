@@ -1,19 +1,19 @@
 -- Recommendation: Execute script in order.
 
 -- News:
-INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Gabriela los aprobo', 'Gabriela Arévalo aprobó a todos los alumnos de la materia Práctica de desarrollo de software porque pudo ver que son todos muy buenos profesionales.','https://www.uniagustiniana.edu.co/sites/default/files/styles/noticia_imagen_min_width_992px/public/noticias/2019-10/grado1.jpg?itok=Dy2atdiC', 'recibidos-unq-image','2022-06-28 14:30:00'::timestamp);
-INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Vampiros en la Unque', 'Se reportaron varios acontecimientos extraños en los pasillos de la UNQUE, algunos alumnos aseguran haber visto sujetos colmilludos merodeando cerca del laboratorio de Biotecnología.', 'https://static.eldiario.es/clip/0fe5d46c-ca93-41d6-8c17-c333d1793ab8_16-9-aspect-ratio_default_0.jpg', 'vampiros-unq-image', '2022-05-18 14:30:00'::timestamp);
-INSERT INTO news(title, message, image_source, image_alt, created_on) VALUES ('Confirmado: Fidel es un robot', 'Los últimos estudios entre alumnos logro determinar que Fidel es un Super Robot llamado Lambda creado en lo que fue una vez la URSS.', 'https://i.ytimg.com/vi/goDjvGP_1o0/maxresdefault.jpg', 'img-fidel-alt', '2022-05-10 12:30:00'::timestamp);
+INSERT INTO news(title, message, image_source, image_alt, created_on, writer, email) VALUES ('Gabriela los aprobo', 'Gabriela Arévalo aprobó a todos los alumnos de la materia Práctica de desarrollo de software porque pudo ver que son todos muy buenos profesionales.','https://www.uniagustiniana.edu.co/sites/default/files/styles/noticia_imagen_min_width_992px/public/noticias/2019-10/grado1.jpg?itok=Dy2atdiC', 'recibidos-unq-image','2022-06-12 14:30:00'::timestamp, 'Jose', 'jose.cassano@alu.unq.edu.ar');
+INSERT INTO news(title, message, image_source, image_alt, created_on, writer, email) VALUES ('Vampiros en la Unque', 'Se reportaron varios acontecimientos extraños en los pasillos de la UNQUE, algunos alumnos aseguran haber visto sujetos colmilludos merodeando cerca del laboratorio de Biotecnología.', 'https://static.eldiario.es/clip/0fe5d46c-ca93-41d6-8c17-c333d1793ab8_16-9-aspect-ratio_default_0.jpg', 'vampiros-unq-image', '2022-06-11 13:30:00'::timestamp, 'Saba ', 'saba@alu.unq.edu.ar');
+INSERT INTO news(title, message, image_source, image_alt, created_on, writer, email) VALUES ('Confirmado: Fidel es un robot', 'Los últimos estudios entre alumnos logro determinar que Fidel es un Super Robot llamado Lambda creado en lo que fue una vez la URSS.', 'https://i.ytimg.com/vi/goDjvGP_1o0/maxresdefault.jpg', 'img-fidel-alt', '2022-06-10 12:30:00'::timestamp, 'Savitch', 'savitch@alu.unq.edu.ar');
 
 -- Validation Configuration (only prerequisite subjects -correlativas-)
 INSERT INTO configurable_validation(validation, active) VALUES (0, true);
 
 -- Users: (password = 'asd123')
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('11111111', 'alumno@gmail.com', 'Henry', 'Rice', 1, '34627', '$2a$10$Zob6s32CjqlljykztJfjU.sbCZLRZuXuvPqB4LcuhTrkuLKoUdvBC');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('11111112', 'lio@gmail.com', 'Lionel', 'Messi', 1, '34628', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('11111111', 'sabaliauskaspablo@gmail.com', 'Pablo', 'Sabaliauskas', 1, '34627', '$2a$10$Zob6s32CjqlljykztJfjU.sbCZLRZuXuvPqB4LcuhTrkuLKoUdvBC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('11111112', 'sabaliauskaspablo@gmail.com', 'Lionel', 'Messi', 1, '34628', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
 INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('11111113', 'jose.cassano@alu.unq.edu.ar', 'Alan', 'Turing', 1, '34629', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
 INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('99999999', 'pepegrillo@gmail.com', 'Pepe', 'Grillo', 1, '99999', '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
-INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('22222222', 'director@gmail.com', 'director', 'director', 2, null, '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
+INSERT INTO users(dni, email, first_name, last_name, role, legajo, password) VALUES ('22222222', 'sabaliauskaspablo@gmail.com', 'Pablo', 'Sabaliauskas', 2, null, '$2a$10$iD0BZtv59tgM60XESMFGwOegZy8bbvjH/O4FPUhlc5AI5zMu4DTYC');
 
 -- Degrees:
 INSERT INTO degrees(acronym, name) VALUES ('TPI', 'Tecnicatura en Programación Informática');
