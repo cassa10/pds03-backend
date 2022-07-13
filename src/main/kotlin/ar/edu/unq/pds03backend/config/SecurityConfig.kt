@@ -56,6 +56,7 @@ class SecurityConfig(
                         "/webjars/**",
                         "/api/v1/login",
                         "/api/v2/login",
+                        "/api/v2/reestablish/password"
                 ).permitAll()
                 .antMatchers(
                         "/api/v1/quoteRequest/{id}/accept",

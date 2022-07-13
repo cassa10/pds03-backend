@@ -23,8 +23,7 @@ class JwtService(
 
     companion object {
         private const val serialVersionUID = -2550185165626007488L
-        private const val hour = 60 * 60 * 1000
-        const val JWT_TOKEN_VALIDITY = 48 * hour
+        const val JWT_TOKEN_VALIDITY = Int.MAX_VALUE
     }
 
     override fun generateToken(user: User): String {
