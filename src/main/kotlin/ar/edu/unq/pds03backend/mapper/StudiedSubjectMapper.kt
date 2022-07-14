@@ -9,7 +9,7 @@ object StudiedSubjectMapper : Mapper<StudiedSubject, StudiedSubjectDTO> {
             id = studiedSubject.id!!,
             subject = SubjectMapper.toSimpleDTO(studiedSubject.subject),
             mark = studiedSubject.mark,
-            status = studiedSubject.status.translate(),
+            status = studiedSubject.translateState(),
             passed = studiedSubject.passed(),
             inProgress = studiedSubject.inProgress()
         )

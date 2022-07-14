@@ -35,5 +35,5 @@ enum class StatusStudiedCourse {
 
     open fun passed(): Boolean = false
     open fun inProgress(): Boolean = false
-    open fun translate(): String = ""
+    abstract fun translate(): String
 }
