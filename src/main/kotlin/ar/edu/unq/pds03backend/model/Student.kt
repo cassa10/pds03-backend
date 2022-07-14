@@ -56,19 +56,13 @@ class Student(
 
     fun anyCoefficientIsGreaterThan(number: Float) = degreeHistories.any {it.coefficient >= number}
 
-    fun maxCoefficient(): Float {
-        if (degreeHistories.isEmpty()) return 0f
-        return degreeHistories.maxOf { it.coefficient }
-    }
+    fun maxCoefficient(): Float =
+        if (degreeHistories.isEmpty()) 0f else degreeHistories.maxOf { it.coefficient }
 
     fun getStudiedDegreeCoefficient(degree: Degree): Float = degreeHistories.find { it.degree == degree }?.coefficient ?: 0f
 
-    fun getPassedSubjects(): List<Subject> {
-        val result: MutableList<Subject> = mutableListOf()
-        degreeHistories.forEach { studiedDegree ->
-            result.addAll(studiedDegree.studied_subjects.filter{ it.passed() }.map{ it.subject })
-        }
-        return result
+    fun getPassedSubjects(): List<Subject> = degreeHistories.flatMap { studiedDegree ->
+            studiedDegree.studied_subjects.filter{ it.passed() }.map{ it.subject }
     }
 
     fun canCourseSubject(subject: Subject): Boolean = !isStudyingOrEnrolled(subject)
@@ -139,7 +133,15 @@ class Student(
 
         fun build(): Student = Student(id, firstName, lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
         fun withId(id: Long) = apply { this.id = id }
+        fun withFirstName(firstName: String) = apply { this.firstName = firstName }
+        fun withLastname(lastName: String) = apply { this.lastName = lastName }
         fun withDni(dni: String) = apply {this.dni = dni}
+        fun withEmail(email: String) = apply { this.email = email }
+        fun withPassword(password: String) = apply { this.password = password }
         fun withLegajo(legajo: String) = apply {this.legajo = legajo}
+        fun withEnrolledDegrees(ls: MutableCollection<Degree>) = apply {this.enrolledDegrees = ls}
+        fun withDegreeHistories(ls: MutableCollection<StudiedDegree>) = apply {this.degree_histories = ls}
+        fun withEnrolledCourses(ls: MutableCollection<Course>) = apply {this.enrolledCourses = ls}
+
     }
 }

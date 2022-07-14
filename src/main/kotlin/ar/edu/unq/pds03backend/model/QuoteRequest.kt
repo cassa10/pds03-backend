@@ -36,4 +36,32 @@ class QuoteRequest(
     fun accept() = state.accept(this)
     fun revoke() = state.revoke(this)
     fun rollbackToPending() = state.rollbackToPending(this)
+
+    data class Builder(
+        var id: Long? = null,
+        var createdOn: LocalDateTime = LocalDateTime.MIN,
+        var course: Course = Course.Builder().build(),
+        var student: Student = Student.Builder().build(),
+        var state: QuoteState = QuoteState.PENDING,
+        var comment: String = "",
+        var adminComment: String = ""
+    ){
+        fun build(): QuoteRequest = QuoteRequest(
+            id = id,
+            createdOn = createdOn,
+            course = course,
+            student = student,
+            state = state,
+            comment = comment,
+            adminComment = adminComment,
+        )
+
+        fun withId(id: Long) = apply { this.id = id}
+        fun withCreatedOn(createdOn: LocalDateTime) = apply { this.createdOn = createdOn}
+        fun withCourse(course: Course) = apply { this.course = course}
+        fun withStudent(student: Student) = apply { this.student = student}
+        fun withState(state: QuoteState) = apply { this.state = state}
+        fun withComment(comment: String) = apply { this.comment = comment}
+        fun withAdminComment(adminComment: String) = apply { this.adminComment = adminComment}
+    }
 }

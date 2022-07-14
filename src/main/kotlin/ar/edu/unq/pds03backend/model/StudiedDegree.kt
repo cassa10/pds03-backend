@@ -29,16 +29,16 @@ class StudiedDegree(
         registryState == RegistryState.ACCEPTED && quality == QualityState.ACTIVE && isRegular
 
     data class Builder(
-        var id: Long? = null,
-        var degree: Degree = Degree.Builder().build(),
-        var student: Student = Student.Builder().build(),
-        var coefficient: Float = 0f,
-        var registryState: RegistryState = RegistryState.PENDING,
-        var plan: String = "",
-        var quality: QualityState = QualityState.PASSIVE,
-        var location: String = "",
-        var isRegular: Boolean = false,
-        var studied_subjects: Collection<StudiedSubject> = listOf(),
+        private var id: Long? = null,
+        private var degree: Degree = Degree.Builder().build(),
+        private var student: Student = Student.Builder().build(),
+        private var coefficient: Float = 0f,
+        private var registryState: RegistryState = RegistryState.PENDING,
+        private var plan: String = "",
+        private var quality: QualityState = QualityState.PASSIVE,
+        private var location: String = "",
+        private var isRegular: Boolean = false,
+        private var studied_subjects: Collection<StudiedSubject> = listOf(),
     ) {
         fun build(): StudiedDegree = StudiedDegree(
             id = id,
@@ -53,6 +53,8 @@ class StudiedDegree(
             studied_subjects = studied_subjects,
         )
 
+        fun withId(id: Long) = apply { this.id = id }
+        fun withCoefficient(coefficient: Float) = apply { this.coefficient = coefficient }
         fun withStudent(student: Student) = apply { this.student = student }
         fun withDegree(degree: Degree) = apply { this.degree = degree }
         fun withRegistryState(registryState: RegistryState) = apply { this.registryState = registryState }
@@ -60,5 +62,6 @@ class StudiedDegree(
         fun withQuality(quality: QualityState) = apply { this.quality = quality }
         fun withIsRegular(isRegular: Boolean) = apply { this.isRegular = isRegular }
         fun withLocation(location: String) = apply { this.location = location }
+        fun withStudiedSubjects(studiedSubjects: Collection<StudiedSubject>) = apply { this.studied_subjects = studiedSubjects }
     }
 }

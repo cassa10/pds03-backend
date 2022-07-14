@@ -1,6 +1,5 @@
 package ar.edu.unq.pds03backend.model
 
-import ar.edu.unq.pds03backend.model.Hour
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
@@ -10,10 +9,14 @@ class HourTest {
 
     @Test
     fun testFromAndToStringFormatAsHHmm() {
-        val hour1 = Hour.Builder().withFrom(LocalTime.of(12, 15)).withTo(LocalTime.of(14, 45)).build()
-        val hour2 = Hour.Builder().withFrom(LocalTime.of(6, 30)).withTo(LocalTime.of(22, 0)).build()
+        val id1: Long = 1
+        val id2: Long = 2
+        val hour1 = Hour.Builder().withId(id1).withFrom(LocalTime.of(12, 15)).withTo(LocalTime.of(14, 45)).build()
+        val hour2 = Hour.Builder().withId(id2).withFrom(LocalTime.of(6, 30)).withTo(LocalTime.of(22, 0)).build()
         assertEquals(hour1.getFromString(), "12:15")
         assertEquals(hour1.getToString(), "14:45")
+        assertEquals(hour1.id, id1)
+        assertEquals(hour2.id, id2)
         assertEquals(hour2.getFromString(), "06:30")
         assertEquals(hour2.getToString(), "22:00")
     }

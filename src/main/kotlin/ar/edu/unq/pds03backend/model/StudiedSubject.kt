@@ -31,4 +31,6 @@ class StudiedSubject(
     fun passed(): Boolean = status.passed()
 
     fun inProgress(): Boolean = status.inProgress()
+
+    fun translateState(): String = status.translate()
 }
