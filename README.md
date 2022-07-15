@@ -4,7 +4,15 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c747c920e8614c8dbe5f7e1a0e88acc6)](https://www.codacy.com/gh/cassa10/pds03-backend/dashboard?utm_source=github.com&utm_medium=referral&utm_content=cassa10/pds03-backend&utm_campaign=Badge_Coverage)
 [![View in Swagger](http://jessemillar.github.io/view-in-swagger-button/button.svg)](https://pds03-backend.herokuapp.com/swagger-ui.html) 
 
-# Integrantes
+## Frontend
+
+[Repo Frontend](https://github.com/emiliano07/quotaAllocationSystem)
+
+## Gestion de tareas
+
+[Trello](https://trello.com/b/cgnbUuhB/unque)
+
+## Integrantes
 
 
 | Alumno            | Github          |
