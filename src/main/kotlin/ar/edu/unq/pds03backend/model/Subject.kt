@@ -32,7 +32,7 @@ class Subject(
     var module: Module
 ){
     fun addPrerequisiteSubject(prerequisiteSubject: Subject) {
-        if(prerequisiteSubjects.none { it.id == prerequisiteSubject.id }){
+        if(id != prerequisiteSubject.id && prerequisiteSubjects.none { it.id == prerequisiteSubject.id }){
             prerequisiteSubjects.add(prerequisiteSubject)
         }
     }

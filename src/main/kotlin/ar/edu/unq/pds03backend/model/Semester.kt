@@ -16,9 +16,9 @@ class Semester(
     var id: Long? = null,
     @Column(name = "is_snd_semester", nullable = false)
     //True if is second semester of year
-    val isSndSemester: Boolean,
+    var isSndSemester: Boolean,
     @Column(nullable = false)
-    val year: Int,
+    var year: Int,
     @Column(name = "accept_quote_requests_from")
     var acceptQuoteRequestsFrom: LocalDateTime,
     @Column(name = "accept_quote_requests_to")
