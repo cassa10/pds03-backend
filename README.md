@@ -1,6 +1,7 @@
 # UNQUE - pds03-backend 
 [![Java CI with Maven](https://github.com/cassa10/pds03-backend/actions/workflows/maven.yml/badge.svg)](https://github.com/cassa10/pds03-backend/actions/workflows/maven.yml) 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c747c920e8614c8dbe5f7e1a0e88acc6)](https://www.codacy.com/gh/cassa10/pds03-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cassa10/pds03-backend&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c747c920e8614c8dbe5f7e1a0e88acc6)](https://www.codacy.com/gh/cassa10/pds03-backend/dashboard?utm_source=github.com&utm_medium=referral&utm_content=cassa10/pds03-backend&utm_campaign=Badge_Coverage)
 [![View in Swagger](http://jessemillar.github.io/view-in-swagger-button/button.svg)](https://pds03-backend.herokuapp.com/swagger-ui.html) 
 
 # Integrantes
