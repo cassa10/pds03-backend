@@ -304,4 +304,60 @@ class StudentTest {
         assertEquals(student.degreeHistories.size, 2)
         assertTrue(student.degreeHistories.any { it.degree == degree2 })
     }
+
+    @Test
+    fun `test student getStudiedDegreeByDegree by degree id`(){
+        val id1: Long = 1
+        val degree1 = Degree.Builder().withId(id1).build()
+        val studiedDegree1 = StudiedDegree.Builder().withDegree(degree1).build()
+        val student = Student.Builder().withDegreeHistories(mutableListOf(studiedDegree1)).build()
+        assertEquals(student.getStudiedDegreeByDegree(degree1), studiedDegree1)
+    }
+
+    @Test(expected = Exception::class)
+    fun `test student getStudiedDegreeByDegree by degree id and throws exception because it doesnt exist`(){
+        val degree = Degree.Builder().build()
+        val student = Student.Builder().build()
+        student.getStudiedDegreeByDegree(degree)
+    }
+
+    @Test
+    fun `test student isNotStudyingInCourseLocation`() {
+        val id1: Long = 1
+        val id2: Long = 2
+        val degree1 = Degree.Builder().withId(id1).build()
+        val degree2 = Degree.Builder().withId(id2).build()
+        val location1 = "Chilecito"
+        val location2 = "Bernal"
+        val studiedDegree1 = StudiedDegree.Builder().withDegree(degree1).withLocation(location1).build()
+        val studiedDegree2 = StudiedDegree.Builder().withDegree(degree2).withLocation(location2).build()
+        val student = Student.Builder().withDegreeHistories(mutableListOf(studiedDegree1, studiedDegree2)).build()
+
+        assertTrue(student.isNotStudyingInCourseLocation(Course.Builder().withLocation("Berlin").build()))
+        assertFalse(student.isNotStudyingInCourseLocation(Course.Builder().withLocation(location1).build()))
+        assertFalse(student.isNotStudyingInCourseLocation(Course.Builder().withLocation(location2).build()))
+    }
+
+    @Test
+    fun `test student existStudiedDegreeWithQuoteRequestCondition given degrees`() {
+        val id1: Long = 1
+        val id2: Long = 2
+        val degree1 = Degree.Builder().withId(id1).build()
+        val degree2 = Degree.Builder().withId(id2).build()
+        val degree3 = Degree.Builder().build()
+        val studiedDegree1: StudiedDegree = mockk{
+            every { degree } returns degree1
+            every { isQuoteRequestCondition() } returns true
+        }
+        val studiedDegree2: StudiedDegree = mockk{
+            every { degree } returns degree2
+            every { isQuoteRequestCondition() } returns false
+        }
+        val student = Student.Builder().withDegreeHistories(mutableListOf(studiedDegree1, studiedDegree2)).build()
+
+        assertTrue(student.existStudiedDegreeWithQuoteRequestCondition(mutableListOf(degree1)))
+        assertTrue(student.existStudiedDegreeWithQuoteRequestCondition(mutableListOf(degree2, degree1)))
+        assertFalse(student.existStudiedDegreeWithQuoteRequestCondition(mutableListOf(degree2)))
+        assertFalse(student.existStudiedDegreeWithQuoteRequestCondition(mutableListOf(degree3)))
+    }
 }

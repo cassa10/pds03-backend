@@ -141,14 +141,13 @@ class SemesterServiceTest {
 
     @Test(expected = InvalidRequestAcceptRequestQuotesDates::class)
     fun `given a SemesterResponseDTO invalid when call create semester then it should InvalidRequestAcceptRequestQuotesDates`() {
-        val semesterMock = mockk<Semester> {
-            every { hasInvalidAcceptRequestQuotesDates() } returns true
-        }
+        val semester = defaultSemester()
+        semester.acceptQuoteRequestsFrom = LocalDateTime.MAX
+        semester.acceptQuoteRequestsTo = LocalDateTime.MIN
         val semesterRequestDTOMock = mockk<SemesterRequestDTO>(relaxed = true) {
-            every { mapToSemester() } returns semesterMock
+            every { mapToSemester() } returns semester
         }
         every { semesterRepository.findByYearAndIsSndSemester(any(), any()) } returns Optional.empty()
-
         semesterService.createSemester(semesterRequestDTOMock)
     }
 

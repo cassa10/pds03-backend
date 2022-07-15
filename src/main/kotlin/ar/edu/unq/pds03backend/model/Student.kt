@@ -119,16 +119,16 @@ class Student(
 
 
     data class Builder(
-        var id: Long? = null,
-        var firstName: String = "",
-        var lastName: String = "",
-        var dni: String = "",
-        var email: String = "",
-        var password: String = "",
-        var legajo: String = "",
-        var enrolledDegrees: MutableCollection<Degree> = mutableListOf(),
-        var degree_histories: MutableCollection<StudiedDegree> = mutableListOf(),
-        var enrolledCourses: MutableCollection<Course> = mutableListOf(),
+        private var id: Long? = null,
+        private var firstName: String = "",
+        private var lastName: String = "",
+        private var dni: String = "",
+        private var email: String = "",
+        private var password: String = "",
+        private var legajo: String = "",
+        private var enrolledDegrees: MutableCollection<Degree> = mutableListOf(),
+        private var degree_histories: MutableCollection<StudiedDegree> = mutableListOf(),
+        private var enrolledCourses: MutableCollection<Course> = mutableListOf(),
     ) {
 
         fun build(): Student = Student(id, firstName, lastName, dni, email, password, legajo, enrolledDegrees, degree_histories, enrolledCourses)
