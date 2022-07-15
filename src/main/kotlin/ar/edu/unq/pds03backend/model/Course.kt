@@ -64,5 +64,6 @@ class Course(
         fun withSubject(subject: Subject) = apply { this.subject = subject }
         fun withSemester(semester: Semester) = apply { this.semester = semester }
         fun withLocation(location: String) = apply { this.location = location }
+        fun withTotalQuotes(totalQuotes: Int) = apply { this.total_quotes = totalQuotes }
     }
 }
